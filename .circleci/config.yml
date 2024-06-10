@@ -1,0 +1,48 @@
+version: 2.1
+
+orbs:
+  ruby: circleci/ruby@2.1.3
+
+executors:
+  default:
+    docker:
+      - image: cimg/ruby:3.3.0
+
+jobs:
+  rspec:
+    executor: default
+    steps:
+      - checkout
+      - ruby/install-deps
+      - ruby/rspec-test
+  rubocop:
+    executor: default
+    steps:
+      - checkout
+      - ruby/install-deps
+      - ruby/rubocop-check
+  release:
+    executor: default
+    steps:
+      - checkout
+      - ruby/install-deps
+      - run: bundle exec rake release
+
+workflows:
+  version: 2.1
+  build:
+    jobs:
+      - rspec
+      - rubocop
+  publish:
+    when:
+      and:
+        - equal: [main, << pipeline.git.branch >>]
+        - matches:
+            pattern: /^v\d+\.\d+\.\d+$/
+            value: << pipeline.git.tag >>
+    jobs:
+      - release:
+          requires:
+            - rspec
+            - rubocop

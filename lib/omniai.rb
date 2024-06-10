@@ -1,0 +1,23 @@
+# frozen_string_literal: true
+
+require 'http'
+require 'zeitwerk'
+
+loader = Zeitwerk::Loader.for_gem
+loader.inflector.inflect 'omniai' => 'OmniAI'
+loader.setup
+
+module OmniAI
+  class Error < StandardError; end
+
+  # An error that wraps an HTTP::Response for non-OK requests.
+  class HTTPError < Error
+    attr_accessor :response
+
+    # @param response [HTTP::Response]
+    def initialize(response)
+      super("status=#{response.status.inspect} headers=#{response.headers.inspect} body=#{response.body.inspect}")
+      @response = response
+    end
+  end
+end
