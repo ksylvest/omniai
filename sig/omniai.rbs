@@ -1,0 +1,3 @@
+module OmniAI
+  VERSION: String
+end
