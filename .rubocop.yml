@@ -1,0 +1,18 @@
+require:
+  - rubocop-rake
+  - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.3
+
+RSpec/FilePath:
+  CustomTransform:
+    OmniAI: omniai
+
+RSpec/SpecFilePathFormat:
+  CustomTransform:
+    OmniAI: omniai
+
+Metrics/ParameterLists:
+  Max: 8
