@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    omniai (1.0.1)
+    omniai (1.0.2)
       event_stream_parser
       http
       zeitwerk
@@ -45,10 +45,10 @@ GEM
       ffi-compiler (~> 1.0)
       rake (~> 13.0)
     parallel (1.25.1)
-    parser (3.3.2.0)
+    parser (3.3.3.0)
       ast (~> 2.4.1)
       racc
-    public_suffix (5.0.5)
+    public_suffix (5.1.0)
     racc (1.8.0)
     rainbow (3.1.1)
     rake (13.2.1)
@@ -61,7 +61,7 @@ GEM
       rspec-mocks (~> 3.13.0)
     rspec-core (3.13.0)
       rspec-support (~> 3.13.0)
-    rspec-expectations (3.13.0)
+    rspec-expectations (3.13.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-mocks (3.13.1)
@@ -90,7 +90,7 @@ GEM
     ruby-progressbar (1.13.0)
     strscan (3.1.0)
     unicode-display_width (2.5.0)
-    zeitwerk (2.6.15)
+    zeitwerk (2.6.16)
 
 PLATFORMS
   aarch64-linux-gnu

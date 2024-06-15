@@ -34,15 +34,9 @@ workflows:
     jobs:
       - rspec
       - rubocop
-  publish:
-    when:
-      and:
-        - equal: [main, << pipeline.git.branch >>]
-        - matches:
-            pattern: /^v\d+\.\d+\.\d+$/
-            value: << pipeline.git.tag >>
-    jobs:
       - release:
-          requires:
-            - rspec
-            - rubocop
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
