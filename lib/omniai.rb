@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'event_stream_parser'
 require 'http'
 require 'zeitwerk'
 
