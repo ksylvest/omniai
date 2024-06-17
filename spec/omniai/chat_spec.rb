@@ -41,8 +41,9 @@ RSpec.describe OmniAI::Chat do
   end
 
   describe '.process!' do
-    subject(:process!) { FakeChat.process!(messages, model:, client:) }
+    subject(:process!) { FakeChat.process!(messages, model:, client:, stream:) }
 
+    let(:stream) { nil }
     let(:client) { FakeClient.new(api_key: '...') }
     let(:model) { FakeChat::Model::FAKE }
 
@@ -80,7 +81,52 @@ RSpec.describe OmniAI::Chat do
             ],
             model:,
           })
-          .to_return_json(status: 422, body: 'An unknown error occurred.')
+          .to_return(status: 422, body: 'An unknown error occurred.')
+      end
+
+      it { expect { process! }.to raise_error(OmniAI::HTTPError) }
+    end
+
+    context 'when OK with stream' do
+      let(:stream) { proc { |chunk| } }
+
+      before do
+        stub_request(:post, 'http://localhost:8080/chat')
+          .with(body: {
+            messages: [
+              { role: 'system', content: 'You are a helpful assistant.' },
+              { role: 'user', content: 'What is the name of the dummer for the Beatles?' },
+            ],
+            model:,
+          })
+          .to_return(status: 200, body: <<~STREAM)
+            data: #{JSON.generate({ choices: [{ delta: { role: 'system', content: 'A' } }] })}\n
+            data: #{JSON.generate({ choices: [{ delta: { role: 'system', content: 'B' } }] })}\n
+            data: [DONE]\n
+          STREAM
+      end
+
+      it do
+        chunks = []
+        allow(stream).to receive(:call) { |chunk| chunks << chunk }
+        process!
+        expect(chunks.map { |chunk| chunk.choice.delta.content }).to eql(%w[A B])
+      end
+    end
+
+    context 'when UNPROCESSABLE with stream' do
+      let(:stream) { proc { |chunk| } }
+
+      before do
+        stub_request(:post, 'http://localhost:8080/chat')
+          .with(body: {
+            messages: [
+              { role: 'system', content: 'You are a helpful assistant.' },
+              { role: 'user', content: 'What is the name of the dummer for the Beatles?' },
+            ],
+            model:,
+          })
+          .to_return(status: 422, body: 'An unknown error occurred.')
       end
 
       it { expect { process! }.to raise_error(OmniAI::HTTPError) }
