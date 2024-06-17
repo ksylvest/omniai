@@ -23,7 +23,9 @@ module OmniAI
 
       # @return [OmniAI::Chat::Message]
       def message
-        Message.new(data: @data['message']) if @data['message']
+        return unless @data['message']
+
+        @message ||= Message.for(role: @data['message'])
       end
     end
   end
