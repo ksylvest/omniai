@@ -40,7 +40,7 @@ module OmniAI
 
       # @return [Array<OmniAI::Chat::Choice>]
       def choices
-        @choices ||= @data['choices'].map { |data| Choice.new(data:) }
+        @choices ||= @data['choices'].map { |data| Choice.for(data:) }
       end
 
       # @param [index] [Integer] optional - default is 0
