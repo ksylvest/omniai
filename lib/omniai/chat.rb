@@ -55,7 +55,7 @@ module OmniAI
     # @raise [ExecutionError]
     def process!
       response = request!
-      raise HTTPError, response unless response.status.ok?
+      raise HTTPError, response.flush unless response.status.ok?
 
       parse!(response:)
     end
