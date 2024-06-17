@@ -14,6 +14,7 @@ GEM
     ast (2.4.2)
     base64 (0.2.0)
     diff-lcs (1.5.1)
+    docile (1.4.0)
     domain_name (0.6.20240107)
     event_stream_parser (1.0.0)
     ffi (1.17.0)
@@ -88,6 +89,12 @@ GEM
     rubocop-rspec (3.0.1)
       rubocop (~> 1.61)
     ruby-progressbar (1.13.0)
+    simplecov (0.22.0)
+      docile (~> 1.1)
+      simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
+    simplecov-html (0.12.3)
+    simplecov_json_formatter (0.1.4)
     strscan (3.1.0)
     unicode-display_width (2.5.0)
     zeitwerk (2.6.16)
@@ -113,6 +120,7 @@ DEPENDENCIES
   rubocop
   rubocop-rake
   rubocop-rspec
+  simplecov
 
 BUNDLED WITH
    2.5.11
