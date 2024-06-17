@@ -3,7 +3,7 @@
 module OmniAI
   class Chat
     # A usage returned by the API.
-    class Completion
+    class Usage
       attr_accessor :data
 
       # @param data [Hash]
