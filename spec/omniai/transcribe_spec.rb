@@ -28,7 +28,9 @@ RSpec.describe OmniAI::Transcribe do
   end
 
   describe '.process!' do
-    subject(:process!) { FakeTranscribe.process!(path, client:, model:) }
+    subject(:process!) { FakeTranscribe.process!(path, client:, model:, format:) }
+
+    let(:format) { described_class::Format::JSON }
 
     let(:client) { FakeClient.new(api_key: '...') }
     let(:model) { FakeTranscribe::Model::FAKE }
@@ -52,6 +54,18 @@ RSpec.describe OmniAI::Transcribe do
       end
 
       it { expect { process! }.to raise_error(OmniAI::HTTPError) }
+    end
+
+    context 'when OK with a non-JSON format' do
+      before do
+        stub_request(:post, 'http://localhost:8080/transcribe')
+          .to_return(status: 200, body: 'Hi!')
+      end
+
+      let(:format) { described_class::Format::TEXT }
+
+      it { expect(process!).to be_a(OmniAI::Transcribe::Transcription) }
+      it { expect(process!.text).to eq('Hi!') }
     end
   end
 end
