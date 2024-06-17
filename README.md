@@ -111,3 +111,11 @@ stream = proc do |chunk|
 end
 client.chat('Tell me a joke.', stream:)
 ```
+
+### Transcribe
+
+Clients that support chat (e.g. OpenAI w/ "Whisper", etc) convert recordings to text via the following calls:
+
+```ruby
+client.transcribe(file.path)
+```

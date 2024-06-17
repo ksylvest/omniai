@@ -33,6 +33,10 @@ module OmniAI
       SYSTEM = 'system'
     end
 
+    module Format
+      JSON = :json
+    end
+
     def self.process!(...)
       new(...).process!
     end
