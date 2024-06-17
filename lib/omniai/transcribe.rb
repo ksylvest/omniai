@@ -119,7 +119,7 @@ module OmniAI
       response = request!
       raise HTTPError, response.flush unless response.status.ok?
 
-      data = @format.eql?(Format::JSON) ? response.parse : { text: String(response.body) }
+      data = @format.nil? || @format.eql?(Format::JSON) ? response.parse : { text: String(response.body) }
       Transcription.new(format: @format, data:)
     end
 
