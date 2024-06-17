@@ -35,15 +35,7 @@ module OmniAI
       def usage
         return unless @data['usage']
 
-        input_tokens = @data['usage']['input_tokens'] || @data['usage']['prompt_tokens']
-        output_tokens = @data['usage']['output_tokens'] || @data['usage']['completion_tokens']
-        total_tokens = @data['usage']['total_tokens'] || (input_tokens + output_tokens)
-
-        @usage ||= Usage.new(
-          input_tokens:,
-          output_tokens:,
-          total_tokens:
-        )
+        @usage ||= Usage.for(data: @data['usage'])
       end
 
       # @return [Array<OmniAI::Chat::Choice>]
