@@ -45,5 +45,19 @@ module OmniAI
     def chat(messages, model:, temperature: nil, format: nil, stream: nil)
       raise NotImplementedError, "#{self.class.name}#chat undefined"
     end
+
+    # @raise [OmniAI::Error]
+    #
+    # @param file [IO]
+    # @param model [String]
+    # @param language [String, nil] optional
+    # @param prompt [String, nil] optional
+    # @param temperature [Float, nil] optional
+    # @param format [Symbol] :text, :srt, :vtt, or :json (default)
+    #
+    # @return text [OmniAI::Transcribe::Transcription]
+    def transcribe(file, model:, language: nil, prompt: nil, temperature: nil, format: Transcription::Format::JSON)
+      raise NotImplementedError, "#{self.class.name}#speak undefined"
+    end
   end
 end
