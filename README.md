@@ -66,7 +66,7 @@ Clients that support chat (e.g. Anthropic w/ "Claude", Google w/ "Gemini", Mistr
 
 ```ruby
 completion = client.chat('Tell me a joke.')
-puts(completion.choice.message.content) # '...'
+completion.choice.message.content # '...'
 ```
 
 #### w/ a Collection of Messages
@@ -77,13 +77,10 @@ messages = [
     role: 'system',
     content: 'You are a helpful assistant with an expertise in geography.',
   },
-  {
-    role: 'user',
-    content: 'What is the capital of Canada?',
-  },
+  'What is the capital of Canada?'
 ]
 completion = client.chat(messages, model: '...', temperature: 0.7, format: :json)
-puts(completion.choice.message.content) # '...'
+completion.choice.message.content
 ```
 
 #### w/ a Collection of Files
@@ -103,7 +100,7 @@ message = {
 }
 
 completion = client.chat(message)
-puts(completion.choice.message.content) # '...'
+completion.choice.message.content
 ```
 
 #### Streaming
