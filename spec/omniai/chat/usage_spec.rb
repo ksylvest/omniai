@@ -10,7 +10,7 @@ RSpec.describe OmniAI::Chat::Usage do
       let(:data) do
         {
           'input_tokens' => 2,
-          'output_tokens' => 3
+          'output_tokens' => 3,
         }
       end
 
@@ -24,7 +24,7 @@ RSpec.describe OmniAI::Chat::Usage do
         {
           'prompt_tokens' => 2,
           'completion_tokens' => 3,
-          'total_tokens' => 5
+          'total_tokens' => 5,
         }
       end
 
