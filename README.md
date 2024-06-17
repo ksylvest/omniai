@@ -80,7 +80,7 @@ messages = [
   'What is the capital of Canada?'
 ]
 completion = client.chat(messages, model: '...', temperature: 0.7, format: :json)
-completion.choice.message.content
+completion.choice.message.content  # '...'
 ```
 
 #### w/ a Collection of Files
@@ -100,7 +100,7 @@ message = {
 }
 
 completion = client.chat(message)
-completion.choice.message.content
+completion.choice.message.content  # '...'
 ```
 
 #### Streaming
@@ -117,5 +117,6 @@ client.chat('Tell me a joke.', stream:)
 Clients that support chat (e.g. OpenAI w/ "Whisper", etc) convert recordings to text via the following calls:
 
 ```ruby
-client.transcribe(file.path)
+transcription = client.transcribe(file.path)
+transcription.text # '...'
 ```
