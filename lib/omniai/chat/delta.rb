@@ -4,22 +4,27 @@ module OmniAI
   class Chat
     # A delta returned by the API.
     class Delta
-      attr_accessor :data
+      attr_accessor :role, :content
 
-      # @param content [Integer]
+      # @param data [Hash]
+      # @return [OmniAI::Chat::Message]
+      def self.for(data:)
+        content = data['content'] || data[:content]
+        role = data['role'] || data[:role]
+
+        new(content:, role: role || Role::USER)
+      end
+
+      # @param content [String]
       # @param role [String]
-      def initialize(data:)
-        @data = data
+      def initialize(content:, role: nil)
+        @content = content
+        @role = role
       end
 
-      # @return [String, nil]
-      def role
-        @data['role']
-      end
-
-      # @return [String, nil]
-      def content
-        @data['content']
+      # @return [String]
+      def inspect
+        "#<#{self.class.name} role=#{role.inspect} content=#{content.inspect}>"
       end
     end
   end
