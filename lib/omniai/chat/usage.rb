@@ -4,36 +4,30 @@ module OmniAI
   class Chat
     # A usage returned by the API.
     class Usage
-      attr_accessor :data
+      attr_accessor :input_tokens, :output_tokens, :total_tokens
 
-      # @param data [Hash]
-      def initialize(data:)
-        @data = data
+      # @param input_tokens [Integer]
+      # @param output_tokens [Integer]
+      # @param total_tokens [Integer]
+      def initialize(input_tokens:, output_tokens:, total_tokens:)
+        @input_tokens = input_tokens
+        @output_tokens = output_tokens
+        @total_tokens = total_tokens
       end
 
-      # @return [Integer, nil]
+      # @return [Integer]
       def completion_tokens
-        @data['completion_tokens']
+        @output_tokens
       end
 
-      # @return [Integer, nil]
+      # @return [Integer]
       def prompt_tokens
-        @data['prompt_tokens']
+        @input_tokens
       end
 
-      # @return [Integer, nil]
-      def total_tokens
-        @data['total_tokens']
-      end
-
-      # @return [Integer, nil]
-      def input_tokens
-        @data['input_tokens']
-      end
-
-      # @return [Integer, nil]
-      def output_tokens
-        @data['output_tokens']
+      # @return [String]
+      def inspect
+        "#<#{self.class.name} input_tokens=#{input_tokens} output_tokens=#{output_tokens} total_tokens=#{total_tokens}>"
       end
     end
   end
