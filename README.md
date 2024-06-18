@@ -1,6 +1,6 @@
 # OmniAI
 
-OmniAI is a flexible AI library that standardizes the APIs for multipe AI providers:
+OmniAI is a flexible AI library that standardizes the APIs for multiple AI providers:
 
 - [OmniAI::Anthropic](https://github.com/ksylvest/omniai-anthropic)
 - [OmniAI::Google](https://github.com/ksylvest/omniai-google)
