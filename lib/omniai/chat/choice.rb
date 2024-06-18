@@ -16,7 +16,9 @@ module OmniAI
         new(index:, delta:, message:)
       end
 
-      # @param data [Hash]
+      # @param index [Integer]
+      # @param delta [OmniAI::Chat::Delta] optional
+      # @param message [OmniAI::Chat::Message] optional
       def initialize(index:, delta:, message:)
         @index = index
         @delta = delta

@@ -5,7 +5,6 @@ module OmniAI
     # A stream given when streaming.
     class Stream
       # @param response [HTTP::Response]
-      # @param block [Proc]
       def initialize(response:)
         @response = response
         @parser = EventStreamParser::Parser.new
