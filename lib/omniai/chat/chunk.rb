@@ -36,7 +36,7 @@ module OmniAI
         @choices ||= @data['choices'].map { |data| Choice.for(data:) }
       end
 
-      # @param [index] [Integer]
+      # @param index [Integer]
       # @return [OmniAI::Chat::Delta]
       def choice(index: 0)
         choices[index]

@@ -6,8 +6,7 @@ module OmniAI
     class Content
       attr_accessor :type, :value
 
-      # @param url [String]
-      # @param text [String]
+      # @param value [String]
       # @param type [Symbol] :image / :video / :audio / :text
       def initialize(value, type: :text)
         @value = value
