@@ -6,10 +6,6 @@ AllCops:
   NewCops: enable
   TargetRubyVersion: 3.3
 
-RSpec/SpecFilePathFormat:
-  CustomTransform:
-    OmniAI: omniai
-
 Layout/FirstHashElementIndentation:
   EnforcedStyle: consistent
 
@@ -18,6 +14,13 @@ Layout/FirstArrayElementIndentation:
 
 Metrics/ParameterLists:
   Enabled: false
+
+RSpec/NestedGroups:
+  Enabled: false
+
+RSpec/SpecFilePathFormat:
+  CustomTransform:
+    OmniAI: omniai
 
 Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: consistent_comma
