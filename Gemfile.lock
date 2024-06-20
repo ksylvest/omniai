@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    omniai (1.2.1)
+    omniai (1.2.2)
       event_stream_parser
       http
       zeitwerk
