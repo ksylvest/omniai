@@ -56,7 +56,7 @@ module OmniAI
       @format = format
     end
 
-    # @raise [ExecutionError]
+    # @raise [HTTPError]
     def process!
       response = request!
       raise HTTPError, response.flush unless response.status.ok?

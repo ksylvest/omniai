@@ -113,8 +113,8 @@ module OmniAI
       @client = client
     end
 
+    # @raise [HTTPError]
     # @return [OmniAI::Transcribe::Transcription]
-    # @raise [ExecutionError]
     def process!
       response = request!
       raise HTTPError, response.flush unless response.status.ok?

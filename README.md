@@ -96,7 +96,7 @@ client.chat('Tell me a joke.', stream:)
 
 ### Transcribe
 
-Clients that support chat (e.g. OpenAI w/ "Whisper", etc) convert recordings to text via the following calls:
+Clients that support transcribe (e.g. OpenAI w/ "Whisper") convert recordings to text via the following calls:
 
 #### Transcriptions with Path
 
@@ -108,7 +108,8 @@ transcription.text # '...'
 #### Transcriptions with Files
 
 ```ruby
-file = File.open("example.ogg", "rb")
-transcription = client.transcribe(file)
-transcription.text # '...'
+File.open("example.ogg", "rb") do |file|
+  transcription = client.transcribe(file)
+  transcription.text # '...'
+end
 ```
