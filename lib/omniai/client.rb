@@ -59,5 +59,26 @@ module OmniAI
     def transcribe(io, model:, language: nil, prompt: nil, temperature: nil, format: nil)
       raise NotImplementedError, "#{self.class.name}#speak undefined"
     end
+
+    # @raise [OmniAI::Error]
+    #
+    # @param input [String] required
+    # @param model [String] required
+    # @param voice [String] required
+    # @param speed [Float] optional
+    # @param format [String] optional (default "aac"):
+    #   - "aac"
+    #   - "mp3"
+    #   - "flac"
+    #   - "opus"
+    #   - "pcm"
+    #   - "wav"
+    #
+    # @yield [output] optional
+    #
+    # @return [Tempfile``]
+    def speak(input, model:, voice:, speed: nil, format: nil, &stream)
+      raise NotImplementedError, "#{self.class.name}#speak undefined"
+    end
   end
 end
