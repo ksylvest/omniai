@@ -62,19 +62,19 @@ client = OmniAI::OpenAI::Client.new
 
 Clients that support chat (e.g. Anthropic w/ "Claude", Google w/ "Gemini", Mistral w/ "LeChat", OpenAI w/ "ChatGPT", etc) generate completions using the following calls:
 
-#### w/ a Simple Prompt
+#### Completions using Single Message
 
 ```ruby
 completion = client.chat('Tell me a joke.')
 completion.choice.message.content # '...'
 ```
 
-#### w/ a Collection of Messages
+#### Completions using Multiple Messages
 
 ```ruby
 messages = [
   {
-    role: 'system',
+    role: OmniAI::Chat::Role::SYSTEM,
     content: 'You are a helpful assistant with an expertise in geography.',
   },
   'What is the capital of Canada?'
@@ -83,7 +83,7 @@ completion = client.chat(messages, model: '...', temperature: 0.7, format: :json
 completion.choice.message.content  # '...'
 ```
 
-#### Streaming
+#### Completions using Real-Time Streaming
 
 ```ruby
 stream = proc do |chunk|
@@ -96,7 +96,17 @@ client.chat('Tell me a joke.', stream:)
 
 Clients that support chat (e.g. OpenAI w/ "Whisper", etc) convert recordings to text via the following calls:
 
+#### Transcriptions with Path
+
 ```ruby
-transcription = client.transcribe(file.path)
+transcription = client.transcribe("example.ogg")
+transcription.text # '...'
+```
+
+#### Transcriptions with Files
+
+```ruby
+file = File.open("example.ogg", "rb")
+transcription = client.transcribe(file)
 transcription.text # '...'
 ```
