@@ -38,9 +38,9 @@ module OmniAI
         @usage ||= Usage.for(data: @data['usage'])
       end
 
-      # @return [Array<OmniAI::Chat::Choice>]
+      # @return [Array<OmniAI::Chat::MessageChoice>]
       def choices
-        @choices ||= @data['choices'].map { |data| Choice.for(data:) }
+        @choices ||= @data['choices'].map { |data| MessageChoice.for(data:) }
       end
 
       # @param index [Integer] optional - default is 0
