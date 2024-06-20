@@ -113,3 +113,25 @@ File.open("example.ogg", "rb") do |file|
   transcription.text # '...'
 end
 ```
+
+### Speak
+
+Clients that support speak (e.g. OpenAI w/ "Whisper") convert text to recordings via the following calls:
+
+#### Speech with Stream
+
+```ruby
+File.open('example.ogg', 'wb') do |file|
+  client.speak('The quick brown fox jumps over a lazy dog.', voice: 'HAL') do |chunk|
+    file << chunk
+  end
+end
+```
+
+#### Speech with File
+
+```ruby
+tempfile = client.speak('The quick brown fox jumps over a lazy dog.', voice: 'HAL')
+tempfile.close
+tempfile.unlink
+```
