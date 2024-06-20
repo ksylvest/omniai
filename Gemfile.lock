@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    omniai (1.1.6)
+    omniai (1.2.0)
       event_stream_parser
       http
       zeitwerk
@@ -54,7 +54,7 @@ GEM
     parser (3.3.3.0)
       ast (~> 2.4.1)
       racc
-    public_suffix (5.1.0)
+    public_suffix (5.1.1)
     racc (1.8.0)
     rainbow (3.1.1)
     rake (13.2.1)
