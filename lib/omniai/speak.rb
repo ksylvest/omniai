@@ -106,7 +106,7 @@ module OmniAI
     #
     # @return [Tempfile]
     def fetch!(response:)
-      tempfile = Tempfile.new(['', ".#{@format}"])
+      tempfile = Tempfile.new
       tempfile.binmode
       response.body.each { |chunk| tempfile << chunk }
       tempfile.rewind
