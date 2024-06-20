@@ -2,10 +2,12 @@
 
 require 'event_stream_parser'
 require 'http'
+require 'uri'
 require 'zeitwerk'
 
 loader = Zeitwerk::Loader.for_gem
 loader.inflector.inflect 'omniai' => 'OmniAI'
+loader.inflector.inflect 'url' => 'URL'
 loader.setup
 
 module OmniAI
