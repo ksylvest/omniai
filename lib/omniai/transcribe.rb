@@ -96,15 +96,15 @@ module OmniAI
       new(...).process!
     end
 
-    # @param path [String] required
+    # @param io [String, Pathname, IO] required
     # @param client [OmniAI::Client] the client
     # @param model [String] required
     # @param language [String, nil] optional
     # @param prompt [String, nil] optional
     # @param temperature [Float, nil] optional
     # @param format [String, nil] optional
-    def initialize(path, client:, model:, language: nil, prompt: nil, temperature: nil, format: Format::JSON)
-      @path = path
+    def initialize(io, client:, model:, language: nil, prompt: nil, temperature: nil, format: Format::JSON)
+      @io = io
       @model = model
       @language = language
       @prompt = prompt
@@ -128,7 +128,7 @@ module OmniAI
     # @return [Hash]
     def payload
       {
-        file: HTTP::FormData::File.new(@path),
+        file: HTTP::FormData::File.new(@io),
         model: @model,
         language: @language,
         prompt: @prompt,

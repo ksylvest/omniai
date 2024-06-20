@@ -17,18 +17,18 @@ class FakeTranscribe < OmniAI::Transcribe
 end
 
 RSpec.describe OmniAI::Transcribe do
-  subject(:transcribe) { described_class.new(path, model:, client:) }
+  subject(:transcribe) { described_class.new(io, model:, client:) }
 
   let(:model) { '...' }
   let(:client) { OmniAI::Client.new(api_key: '...') }
-  let(:path) { Pathname.new(File.dirname(__FILE__)).join('..', 'fixtures', 'file.ogg') }
+  let(:io) { Pathname.new(File.dirname(__FILE__)).join('..', 'fixtures', 'file.ogg') }
 
   describe '#path' do
     it { expect { transcribe.send(:path) }.to raise_error(NotImplementedError) }
   end
 
   describe '.process!' do
-    subject(:process!) { FakeTranscribe.process!(path, client:, model:, format:) }
+    subject(:process!) { FakeTranscribe.process!(io, client:, model:, format:) }
 
     let(:format) { described_class::Format::JSON }
 

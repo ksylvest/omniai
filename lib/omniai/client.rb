@@ -48,7 +48,7 @@ module OmniAI
 
     # @raise [OmniAI::Error]
     #
-    # @param file [IO]
+    # @param io [String, Pathname, IO] required
     # @param model [String]
     # @param language [String, nil] optional
     # @param prompt [String, nil] optional
@@ -56,7 +56,7 @@ module OmniAI
     # @param format [Symbol] :text, :srt, :vtt, or :json (default)
     #
     # @return text [OmniAI::Transcribe::Transcription]
-    def transcribe(file, model:, language: nil, prompt: nil, temperature: nil, format: nil)
+    def transcribe(io, model:, language: nil, prompt: nil, temperature: nil, format: nil)
       raise NotImplementedError, "#{self.class.name}#speak undefined"
     end
   end
