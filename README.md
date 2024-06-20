@@ -60,6 +60,18 @@ require 'omniai/openai'
 client = OmniAI::OpenAI::Client.new
 ```
 
+#### Usage with LocalAI
+
+LocalAI support is offered through [OmniAI::OpenAI](https://github.com/ksylvest/omniai-openai):
+
+[Usage with LocalAI](https://github.com/ksylvest/omniai-openai#usage-with-localai)
+
+#### Usage with Ollama
+
+Ollama support is offered through [OmniAI::OpenAI](https://github.com/ksylvest/omniai-openai):
+
+[Usage with Ollama](https://github.com/ksylvest/omniai-openai#usage-with-ollama)
+
 ### Chat
 
 Clients that support chat (e.g. Anthropic w/ "Claude", Google w/ "Gemini", Mistral w/ "LeChat", OpenAI w/ "ChatGPT", etc) generate completions using the following calls:
