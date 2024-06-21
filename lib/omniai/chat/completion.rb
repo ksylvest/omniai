@@ -44,7 +44,7 @@ module OmniAI
       end
 
       # @param index [Integer] optional - default is 0
-      # @return [OmniAI::Chat::Choice]
+      # @return [OmniAI::Chat::MessageChoice]
       def choice(index: 0)
         choices[index]
       end
