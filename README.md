@@ -87,39 +87,10 @@ client = OmniAI::Example::Client.new(logger:)
 ```
 
 ```
-I, [...]  INFO -- : > POST https://...
-D, [...] DEBUG -- : Authorization: Bearer ...
+[INFO]: POST https://...
+[INFO]: 200 OK
 ...
-{"messages":[{"role":"user","content":"Tell me a joke!"}],"model":"..."}
-I, [...]  INFO -- : < 200 OK
-D, [...] DEBUG -- : Date: ...
-...
-{
-  "id": "...",
-  "object": "...",
-  ...
-}
 ```
-
-The level of the logger can be configured to either `INFO` and `DEBUG`:
-
-**INFO**:
-
-```ruby
-logger.level = Logger::INFO
-```
-
-- Request: verb / URI
-- Response: status
-
-**DEBUG**:
-
-```ruby
-logger.level = Logger::DEBUG
-```
-
-- Request: verb / URI / headers / body
-- Response: status / headers / body
 
 #### Timeouts
 

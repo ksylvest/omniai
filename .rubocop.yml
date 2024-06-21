@@ -21,6 +21,9 @@ Metrics/ParameterLists:
 RSpec/NestedGroups:
   Enabled: false
 
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
 RSpec/SpecFilePathFormat:
   CustomTransform:
     OmniAI: omniai

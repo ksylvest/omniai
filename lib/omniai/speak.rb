@@ -84,6 +84,7 @@ module OmniAI
     # @return [Tempfile]
     def process!(&block)
       response = request!
+
       raise HTTPError, response.flush unless response.status.ok?
 
       if block
