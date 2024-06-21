@@ -2,12 +2,14 @@
 
 [![CircleCI](https://circleci.com/gh/ksylvest/omniai.svg?style=svg)](https://circleci.com/gh/ksylvest/omniai)
 
-OmniAI is a flexible AI library that standardizes the APIs for multiple AI providers:
+OmniAI is a flexible AI library that standardizes the APIs of many different AIs:
 
 - [OmniAI::Anthropic](https://github.com/ksylvest/omniai-anthropic)
 - [OmniAI::Google](https://github.com/ksylvest/omniai-google)
 - [OmniAI::Mistral](https://github.com/ksylvest/omniai-mistral)
 - [OmniAI::OpenAI](https://github.com/ksylvest/omniai-openai)
+
+All libraries are community maintained.
 
 ## Installation
 
