@@ -6,6 +6,9 @@ AllCops:
   NewCops: enable
   TargetRubyVersion: 3.3
 
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
 Layout/FirstHashElementIndentation:
   EnforcedStyle: consistent
 
