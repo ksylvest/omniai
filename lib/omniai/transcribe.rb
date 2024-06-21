@@ -117,6 +117,7 @@ module OmniAI
     # @return [OmniAI::Transcribe::Transcription]
     def process!
       response = request!
+
       raise HTTPError, response.flush unless response.status.ok?
 
       text = @format.nil? || @format.eql?(Format::JSON) ? response.parse['text'] : String(response.body)

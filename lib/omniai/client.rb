@@ -57,7 +57,7 @@ module OmniAI
     # @return [HTTP::Client]
     def connection
       http = HTTP.persistent(@host)
-      http = http.use(logging: { logger: @logger }) if @logger
+      http = http.use(instrumentation: { instrumenter: Instrumentation.new(logger: @logger) }) if @logger
       http = http.timeout(@timeout) if @timeout
       http
     end

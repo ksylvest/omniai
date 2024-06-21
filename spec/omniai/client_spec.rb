@@ -6,7 +6,7 @@ RSpec.describe OmniAI::Client do
   let(:api_key) { 'abcdef' }
   let(:host) { 'http://localhost:8080' }
   let(:timeout) { 5 }
-  let(:logger) { Logger.new($stdout) }
+  let(:logger) { instance_double(Logger) }
 
   describe '#api_key' do
     it { expect(client.api_key).to eq(api_key) }
