@@ -74,6 +74,79 @@ Ollama support is offered through [OmniAI::OpenAI](https://github.com/ksylvest/o
 
 [Usage with Ollama](https://github.com/ksylvest/omniai-openai#usage-with-ollama)
 
+#### Logging
+
+Logging the **request** / **response** is configurable by passing a logger into any client:
+
+```ruby
+require 'omniai/openai'
+require 'logger'
+
+logger = Logger.new(STDOUT)
+client = OmniAI::Example::Client.new(logger:)
+```
+
+```
+I, [...]  INFO -- : > POST https://...
+D, [...] DEBUG -- : Authorization: Bearer ...
+...
+{"messages":[{"role":"user","content":"Tell me a joke!"}],"model":"..."}
+I, [...]  INFO -- : < 200 OK
+D, [...] DEBUG -- : Date: ...
+...
+{
+  "id": "...",
+  "object": "...",
+  ...
+}
+```
+
+The level of the logger can be configured to either `INFO` and `DEBUG`:
+
+**INFO**:
+
+```ruby
+logger.level = Logger::INFO
+```
+
+- Request: verb / URI
+- Response: status
+
+**DEBUG**:
+
+```ruby
+logger.level = Logger::DEBUG
+```
+
+- Request: verb / URI / headers / body
+- Response: status / headers / body
+
+#### Timeouts
+
+Timeouts are configurable by passing a `timeout` an integer duration for the request / response of any APIs using:
+
+```ruby
+require 'omniai/openai'
+require 'logger'
+
+logger = Logger.new(STDOUT)
+client = OmniAI::OpenAI::Client.new(timeout: 8) # i.e. 8 seconds
+```
+
+Timeouts are also be configurable by passing a `timeout` hash with `timeout` / `read` / `write` / `keys using:
+
+```ruby
+require 'omniai/openai'
+require 'logger'
+
+logger = Logger.new(STDOUT)
+client = OmniAI::OpenAI::Client.new(timeout: {
+  read: 2, # i.e. 2 seconds
+  write: 3, # i.e. 3 seconds
+  connect: 4, # i.e. 4 seconds
+})
+```
+
 ### Chat
 
 Clients that support chat (e.g. Anthropic w/ "Claude", Google w/ "Gemini", Mistral w/ "LeChat", OpenAI w/ "ChatGPT", etc) generate completions using the following calls:
