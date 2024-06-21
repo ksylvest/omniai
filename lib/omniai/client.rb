@@ -9,19 +9,36 @@ module OmniAI
   #     def initialize(api_key: ENV.fetch('OPENAI_API_KEY'), logger: nil)
   #       super
   #     end
+  #
+  #     # @return [HTTP::Client]
+  #     def connection
+  #       @connection ||= super.auth("Bearer: #{@api_key}")
+  #     end
   #   end
   class Client
     class Error < StandardError; end
 
-    attr_accessor :api_key, :logger, :host
+    # @return [String, nil]
+    attr_accessor :api_key
 
-    # @param api_key [String] optional
-    # @param host [String] optional - supports for customzing the host of the client (e.g. 'http://localhost:8080')
-    # @param logger [Logger] optional
-    def initialize(api_key: nil, logger: nil, host: nil)
+    # @return [Logger, nil]
+    attr_accessor :logger
+
+    # @return [String, nil]
+    attr_accessor :host
+
+    # @return [Integer, nil]
+    attr_accessor :timeout
+
+    # @param api_key [String, nil] optional
+    # @param host [String, nil] optional - supports for customzing the host of the client (e.g. 'http://localhost:8080')
+    # @param logger [Logger, nil] optional
+    # @param timeout [Integer, nil] optional
+    def initialize(api_key: nil, logger: nil, host: nil, timeout: nil)
       @api_key = api_key
       @host = host
       @logger = logger
+      @timeout = timeout
     end
 
     # @return [String]
@@ -39,7 +56,10 @@ module OmniAI
 
     # @return [HTTP::Client]
     def connection
-      raise NotImplementedError, "#{self.class.name}#connection undefined"
+      http = HTTP.persistent(@host)
+      http = http.use(logging: { logger: @logger }) if @logger
+      http = http.timeout(@timeout) if @timeout
+      http
     end
 
     # @raise [OmniAI::Error]
