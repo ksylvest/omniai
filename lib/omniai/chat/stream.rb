@@ -16,7 +16,7 @@ module OmniAI
           @parser.feed(chunk) do |_, data|
             next if data.eql?('[DONE]')
 
-            yield(Chunk.new(data: JSON.parse(data)))
+            yield(Response::Chunk.new(data: JSON.parse(data)))
           end
         end
       end

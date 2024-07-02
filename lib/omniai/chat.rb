@@ -78,7 +78,7 @@ module OmniAI
     end
 
     # @param response [HTTP::Response]
-    # @return [OmniAI::Chat::Completion]
+    # @return [OmniAI::Chat::Response::Completion]
     def parse!(response:)
       if @stream
         stream!(response:)
@@ -87,13 +87,14 @@ module OmniAI
       end
     end
 
-    # @param response [OmniAI::Chat::Completion]
+    # @param response [OmniAI::Chat::Response::Completion]
     def complete!(response:)
       Completion.new(data: response.parse)
     end
 
     # @param response [HTTP::Response]
-    # @return [OmniAI::Chat::Stream]
+    #
+    # @return [OmniAI::Chat::Response::Stream]
     def stream!(response:)
       raise Error, "#{self.class.name}#stream! unstreamable" unless @stream
 
