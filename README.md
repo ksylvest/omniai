@@ -193,3 +193,38 @@ tempfile = client.speak('The quick brown fox jumps over a lazy dog.', voice: 'HA
 tempfile.close
 tempfile.unlink
 ```
+
+## CLI
+
+OmniAI packages a basic command line interface (CLI) to allow for exploration of various APIs. A detailed CLI documentation can be found via help:
+
+```bash
+omniai --help
+```
+
+### Chat
+
+#### w/ a Prompt
+
+```bash
+omniai chat "What is the coldest place on earth?"
+```
+
+```
+The coldest place on earth is Antarctica.
+```
+
+#### w/o a Prompt
+
+```bash
+omniai chat --provider="openai" --model="gpt-4" --temperature="0.5"
+```
+
+```
+Type 'exit' or 'quit' to abort.
+# What is the warmet place on earth?
+```
+
+```
+The warmest place on earth is Africa.
+```

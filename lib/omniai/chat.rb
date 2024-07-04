@@ -45,7 +45,7 @@ module OmniAI
     # @param client [OmniAI::Client] the client
     # @param model [String] required
     # @param temperature [Float, nil] optional
-    # @param stream [Proc, nil] optional
+    # @param stream [Proc, IO, nil] optional
     # @param format [Symbol, nil] optional - :json
     def initialize(messages, client:, model:, temperature: nil, stream: nil, format: nil)
       @messages = messages
@@ -97,7 +97,14 @@ module OmniAI
     def stream!(response:)
       raise Error, "#{self.class.name}#stream! unstreamable" unless @stream
 
-      Stream.new(response:).stream! { |chunk| @stream.call(chunk) }
+      Stream.new(response:).stream! do |chunk|
+        case @stream
+        when IO then @stream << chunk
+        else @stream.call(chunk)
+        end
+      end
+
+      @stream.flush if @stream.is_a?(IO)
     end
 
     # @return [Array<Hash>]

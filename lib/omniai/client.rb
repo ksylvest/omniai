@@ -16,8 +16,6 @@ module OmniAI
   #     end
   #   end
   class Client
-    class Error < StandardError; end
-
     # @return [String, nil]
     attr_accessor :api_key
 
@@ -29,6 +27,68 @@ module OmniAI
 
     # @return [Integer, nil]
     attr_accessor :timeout
+
+    # Initialize a client for Anthropic. This method requires the provider if it is undefined.
+    #
+    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
+    # @return [Class<OmniAI::Client>]
+    def self.anthropic
+      require 'omniai/anthropic' unless defined?(OmniAI::Anthropic::Client)
+      OmniAI::Anthropic::Client
+    rescue LoadError
+      raise Error, "requires 'omniai-anthropic': `gem install omniai-anthropic`"
+    end
+
+    # Lookup the `OmniAI::Google::Client``. This method requires the provider if it is undefined.
+    #
+    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
+    # @return [Class<OmniAI::Client>]
+    def self.google
+      require 'omniai/google' unless defined?(OmniAI::Google::Client)
+      OmniAI::Google::Client
+    rescue LoadError
+      raise Error, "requires 'omniai-google': `gem install omniai-google`"
+    end
+
+    # Initialize a client for Mistral. This method requires the provider if it is undefined.
+    #
+    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
+    # @return [Class<OmniAI::Client>]
+    def self.mistral
+      require 'omniai/mistral' unless defined?(OmniAI::Mistral::Client)
+      OmniAI::Mistral::Client
+    rescue LoadError
+      raise Error, "requires 'omniai-mistral': `gem install omniai-mistral`"
+    end
+
+    # Initialize a client for OpenAI. This method requires the provider if it is undefined.
+    #
+    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
+    # @return [Class<OmniAI::Client>]
+    def self.openai
+      require 'omniai/openai' unless defined?(OmniAI::OpenAI::Client)
+      OmniAI::OpenAI::Client
+    rescue LoadError
+      raise Error, "requires 'omniai-openai': `gem install omniai-openai`"
+    end
+
+    # Initialize a client by provider (e.g. 'openai'). This method attempts to require the provider.
+    #
+    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
+    # @param provider [String] required (e.g. 'anthropic', 'google', 'mistral', 'openai', etc)
+    # @return [OmniAI::Client]
+    def self.find(provider:, **)
+      klass =
+        case provider
+        when 'anthropic' then anthropic
+        when 'google' then google
+        when 'mistral' then mistral
+        when 'openai' then openai
+        else raise Error, "unknown provider=#{provider.inspect}"
+        end
+
+      klass.new(**)
+    end
 
     # @param api_key [String, nil] optional
     # @param host [String, nil] optional - supports for customzing the host of the client (e.g. 'http://localhost:8080')

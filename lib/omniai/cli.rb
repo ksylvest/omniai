@@ -1,0 +1,64 @@
+# frozen_string_literal: true
+
+require 'optparse'
+
+module OmniAI
+  # Used when interacting with the suite from the command line interface (CLI).
+  #
+  # Usage:
+  #
+  #   cli = OmniAI::CLI.new
+  #   cli.parse
+  class CLI
+    ChatArgs = Struct.new(:provider, :model, :temperature)
+
+    # @param in [IO] a stream
+    # @param out [IO] a stream
+    # @param provider [String] a provider
+    def initialize(stdin: $stdin, stdout: $stdout, provider: 'openai')
+      @stdin = stdin
+      @stdout = stdout
+      @provider = provider
+      @args = {}
+    end
+
+    def parse(argv = ARGV)
+      parser.order!(argv)
+      command = argv.shift
+      return if command.nil?
+
+      case command
+      when 'chat' then ChatHandler.handle!(stdin: @stdin, stdout: @stdout, provider: @provider, argv:)
+      else raise Error, "unsupported command=#{command.inspect}"
+      end
+    end
+
+    private
+
+    # @return [OptionParser]
+    def parser
+      OptionParser.new do |options|
+        options.banner = 'usage: omniai [options] <command> [<args>]'
+
+        options.on('-h', '--help', 'help') do
+          @stdout.puts(options)
+          exit
+        end
+
+        options.on('-v', '--version', 'version') do
+          @stdout.puts(VERSION)
+          exit
+        end
+
+        options.on('-p', '--provider=PROVIDER', 'provider (default="openai")') do |provider|
+          @provider = provider
+        end
+
+        options.separator <<~COMMANDS
+          commands:
+            chat
+        COMMANDS
+      end
+    end
+  end
+end

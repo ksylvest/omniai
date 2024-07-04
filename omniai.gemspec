@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.metadata['changelog_uri'] = "#{spec.homepage}/releases"
   spec.metadata['rubygems_mfa_required'] = 'true'
 
-  spec.files = Dir.glob('{bin,lib}/**/*') + %w[README.md Gemfile]
+  spec.files = Dir.glob('{bin,lib,exe}/**/*') + %w[README.md Gemfile]
 
   spec.bindir = 'exe'
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }

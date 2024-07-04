@@ -15,10 +15,19 @@ Layout/FirstHashElementIndentation:
 Layout/FirstArrayElementIndentation:
   EnforcedStyle: consistent
 
+Metrics/MethodLength:
+  Enabled: false
+
 Metrics/ParameterLists:
   Enabled: false
 
+RSpec/ExampleLength:
+  Enabled: false
+
 RSpec/NestedGroups:
+  Enabled: false
+
+RSpec/MultipleExpectations:
   Enabled: false
 
 RSpec/MultipleMemoizedHelpers:
