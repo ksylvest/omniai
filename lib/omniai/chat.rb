@@ -99,7 +99,9 @@ module OmniAI
 
       Stream.new(response:).stream! do |chunk|
         case @stream
-        when IO then @stream << chunk.choice.delta.content
+        when IO
+          @stream << chunk.choice.delta.content
+          @stream.flush
         else @stream.call(chunk)
         end
       end
