@@ -89,7 +89,7 @@ module OmniAI
 
     # @param response [OmniAI::Chat::Completion]
     def complete!(response:)
-      Completion.new(data: response.parse)
+      self.class::Completion.new(data: response.parse)
     end
 
     # @param response [HTTP::Response]
@@ -97,7 +97,7 @@ module OmniAI
     def stream!(response:)
       raise Error, "#{self.class.name}#stream! unstreamable" unless @stream
 
-      Stream.new(response:).stream! do |chunk|
+      self.class::Stream.new(response:).stream! do |chunk|
         case @stream
         when IO
           @stream << chunk.choice.delta.content
