@@ -21,6 +21,7 @@ module OmniAI
 
         loop do
           @stdout.print('# ')
+          @stdout.flush
           prompt = @stdin.gets&.chomp
 
           break if prompt.nil? || prompt.match?(/\A(exit|quit)\z/i)
