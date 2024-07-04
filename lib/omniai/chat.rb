@@ -113,7 +113,7 @@ module OmniAI
     def messages
       arrayify(@messages).map do |content|
         case content
-        when String then { role: OmniAI::Chat::Role::USER, content: }
+        when String then { role: Role::USER, content: }
         when Hash then content
         else raise Error, "Unsupported content=#{content.inspect}"
         end
