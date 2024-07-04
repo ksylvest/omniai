@@ -99,14 +99,14 @@ module OmniAI
 
       self.class::Stream.new(response:).stream! do |chunk|
         case @stream
-        when IO
+        when IO, StringIO
           @stream << chunk.choice.delta.content
           @stream.flush
         else @stream.call(chunk)
         end
       end
 
-      @stream.puts if @stream.is_a?(IO)
+      @stream.puts if @stream.is_a?(IO) || @stream.is_a?(StringIO)
     end
 
     # @return [Array<Hash>]

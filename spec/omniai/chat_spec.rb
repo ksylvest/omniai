@@ -87,7 +87,7 @@ RSpec.describe OmniAI::Chat do
       it { expect { process! }.to raise_error(OmniAI::HTTPError) }
     end
 
-    context 'when OK with stream' do
+    context 'when OK with stream using a proc' do
       let(:stream) { proc { |chunk| } }
 
       before do
@@ -111,6 +111,31 @@ RSpec.describe OmniAI::Chat do
         allow(stream).to receive(:call) { |chunk| chunks << chunk }
         process!
         expect(chunks.map { |chunk| chunk.choice.delta.content }).to eql(%w[A B])
+      end
+    end
+
+    context 'when OK with stream using IO' do
+      let(:stream) { StringIO.new }
+
+      before do
+        stub_request(:post, 'http://localhost:8080/chat')
+          .with(body: {
+            messages: [
+              { role: 'system', content: 'You are a helpful assistant.' },
+              { role: 'user', content: 'What is the name of the dummer for the Beatles?' },
+            ],
+            model:,
+          })
+          .to_return(status: 200, body: <<~STREAM)
+            data: #{JSON.generate({ choices: [{ delta: { role: 'system', content: 'A' } }] })}\n
+            data: #{JSON.generate({ choices: [{ delta: { role: 'system', content: 'B' } }] })}\n
+            data: [DONE]\n
+          STREAM
+      end
+
+      it do
+        process!
+        expect(stream.string).to eql("AB\n")
       end
     end
 
