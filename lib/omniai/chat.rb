@@ -27,10 +27,19 @@ module OmniAI
   class Chat
     JSON_PROMPT = 'Respond with valid JSON. Do not include any non-JSON in the response.'
 
+    # An error raised when a chat makes a tool-call for a tool that cannot be found.
+    class ToolCallLookupError < Error
+      def initialize(tool_call)
+        super("missing tool for tool_call=#{tool_call.inspect}")
+        @tool_call = tool_call
+      end
+    end
+
     module Role
       ASSISTANT = 'assistant'
       USER = 'user'
       SYSTEM = 'system'
+      TOOL = 'tool'
     end
 
     module Format
@@ -46,13 +55,15 @@ module OmniAI
     # @param model [String] required
     # @param temperature [Float, nil] optional
     # @param stream [Proc, IO, nil] optional
+    # @param tools [Array<OmniAI::Tool>] optional
     # @param format [Symbol, nil] optional - :json
-    def initialize(messages, client:, model:, temperature: nil, stream: nil, format: nil)
+    def initialize(messages, client:, model:, temperature: nil, stream: nil, tools: nil, format: nil)
       @messages = arrayify(messages)
       @client = client
       @model = model
       @temperature = temperature
       @stream = stream
+      @tools = tools
       @format = format
     end
 
@@ -88,8 +99,20 @@ module OmniAI
     end
 
     # @param response [OmniAI::Chat::Completion]
+    # @return [OmniAI::Chat::Completion]
     def complete!(response:)
-      self.class::Completion.new(data: response.parse)
+      completion = self.class::Completion.new(data: response.parse)
+
+      if @tools && completion.tool_call_required?
+        @messages = [
+          *@messages,
+          *completion.choices.map(&:message).map(&:data),
+          *(completion.tool_call_list.map { |tool_call| execute_tool_call(tool_call) }),
+        ]
+        process!
+      else
+        completion
+      end
     end
 
     # @param response [HTTP::Response]
@@ -111,7 +134,7 @@ module OmniAI
 
     # @return [Array<Hash>]
     def messages
-      arrayify(@messages).map do |content|
+      @messages.map do |content|
         case content
         when String then { role: Role::USER, content: }
         when Hash then content
@@ -132,6 +155,27 @@ module OmniAI
         .connection
         .accept(:json)
         .post(path, json: payload)
+    end
+
+    # @param tool_call [OmniAI::Chat::ToolCall]
+    def execute_tool_call(tool_call)
+      function = tool_call.function
+
+      tool = @tools.find { |entry| function.name == entry.name } || raise(ToolCallLookupError, tool_call)
+      result = tool.call(function.arguments)
+
+      prepare_tool_call_message(tool_call:, content: result)
+    end
+
+    # @param tool_call [OmniAI::Chat::ToolCall]
+    # @param content [String]
+    def prepare_tool_call_message(tool_call:, content:)
+      {
+        role: Role::TOOL,
+        name: tool_call.function.name,
+        tool_call_id: tool_call.id,
+        content:,
+      }
     end
   end
 end

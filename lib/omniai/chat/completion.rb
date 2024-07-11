@@ -12,6 +12,11 @@ module OmniAI
       end
 
       # @return [String]
+      def inspect
+        "#<#{self.class.name} id=#{id.inspect} choices=#{choices.inspect}"
+      end
+
+      # @return [String]
       def id
         @data['id']
       end
@@ -33,20 +38,32 @@ module OmniAI
 
       # @return [OmniAI::Chat::Usage]
       def usage
-        return unless @data['usage']
-
-        @usage ||= Usage.for(data: @data['usage'])
+        @usage ||= Usage.new(data: @data['usage']) if @data['usage']
       end
 
       # @return [Array<OmniAI::Chat::MessageChoice>]
       def choices
-        @choices ||= @data['choices'].map { |data| MessageChoice.for(data:) }
+        @choices ||= @data['choices'].map { |data| MessageChoice.new(data:) }
       end
 
       # @param index [Integer] optional - default is 0
       # @return [OmniAI::Chat::MessageChoice]
       def choice(index: 0)
         choices[index]
+      end
+
+      # @return [Boolean]
+      def tool_call_required?
+        choices.any? { |choice| choice.message.tool_call_list.any? }
+      end
+
+      # @return [Array<OmniAI::Chat::ToolCall>]
+      def tool_call_list
+        list = []
+        choices.each do |choice|
+          list += choice.message.tool_call_list
+        end
+        list
       end
     end
   end

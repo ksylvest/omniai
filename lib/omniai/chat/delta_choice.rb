@@ -4,22 +4,24 @@ module OmniAI
   class Chat
     # A delta choice returned by the API.
     class DeltaChoice
-      attr_accessor :index, :delta
-
       # @param data [Hash]
-      # @return [OmniAI::Chat::Choice]
-      def self.for(data:)
-        index = data['index']
-        delta = Delta.for(data: data['delta'])
-
-        new(index:, delta:)
+      def initialize(data:)
+        @data = data
       end
 
-      # @param index [Integer]
-      # @param delta [Delta]
-      def initialize(index:, delta:)
-        @index = index
-        @delta = delta
+      # @return [Integer]
+      def index
+        @data['index']
+      end
+
+      # @return [OmniAI::Chat::Delta]
+      def delta
+        @delta ||= Delta.new(data: @data['delta'])
+      end
+
+      # @return [String]
+      def inspect
+        "#<#{self.class.name} index=#{index} delta=#{delta.inspect}>"
       end
     end
   end

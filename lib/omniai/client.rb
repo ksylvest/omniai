@@ -129,9 +129,10 @@ module OmniAI
     # @param format [Symbol] optional :text or :json
     # @param temperature [Float, nil] optional
     # @param stream [Proc, nil] optional
+    # @param tools [Array<OmniAI::Tool>] optional
     #
     # @return [OmniAI::Chat::Completion]
-    def chat(messages, model:, temperature: nil, format: nil, stream: nil)
+    def chat(messages, model:, temperature: nil, format: nil, stream: nil, tools: nil)
       raise NotImplementedError, "#{self.class.name}#chat undefined"
     end
 
