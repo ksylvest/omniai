@@ -144,7 +144,7 @@ module OmniAI
     # @param temperature [Float, nil] optional
     # @param format [Symbol] :text, :srt, :vtt, or :json (default)
     #
-    # @return text [OmniAI::Transcribe::Transcription]
+    # @return [OmniAI::Transcribe::Transcription]
     def transcribe(io, model:, language: nil, prompt: nil, temperature: nil, format: nil)
       raise NotImplementedError, "#{self.class.name}#speak undefined"
     end
