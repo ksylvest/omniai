@@ -12,8 +12,8 @@ module OmniAI
   class CLI
     ChatArgs = Struct.new(:provider, :model, :temperature)
 
-    # @param in [IO] a stream
-    # @param out [IO] a stream
+    # @param stdin [IO] a stream
+    # @param stdout [IO] a stream
     # @param provider [String] a provider
     def initialize(stdin: $stdin, stdout: $stdout, provider: 'openai')
       @stdin = stdin
@@ -22,6 +22,7 @@ module OmniAI
       @args = {}
     end
 
+    # @param argv [Array<String>]
     def parse(argv = ARGV)
       parser.order!(argv)
       command = argv.shift

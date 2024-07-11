@@ -4,6 +4,7 @@ module OmniAI
   class CLI
     # Used for CLI usage of 'omnia chat'.
     class ChatHandler < BaseHandler
+      # @param argv [Array<String>]
       def handle!(argv:)
         parser.parse!(argv)
 

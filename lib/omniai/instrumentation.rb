@@ -18,7 +18,6 @@ module OmniAI
       @logger.error("#{name}: #{error.message}")
     end
 
-    # @param name [String]
     # @param payload [Hash]
     # @option payload [HTTP::Request] :request
     def start(_, payload)
@@ -26,7 +25,6 @@ module OmniAI
       @logger.info("#{request.verb.upcase} #{request.uri}")
     end
 
-    # @param name [String]
     # @param payload [Hash]
     # @option payload [HTTP::Response] :response
     def finish(_, payload)
