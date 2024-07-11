@@ -1,14 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe OmniAI::Chat::Delta do
-  subject(:delta) { described_class.new(role: 'user', content: 'Hello!') }
+  subject(:delta) { described_class.new(data:) }
 
-  describe '.for' do
-    subject(:delta) { described_class.for(data: { 'role' => 'user', 'content' => 'Hello!' }) }
-
-    it { expect(delta.role).to eq('user') }
-    it { expect(delta.content).to eq('Hello!') }
-  end
+  let(:data) { { 'role' => 'user', 'content' => 'Hello!' } }
 
   describe '#role' do
     it { expect(delta.role).to eq('user') }

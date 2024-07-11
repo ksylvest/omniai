@@ -162,6 +162,27 @@ The above code can also be supplied any IO (e.g. `File`, `$stdout`, `$stdin`, et
 client.chat('Tell me a story', stream: $stdout)
 ```
 
+#### Completion with Tools
+
+A chat can also be initialized with tools:
+
+```ruby
+client.chat('What is the weather in "London, England" and "Madrid, Spain"?', tools: [
+  OmniAI::Tool.new(
+    proc { |location:, unit: 'celsius'| "It is #{rand(20..50)}° #{unit} in #{location}" },
+    name: 'Weather',
+    description: 'Lookup the weather in a location',
+    parameters: OmniAI::Tool::Parameters.new(
+      properties: {
+        location: OmniAI::Tool::Property.string(description: 'The city and country (e.g. Toronto, Canada).'),
+        unit: OmniAI::Tool::Property.string(enum: %w[celcius farenheit]),
+      },
+      required: %i[location]
+    )
+  )
+])
+```
+
 ### Transcribe
 
 Clients that support transcribe (e.g. OpenAI w/ "Whisper") convert recordings to text via the following calls:
