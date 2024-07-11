@@ -19,6 +19,12 @@ executors:
       - image: cimg/ruby:3.3.0
 
 jobs:
+  doc:
+    executor: default
+    steps:
+      - checkout
+      - ruby/install-deps
+      - run: bundle exec yard doc
   rspec:
     executor: default
     steps:
@@ -43,6 +49,7 @@ workflows:
   version: 2.1
   build:
     jobs:
+      - doc
       - rspec
       - rubocop
       - release:
