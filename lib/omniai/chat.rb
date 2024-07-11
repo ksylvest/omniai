@@ -48,7 +48,7 @@ module OmniAI
     # @param stream [Proc, IO, nil] optional
     # @param format [Symbol, nil] optional - :json
     def initialize(messages, client:, model:, temperature: nil, stream: nil, format: nil)
-      @messages = messages
+      @messages = arrayify(messages)
       @client = client
       @model = model
       @temperature = temperature
