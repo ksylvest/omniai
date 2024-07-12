@@ -3,12 +3,10 @@
 module OmniAI
   class Chat
     # A chunk returned by the API.
-    class Chunk
-      attr_accessor :data
-
-      # @param data [Hash]
-      def initialize(data:)
-        @data = data
+    class Chunk < OmniAI::Chat::Response::Resource
+      # @return [String]
+      def inspect
+        "#<#{self.class.name} id=#{id.inspect} model=#{model.inspect} choices=#{choices.inspect}>"
       end
 
       # @return [String]

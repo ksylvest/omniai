@@ -3,12 +3,7 @@
 module OmniAI
   class Chat
     # For use with MessageChoice or DeltaChoice.
-    class Choice
-      # @param data [Hash]
-      def initialize(data:)
-        @data = data
-      end
-
+    class Choice < OmniAI::Chat::Response::Resource
       # @return [Integer]
       def index
         @data['index']
