@@ -34,6 +34,6 @@ RSpec.describe OmniAI::Chat::Response::Chunk do
   end
 
   describe '#inspect' do
-    it { expect(chunk.inspect).to eq('#<OmniAI::Chat::Response::Chunk id="fake_id" model="fake_model" choices=[]>') }
+    it { expect(chunk.inspect).to eq('#<OmniAI::Chat::Response::Chunk id="fake_id" choices=[]>') }
   end
 end

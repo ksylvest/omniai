@@ -7,7 +7,7 @@ module OmniAI
       class Payload < Resource
         # @return [String]
         def inspect
-          "#<#{self.class.name} id=#{id.inspect} model=#{model.inspect} choices=#{choices.inspect}>"
+          "#<#{self.class.name} id=#{id.inspect} choices=#{choices.inspect}>"
         end
 
         # @return [String]
