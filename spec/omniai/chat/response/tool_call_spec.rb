@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe OmniAI::Chat::ToolCall do
+RSpec.describe OmniAI::Chat::Response::ToolCall do
   subject(:tool_call) { described_class.new(data:) }
 
   let(:data) do
@@ -18,6 +18,6 @@ RSpec.describe OmniAI::Chat::ToolCall do
   describe '#inspect' do
     subject(:inspect) { tool_call.inspect }
 
-    it { expect(inspect).to eq('#<OmniAI::Chat::ToolCall id="fake_tool_call_id" type="function">') }
+    it { expect(inspect).to eq('#<OmniAI::Chat::Response::ToolCall id="fake_tool_call_id" type="function">') }
   end
 end
