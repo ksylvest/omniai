@@ -3,17 +3,7 @@
 module OmniAI
   class Chat
     # A delta choice returned by the API.
-    class DeltaChoice
-      # @param data [Hash]
-      def initialize(data:)
-        @data = data
-      end
-
-      # @return [Integer]
-      def index
-        @data['index']
-      end
-
+    class DeltaChoice < OmniAI::Chat::Choice
       # @return [OmniAI::Chat::Delta]
       def delta
         @delta ||= Delta.new(data: @data['delta'])
