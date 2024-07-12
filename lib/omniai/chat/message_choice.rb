@@ -9,9 +9,9 @@ module OmniAI
         "#<#{self.class.name} index=#{index} message=#{message.inspect}>"
       end
 
-      # @return [OmniAI::Chat::Message]
+      # @return [OmniAI::Chat::Response::Message]
       def message
-        @message ||= Message.new(data: @data['message'])
+        @message ||= Response::Message.new(data: @data['message'])
       end
     end
   end
