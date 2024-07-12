@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe OmniAI::Chat::Chunk do
+RSpec.describe OmniAI::Chat::Response::Chunk do
   subject(:chunk) { described_class.new(data:) }
 
   let(:data) do
@@ -34,6 +34,6 @@ RSpec.describe OmniAI::Chat::Chunk do
   end
 
   describe '#inspect' do
-    it { expect(chunk.inspect).to eq('#<OmniAI::Chat::Chunk id="fake_id" model="fake_model" choices=[]>') }
+    it { expect(chunk.inspect).to eq('#<OmniAI::Chat::Response::Chunk id="fake_id" model="fake_model" choices=[]>') }
   end
 end
