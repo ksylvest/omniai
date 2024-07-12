@@ -43,6 +43,6 @@ RSpec.describe OmniAI::Chat::Response::Completion do
   end
 
   describe '#inspect' do
-    it { expect(completion.inspect).to eql('#<OmniAI::Chat::Response::Completion id="fake_id" choices=[]') }
+    it { expect(completion.inspect).to eql('#<OmniAI::Chat::Response::Completion id="fake_id" choices=[]>') }
   end
 end
