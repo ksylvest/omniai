@@ -120,7 +120,7 @@ module OmniAI
     def stream!(response:)
       raise Error, "#{self.class.name}#stream! unstreamable" unless @stream
 
-      self.class::Stream.new(response:).stream! do |chunk|
+      self.class::Response::Stream.new(response:).stream! do |chunk|
         case @stream
         when IO, StringIO
           @stream << chunk.choice.delta.content
