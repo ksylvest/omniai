@@ -19,9 +19,9 @@ module OmniAI
         @data['type']
       end
 
-      # @return [OmniAI::Chat::Function]
+      # @return [OmniAI::Chat::Response::Function]
       def function
-        @function ||= Function.new(data: @data['function']) if @data['function']
+        @function ||= Response::Function.new(data: @data['function']) if @data['function']
       end
     end
   end

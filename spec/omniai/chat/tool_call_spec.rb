@@ -13,7 +13,7 @@ RSpec.describe OmniAI::Chat::ToolCall do
 
   it { expect(tool_call.id).to eq('fake_tool_call_id') }
   it { expect(tool_call.type).to eq('function') }
-  it { expect(tool_call.function).to be_a(OmniAI::Chat::Function) }
+  it { expect(tool_call.function).to be_a(OmniAI::Chat::Response::Function) }
 
   describe '#inspect' do
     subject(:inspect) { tool_call.inspect }
