@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module OmniAI
-  # A configuration for each agent w/ `api_key` / `host` / `logger`. Usage:
+  # A configuration for each agent w/ `api_key` / `host` / `logger`.
+  #
+  # Usage:
   #
   #   OmniAI::OpenAI.config do |config|
   #     config.api_key = '...'
