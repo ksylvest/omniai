@@ -35,7 +35,7 @@ RSpec.describe OmniAI::Chat::Completion do
   end
 
   describe '#usage' do
-    it { expect(completion.usage).to be_a(OmniAI::Chat::Usage) }
+    it { expect(completion.usage).to be_a(OmniAI::Chat::Response::Usage) }
   end
 
   describe '#choices' do

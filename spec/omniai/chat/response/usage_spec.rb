@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe OmniAI::Chat::Usage do
+RSpec.describe OmniAI::Chat::Response::Usage do
   subject(:usage) { described_class.new(data:) }
 
   let(:data) { { 'input_tokens' => 2, 'output_tokens' => 3, 'total_tokens' => 5 } }
@@ -33,6 +33,6 @@ RSpec.describe OmniAI::Chat::Usage do
   end
 
   describe '#inspect' do
-    it { expect(usage.inspect).to eq('#<OmniAI::Chat::Usage input_tokens=2 output_tokens=3 total_tokens=5>') }
+    it { expect(usage.inspect).to eq('#<OmniAI::Chat::Response::Usage input_tokens=2 output_tokens=3 total_tokens=5>') }
   end
 end
