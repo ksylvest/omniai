@@ -19,10 +19,13 @@ module OmniAI
         @data['content']
       end
 
-      # @return [Array<OmniAI::Chat::ToolCall>]
+      # @return [Array<OmniAI::Chat::Response::ToolCall>]
       def tool_call_list
-        @tool_call_list ||=
-          @data['tool_calls'] ? @data['tool_calls'].map { |tool_call_data| ToolCall.new(data: tool_call_data) } : []
+        return [] unless @data['tool_calls']
+
+        @tool_call_list ||= @data['tool_calls'].map do |tool_call_data|
+          Response::ToolCall.new(data: tool_call_data)
+        end
       end
     end
   end
