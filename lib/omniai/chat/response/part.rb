@@ -26,6 +26,12 @@ module OmniAI
 
           @tool_call_list ||= @data['tool_calls'].map { |tool_call_data| ToolCall.new(data: tool_call_data) }
         end
+
+        # @param index [Integer]
+        # @return [OmniAI::Chat::Response::ToolCall, nil]
+        def tool_call(index: 0)
+          tool_call_list[index]
+        end
       end
     end
   end
