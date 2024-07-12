@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe OmniAI::Chat::Completion do
+RSpec.describe OmniAI::Chat::Response::Completion do
   subject(:completion) { described_class.new(data:) }
 
   let(:data) do
@@ -43,6 +43,6 @@ RSpec.describe OmniAI::Chat::Completion do
   end
 
   describe '#inspect' do
-    it { expect(completion.inspect).to eql('#<OmniAI::Chat::Completion id="fake_id" choices=[]') }
+    it { expect(completion.inspect).to eql('#<OmniAI::Chat::Response::Completion id="fake_id" choices=[]') }
   end
 end
