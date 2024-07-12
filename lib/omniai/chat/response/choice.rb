@@ -9,6 +9,11 @@ module OmniAI
         def index
           @data['index']
         end
+
+        # @return [OmniAI::Chat::Response::Part]
+        def part
+          raise NotImplementedError, "#{self.class.name}#part undefined"
+        end
       end
     end
   end

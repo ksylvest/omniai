@@ -14,6 +14,11 @@ module OmniAI
         def delta
           @delta ||= Delta.new(data: @data['delta'])
         end
+
+        # @return [OmniAI::Chat::Response::Delta]
+        def part
+          delta
+        end
       end
     end
   end
