@@ -11,7 +11,7 @@ RSpec.describe OmniAI::Chat::DeltaChoice do
   it { expect(choice.delta.content).to eq('Hello!') }
 
   describe '#inspect' do
-    let(:delta) { OmniAI::Chat::Delta.new(data: data['delta']) }
+    let(:delta) { OmniAI::Chat::Response::Delta.new(data: data['delta']) }
 
     it { expect(choice.inspect).to eq(%(#<OmniAI::Chat::DeltaChoice index=0 delta=#{delta.inspect}>)) }
   end
