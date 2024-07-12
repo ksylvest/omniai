@@ -41,21 +41,35 @@ module OmniAI
           choices[index]
         end
 
+        # @param index [Integer]
+        # @return [OmniAI::Chat::Response::Part]
+        def part(index: 0)
+          choice(index:).part
+        end
+
         # @return [OmniAI::Chat::Response::Usage]
         def usage
           @usage ||= Usage.new(data: @data['usage']) if @data['usage']
         end
 
-        # @return [Array<OmniAI::Chat::Response:ToolCall>]
-        def tool_call_list
-          @tool_call_list ||= choices.inject([]) do |memo, choice|
-            memo.concat(choice.tool_call_list)
-          end
+        # @return [String, nil]
+        def content
+          choice.content
         end
 
         # @return [Boolean]
-        def tool_call_required?
-          tool_call_list.any?
+        def content?
+          choice.content?
+        end
+
+        # @return [Array<OmniAI::Chat::Response:ToolCall>]
+        def tool_call_list
+          choice.tool_call_list
+        end
+
+        # @return [Boolean]
+        def tool_call_list?
+          choice.tool_call_list?
         end
       end
     end
