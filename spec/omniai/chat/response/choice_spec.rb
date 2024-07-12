@@ -8,4 +8,8 @@ RSpec.describe OmniAI::Chat::Response::Choice do
   describe '#index' do
     it { expect(choice.index).to eq(0) }
   end
+
+  describe '#part' do
+    it { expect { choice.part }.to raise_error(NotImplementedError) }
+  end
 end

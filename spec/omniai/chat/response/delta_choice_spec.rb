@@ -15,4 +15,8 @@ RSpec.describe OmniAI::Chat::Response::DeltaChoice do
 
     it { expect(choice.inspect).to eq(%(#<OmniAI::Chat::Response::DeltaChoice index=0 delta=#{delta.inspect}>)) }
   end
+
+  describe '#part' do
+    it { expect(choice.part).to be_a(OmniAI::Chat::Response::Delta) }
+  end
 end

@@ -14,6 +14,11 @@ module OmniAI
         def message
           @message ||= Message.new(data: @data['message'])
         end
+
+        # @return [OmniAI::Chat::Response::Message]
+        def part
+          message
+        end
       end
     end
   end
