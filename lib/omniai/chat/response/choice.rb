@@ -20,11 +20,6 @@ module OmniAI
           part.tool_call_list
         end
 
-        # @return [Boolean]
-        def tool_call_list?
-          tool_call_list.any?
-        end
-
         # @return [String, nil]
         def content
           part.content

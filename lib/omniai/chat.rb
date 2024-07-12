@@ -103,7 +103,7 @@ module OmniAI
     def complete!(response:)
       completion = self.class::Response::Completion.new(data: response.parse)
 
-      if @tools && completion.tool_call_required?
+      if @tools && completion.tool_call_list.any?
         @messages = [
           *@messages,
           *completion.choices.map(&:message).map(&:data),

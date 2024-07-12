@@ -66,11 +66,6 @@ module OmniAI
         def tool_call_list
           choice.tool_call_list
         end
-
-        # @return [Boolean]
-        def tool_call_list?
-          choice.tool_call_list?
-        end
       end
     end
   end
