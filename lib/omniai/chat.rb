@@ -123,8 +123,10 @@ module OmniAI
       self.class::Response::Stream.new(response:).stream! do |chunk|
         case @stream
         when IO, StringIO
-          @stream << chunk.choice.delta.content
-          @stream.flush
+          if chunk.content?
+            @stream << chunk.content
+            @stream.flush
+          end
         else @stream.call(chunk)
         end
       end
