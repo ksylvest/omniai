@@ -45,6 +45,20 @@ module OmniAI
         def usage
           @usage ||= Usage.new(data: @data['usage']) if @data['usage']
         end
+
+        # @return [Boolean]
+        def tool_call_required?
+          choices.any?(&:tool_call_required)
+        end
+
+        # @return [Array<OmniAI::Chat::Response:ToolCall>]
+        def tool_call_list
+          list = []
+          choices.each do |choice|
+            list += choice.tool_call_list
+          end
+          list
+        end
       end
     end
   end

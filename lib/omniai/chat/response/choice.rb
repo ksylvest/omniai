@@ -14,6 +14,16 @@ module OmniAI
         def part
           raise NotImplementedError, "#{self.class.name}#part undefined"
         end
+
+        # @return [OmniAI::Chat::Response::ToolCallList]
+        def tool_call_list
+          part.tool_call_list
+        end
+
+        # @return [Boolean]
+        def tool_call_required?
+          part.tool_call_required?
+        end
       end
     end
   end
