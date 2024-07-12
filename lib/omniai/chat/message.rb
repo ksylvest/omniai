@@ -3,7 +3,7 @@
 module OmniAI
   class Chat
     # A message returned by the API.
-    class Message < OmniAI::Chat::Part
+    class Message < Response::Part
     end
   end
 end
