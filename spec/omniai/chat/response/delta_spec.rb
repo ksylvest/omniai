@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe OmniAI::Chat::Delta do
+RSpec.describe OmniAI::Chat::Response::Delta do
   subject(:delta) { described_class.new(data:) }
 
   let(:data) { { 'role' => 'user', 'content' => 'Hello!' } }
@@ -14,6 +14,6 @@ RSpec.describe OmniAI::Chat::Delta do
   end
 
   describe '#inspect' do
-    it { expect(delta.inspect).to eq('#<OmniAI::Chat::Delta role="user" content="Hello!">') }
+    it { expect(delta.inspect).to eq('#<OmniAI::Chat::Response::Delta role="user" content="Hello!">') }
   end
 end

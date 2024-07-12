@@ -9,9 +9,9 @@ module OmniAI
         "#<#{self.class.name} index=#{index} delta=#{delta.inspect}>"
       end
 
-      # @return [OmniAI::Chat::Delta]
+      # @return [OmniAI::Chat::Response::Delta]
       def delta
-        @delta ||= Delta.new(data: @data['delta'])
+        @delta ||= Response::Delta.new(data: @data['delta'])
       end
     end
   end
