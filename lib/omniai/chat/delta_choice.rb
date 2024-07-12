@@ -3,7 +3,7 @@
 module OmniAI
   class Chat
     # A delta choice returned by the API.
-    class DeltaChoice < OmniAI::Chat::Choice
+    class DeltaChoice < Response::Choice
       # @return [String]
       def inspect
         "#<#{self.class.name} index=#{index} delta=#{delta.inspect}>"

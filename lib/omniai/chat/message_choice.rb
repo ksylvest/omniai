@@ -3,7 +3,7 @@
 module OmniAI
   class Chat
     # A choice returned by the API.
-    class MessageChoice < OmniAI::Chat::Choice
+    class MessageChoice < Response::Choice
       # @return [String]
       def inspect
         "#<#{self.class.name} index=#{index} message=#{message.inspect}>"
