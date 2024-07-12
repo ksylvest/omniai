@@ -98,10 +98,10 @@ module OmniAI
       end
     end
 
-    # @param response [OmniAI::Chat::Completion]
-    # @return [OmniAI::Chat::Completion]
+    # @param response [HTTP::Response]
+    # @return [OmniAI::Chat::Response::Completion]
     def complete!(response:)
-      completion = self.class::Completion.new(data: response.parse)
+      completion = self.class::Response::Completion.new(data: response.parse)
 
       if @tools && completion.tool_call_required?
         @messages = [

@@ -68,7 +68,7 @@ RSpec.describe OmniAI::Chat do
           })
       end
 
-      it { expect(process!).to be_a(OmniAI::Chat::Completion) }
+      it { expect(process!).to be_a(OmniAI::Chat::Response::Completion) }
     end
 
     context 'when UNPROCESSABLE' do
