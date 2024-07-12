@@ -3,15 +3,7 @@
 module OmniAI
   class Chat
     # Either a delta or message.
-    class Part
-      # @return [Hash]
-      attr_accessor :data
-
-      # @param data [Hash]
-      def initialize(data:)
-        @data = data
-      end
-
+    class Part < OmniAI::Chat::Response::Resource
       # @return [String]
       def inspect
         "#<#{self.class.name} role=#{role.inspect} content=#{content.inspect}>"

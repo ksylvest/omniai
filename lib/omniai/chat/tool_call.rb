@@ -3,10 +3,10 @@
 module OmniAI
   class Chat
     # A tool-call returned by the API.
-    class ToolCall
-      # @param data [Hash]
-      def initialize(data:)
-        @data = data
+    class ToolCall < OmniAI::Chat::Response::Resource
+      # @return [String]
+      def inspect
+        "#<#{self.class.name} id=#{id.inspect} type=#{type.inspect}>"
       end
 
       # @return [String]
@@ -22,11 +22,6 @@ module OmniAI
       # @return [OmniAI::Chat::Function]
       def function
         @function ||= Function.new(data: @data['function']) if @data['function']
-      end
-
-      # @return [String]
-      def inspect
-        "#<#{self.class.name} id=#{id.inspect} type=#{type.inspect}>"
       end
     end
   end

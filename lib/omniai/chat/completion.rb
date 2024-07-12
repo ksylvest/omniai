@@ -3,14 +3,7 @@
 module OmniAI
   class Chat
     # A completion returned by the API.
-    class Completion
-      attr_accessor :data
-
-      # @param data [Hash]
-      def initialize(data:)
-        @data = data
-      end
-
+    class Completion < OmniAI::Chat::Response::Resource
       # @return [String]
       def inspect
         "#<#{self.class.name} id=#{id.inspect} choices=#{choices.inspect}"
