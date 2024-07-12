@@ -29,9 +29,9 @@ module OmniAI
         @data['model']
       end
 
-      # @return [OmniAI::Chat::Usage]
+      # @return [OmniAI::Chat::Response::Usage]
       def usage
-        @usage ||= Usage.new(data: @data['usage']) if @data['usage']
+        @usage ||= Response::Usage.new(data: @data['usage']) if @data['usage']
       end
 
       # @return [Array<OmniAI::Chat::MessageChoice>]
