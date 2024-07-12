@@ -34,13 +34,13 @@ module OmniAI
         @usage ||= Response::Usage.new(data: @data['usage']) if @data['usage']
       end
 
-      # @return [Array<OmniAI::Chat::MessageChoice>]
+      # @return [Array<OmniAI::Chat:Response:::MessageChoice>]
       def choices
-        @choices ||= @data['choices'].map { |data| MessageChoice.new(data:) }
+        @choices ||= @data['choices'].map { |data| Response::MessageChoice.new(data:) }
       end
 
       # @param index [Integer] optional - default is 0
-      # @return [OmniAI::Chat::MessageChoice]
+      # @return [OmniAI::Chat::Response::MessageChoice]
       def choice(index: 0)
         choices[index]
       end
@@ -50,7 +50,7 @@ module OmniAI
         choices.any? { |choice| choice.message.tool_call_list.any? }
       end
 
-      # @return [Array<OmniAI::Chat::ToolCall>]
+      # @return [Array<OmniAI::Chat::Response:ToolCall>]
       def tool_call_list
         list = []
         choices.each do |choice|

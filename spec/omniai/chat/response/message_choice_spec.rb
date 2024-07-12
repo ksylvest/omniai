@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe OmniAI::Chat::MessageChoice do
+RSpec.describe OmniAI::Chat::Response::MessageChoice do
   subject(:choice) { described_class.new(data:) }
 
   let(:data) { { 'index' => 0, 'message' => { 'role' => 'user', 'content' => 'Hello!' } } }
@@ -13,6 +13,6 @@ RSpec.describe OmniAI::Chat::MessageChoice do
   describe '#inspect' do
     let(:message) { OmniAI::Chat::Response::Message.new(data: data['message']) }
 
-    it { expect(choice.inspect).to eq(%(#<OmniAI::Chat::MessageChoice index=0 message=#{message.inspect}>)) }
+    it { expect(choice.inspect).to eq(%(#<OmniAI::Chat::Response::MessageChoice index=0 message=#{message.inspect}>)) }
   end
 end
