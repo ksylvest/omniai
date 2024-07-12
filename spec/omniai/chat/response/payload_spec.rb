@@ -28,14 +28,32 @@ RSpec.describe OmniAI::Chat::Response::Payload do
 
   describe '#created' do
     it { expect(completion.created).to be_a(Time) }
+
+    context 'without created' do
+      let(:data) { {} }
+
+      it { expect(completion.created).to be_nil }
+    end
   end
 
   describe '#updated' do
     it { expect(completion.updated).to be_a(Time) }
+
+    context 'without updated' do
+      let(:data) { {} }
+
+      it { expect(completion.updated).to be_nil }
+    end
   end
 
   describe '#usage' do
     it { expect(completion.usage).to be_a(OmniAI::Chat::Response::Usage) }
+
+    context 'without usage' do
+      let(:data) { {} }
+
+      it { expect(completion.usage).to be_nil }
+    end
   end
 
   describe '#choices' do

@@ -46,18 +46,16 @@ module OmniAI
           @usage ||= Usage.new(data: @data['usage']) if @data['usage']
         end
 
-        # @return [Boolean]
-        def tool_call_required?
-          choices.any?(&:tool_call_required)
-        end
-
         # @return [Array<OmniAI::Chat::Response:ToolCall>]
         def tool_call_list
-          list = []
-          choices.each do |choice|
-            list += choice.tool_call_list
+          @tool_call_list ||= choices.inject([]) do |memo, choice|
+            memo.concat(choice.tool_call_list)
           end
-          list
+        end
+
+        # @return [Boolean]
+        def tool_call_required?
+          tool_call_list.any?
         end
       end
     end

@@ -19,11 +19,6 @@ module OmniAI
         def tool_call_list
           part.tool_call_list
         end
-
-        # @return [Boolean]
-        def tool_call_required?
-          part.tool_call_required?
-        end
       end
     end
   end

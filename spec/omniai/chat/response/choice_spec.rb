@@ -12,4 +12,8 @@ RSpec.describe OmniAI::Chat::Response::Choice do
   describe '#part' do
     it { expect { choice.part }.to raise_error(NotImplementedError) }
   end
+
+  describe '#tool_call_list' do
+    it { expect { choice.tool_call_list }.to raise_error(NotImplementedError) }
+  end
 end
