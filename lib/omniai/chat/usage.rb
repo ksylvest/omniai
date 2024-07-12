@@ -6,7 +6,12 @@ module OmniAI
     class Usage < OmniAI::Chat::Response::Resource
       # @return [String]
       def inspect
-        "#<#{self.class.name} input_tokens=#{input_tokens} output_tokens=#{output_tokens} total_tokens=#{total_tokens}>"
+        properties = [
+          "input_tokens=#{input_tokens}",
+          "output_tokens=#{output_tokens}",
+          "total_tokens=#{total_tokens}",
+        ]
+        "#<#{self.class.name} #{properties.join(' ')}>"
       end
 
       # @return [Integer]
