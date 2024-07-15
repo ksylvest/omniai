@@ -30,24 +30,24 @@ module OmniAI
           @data['model']
         end
 
-        # @return [Array<OmniAI::Chat::Response::Choice>]
+        # @return [Array<Choice>]
         def choices
           raise NotImplementedError, "#{self.class.name}#choices undefined"
         end
 
         # @param index [Integer]
-        # @return [OmniAI::Chat::Response::DeltaChoice]
+        # @return [DeltaChoice]
         def choice(index: 0)
           choices[index]
         end
 
         # @param index [Integer]
-        # @return [OmniAI::Chat::Response::Part]
+        # @return [Part]
         def part(index: 0)
           choice(index:).part
         end
 
-        # @return [OmniAI::Chat::Response::Usage]
+        # @return [Usage]
         def usage
           @usage ||= Usage.new(data: @data['usage']) if @data['usage']
         end
@@ -62,7 +62,7 @@ module OmniAI
           choice.content?
         end
 
-        # @return [Array<OmniAI::Chat::Response:ToolCall>]
+        # @return [Array<ToolCall>]
         def tool_call_list
           choice.tool_call_list
         end

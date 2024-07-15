@@ -10,12 +10,12 @@ module OmniAI
           "#<#{self.class.name} index=#{index} message=#{message.inspect}>"
         end
 
-        # @return [OmniAI::Chat::Response::Message]
+        # @return [Message]
         def message
           @message ||= Message.new(data: @data['message'])
         end
 
-        # @return [OmniAI::Chat::Response::Message]
+        # @return [Message]
         def part
           message
         end

@@ -5,7 +5,7 @@ module OmniAI
     module Response
       # A completion returned by the API.
       class Completion < Payload
-        # @return [Array<OmniAI::Chat:Response:::MessageChoice>]
+        # @return [Array<MessageChoice>]
         def choices
           @choices ||= @data['choices'].map { |data| MessageChoice.new(data:) }
         end
