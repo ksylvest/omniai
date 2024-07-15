@@ -78,6 +78,19 @@ module OmniAI
 
     protected
 
+    # Used to spawn another chat with the same configuration using different messages.
+    def spawn!(messages)
+      self.class.new(
+        messages,
+        client: @client,
+        model: @model,
+        temperature: @temperature,
+        stream: @stream,
+        tools: @tools,
+        format: @format
+      ).process!
+    end
+
     # @return [Hash]
     def payload
       raise NotImplementedError, "#{self.class.name}#payload undefined"
@@ -89,7 +102,7 @@ module OmniAI
     end
 
     # @param response [HTTP::Response]
-    # @return [OmniAI::Chat::Completion]
+    # @return [OmniAI::Chat::Response::Completion]
     def parse!(response:)
       if @stream
         stream!(response:)
@@ -104,19 +117,18 @@ module OmniAI
       completion = self.class::Response::Completion.new(data: response.parse)
 
       if @tools && completion.tool_call_list.any?
-        @messages = [
+        spawn!([
           *@messages,
           *completion.choices.map(&:message).map(&:data),
           *(completion.tool_call_list.map { |tool_call| execute_tool_call(tool_call) }),
-        ]
-        process!
+        ])
       else
         completion
       end
     end
 
     # @param response [HTTP::Response]
-    # @return [OmniAI::Chat::Stream]
+    # @return [OmniAI::Chat::Response::Stream]
     def stream!(response:)
       raise Error, "#{self.class.name}#stream! unstreamable" unless @stream
 
