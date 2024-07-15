@@ -5,7 +5,7 @@ module OmniAI
     module Response
       # A chunk returned by the API.
       class Chunk < Payload
-        # @return [Array<OmniAI::Chat::Response::DeltaChoice>]
+        # @return [Array<DeltaChoice>]
         def choices
           @choices ||= @data['choices'].map { |data| DeltaChoice.new(data:) }
         end

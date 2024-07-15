@@ -20,7 +20,7 @@ module OmniAI
           @data['content']
         end
 
-        # @return [Array<OmniAI::Chat::Response::ToolCall>]
+        # @return [Array<ToolCall>]
         def tool_call_list
           return [] unless @data['tool_calls']
 
@@ -28,7 +28,7 @@ module OmniAI
         end
 
         # @param index [Integer]
-        # @return [OmniAI::Chat::Response::ToolCall, nil]
+        # @return [ToolCall, nil]
         def tool_call(index: 0)
           tool_call_list[index]
         end

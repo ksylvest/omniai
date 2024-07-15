@@ -10,12 +10,12 @@ module OmniAI
           @data['index']
         end
 
-        # @return [OmniAI::Chat::Response::Part]
+        # @return [Part]
         def part
           raise NotImplementedError, "#{self.class.name}#part undefined"
         end
 
-        # @return [OmniAI::Chat::Response::ToolCallList]
+        # @return [ToolCallList]
         def tool_call_list
           part.tool_call_list
         end

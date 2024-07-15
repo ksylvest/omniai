@@ -10,12 +10,12 @@ module OmniAI
           "#<#{self.class.name} index=#{index} delta=#{delta.inspect}>"
         end
 
-        # @return [OmniAI::Chat::Response::Delta]
+        # @return [Delta]
         def delta
           @delta ||= Delta.new(data: @data['delta'])
         end
 
-        # @return [OmniAI::Chat::Response::Delta]
+        # @return [Delta]
         def part
           delta
         end
