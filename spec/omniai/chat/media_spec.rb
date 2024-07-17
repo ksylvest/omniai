@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe OmniAI::Chat::Content::Media do
+RSpec.describe OmniAI::Chat::Media do
   subject(:media) { described_class.new(type) }
 
   let(:type) { 'text/plain' }
@@ -66,6 +66,40 @@ RSpec.describe OmniAI::Chat::Content::Media do
       let(:type) { 'application/pdf' }
 
       it { expect(media).not_to be_video }
+    end
+  end
+
+  describe '#kind' do
+    subject(:kind) { media.kind }
+
+    context 'when type is audio/flac' do
+      let(:type) { 'audio/flac' }
+
+      it { expect(kind).to eq(:audio) }
+    end
+
+    context 'when type is image/jpeg' do
+      let(:type) { 'image/jpeg' }
+
+      it { expect(kind).to eq(:image) }
+    end
+
+    context 'when type is video/mpeg' do
+      let(:type) { 'video/mpeg' }
+
+      it { expect(kind).to eq(:video) }
+    end
+
+    context 'when type is text/plain' do
+      let(:type) { 'text/plain' }
+
+      it { expect(kind).to eq(:text) }
+    end
+
+    context 'when type is application/pdf' do
+      let(:type) { 'application/pdf' }
+
+      it { expect { kind }.to raise_error(described_class::TypeError, 'unsupported type=application/pdf') }
     end
   end
 end

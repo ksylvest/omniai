@@ -16,20 +16,44 @@ class FakeChat < OmniAI::Chat
   end
 
   def payload
-    { messages:, model: @model }
+    { messages: @prompt.serialize, model: @model }
   end
 end
 
 RSpec.describe OmniAI::Chat do
-  subject(:chat) { described_class.new(messages, model:, client:) }
+  subject(:chat) { described_class.new(prompt, model:, client:) }
 
   let(:model) { '...' }
   let(:client) { OmniAI::Client.new(api_key: '...') }
-  let(:messages) do
-    [
-      { role: described_class::Role::SYSTEM, content: 'You are a helpful assistant.' },
-      'What is the name of the dummer for the Beatles?',
-    ]
+
+  let(:prompt) do
+    OmniAI::Chat::Prompt.new.tap do |prompt|
+      prompt.system('You are a helpful assistant.')
+      prompt.user('What is the name of the dummer for the Beatles?')
+    end
+  end
+
+  describe '#initialize' do
+    context 'with a prompt' do
+      it 'returns a chat' do
+        expect(described_class.new('What is the capital of France', model:, client:))
+          .to be_a(described_class)
+      end
+    end
+
+    context 'with a block' do
+      it 'returns a chat' do
+        expect(described_class.new(model:, client:) { |prompt| prompt.user('What is the capital of Spain') })
+          .to be_a(described_class)
+      end
+    end
+
+    context 'without a prompt or block' do
+      it 'raises an error' do
+        expect { described_class.new(model:, client:) }
+          .to raise_error(ArgumentError, 'prompt or block is required')
+      end
+    end
   end
 
   describe '#path' do
@@ -41,7 +65,7 @@ RSpec.describe OmniAI::Chat do
   end
 
   describe '.process!' do
-    subject(:process!) { FakeChat.process!(messages, model:, client:, stream:) }
+    subject(:process!) { FakeChat.process!(prompt, model:, client:, stream:) }
 
     let(:stream) { nil }
     let(:client) { FakeClient.new(api_key: '...') }

@@ -122,25 +122,30 @@ client = OmniAI::OpenAI::Client.new(timeout: {
 
 Clients that support chat (e.g. Anthropic w/ "Claude", Google w/ "Gemini", Mistral w/ "LeChat", OpenAI w/ "ChatGPT", etc) generate completions using the following calls:
 
-#### Completions using Single Message
+#### Completions using a Simple Prompt
+
+Generating a completion is as simple as sending in the text:
 
 ```ruby
 completion = client.chat('Tell me a joke.')
-completion.choice.message.content # '...'
+completion.choice.message.content # 'Why don't scientists trust atoms? They make up everything!'
 ```
 
-#### Completions using Multiple Messages
+#### Completions using a Complex Prompt
+
+More complex completions are generated using a block w/ various system / user messages:
 
 ```ruby
-messages = [
-  {
-    role: OmniAI::Chat::Role::SYSTEM,
-    content: 'You are a helpful assistant with an expertise in geography.',
-  },
-  'What is the capital of Canada?'
-]
-completion = client.chat(messages, model: '...', temperature: 0.7, format: :json)
-completion.choice.message.content  # '...'
+completion = client.chat do |prompt|
+  prompt.system 'You are a helpful assistant with an expertise in animals.'
+  prompt.user do |message|
+    message.text 'What animals are in the attached photos?'
+    message.url('https://.../cat.jpeg', "image/jpeg")
+    message.url('https://.../dog.jpeg', "image/jpeg")
+    message.file('./hamster.jpeg', "image/jpeg")
+  end
+end
+completion.choice.message.content  # 'They are photos of a cat, a cat, and a hamster.'
 ```
 
 #### Completions using Streaming via Proc
@@ -167,20 +172,19 @@ client.chat('Tell me a story', stream: $stdout)
 A chat can also be initialized with tools:
 
 ```ruby
-client.chat('What is the weather in "London, England" and "Madrid, Spain"?', tools: [
-  OmniAI::Tool.new(
-    proc { |location:, unit: 'celsius'| "It is #{rand(20..50)}° #{unit} in #{location}" },
-    name: 'Weather',
-    description: 'Lookup the weather in a location',
-    parameters: OmniAI::Tool::Parameters.new(
-      properties: {
-        location: OmniAI::Tool::Property.string(description: 'The city and country (e.g. Toronto, Canada).'),
-        unit: OmniAI::Tool::Property.string(enum: %w[celcius farenheit]),
-      },
-      required: %i[location]
-    )
+tool = OmniAI::Tool.new(
+  proc { |location:, unit: 'celsius'| "#{rand(20..50)}° #{unit} in #{location}" },
+  name: 'Weather',
+  description: 'Lookup the weather in a location',
+  parameters: OmniAI::Tool::Parameters.new(
+    properties: {
+      location: OmniAI::Tool::Property.string(description: 'e.g. Toronto'),
+      unit: OmniAI::Tool::Property.string(enum: %w[celcius farenheit]),
+    },
+    required: %i[location]
   )
-])
+)
+client.chat('What is the weather in "London" and "Madrid"?', tools: [tool])
 ```
 
 ### Transcribe

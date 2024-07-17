@@ -50,15 +50,20 @@ module OmniAI
       new(...).process!
     end
 
-    # @param messages [String] required
+    # @param prompt [OmniAI::Chat::Prompt, String, nil] optional
     # @param client [OmniAI::Client] the client
     # @param model [String] required
     # @param temperature [Float, nil] optional
     # @param stream [Proc, IO, nil] optional
     # @param tools [Array<OmniAI::Tool>] optional
     # @param format [Symbol, nil] optional - :json
-    def initialize(messages, client:, model:, temperature: nil, stream: nil, tools: nil, format: nil)
-      @messages = arrayify(messages)
+    # @yield [prompt] optional
+    def initialize(prompt = nil, client:, model:, temperature: nil, stream: nil, tools: nil, format: nil, &block)
+      raise ArgumentError, 'prompt or block is required' if !prompt && !block
+
+      @prompt = prompt ? Prompt.parse(prompt) : Prompt.new
+      block&.call(@prompt)
+
       @client = client
       @model = model
       @temperature = temperature
@@ -79,9 +84,12 @@ module OmniAI
     protected
 
     # Used to spawn another chat with the same configuration using different messages.
-    def spawn!(messages)
+    #
+    # @param prompt [OmniAI::Chat::Prompt]
+    # @return [OmniAI::Chat::Prompt]
+    def spawn!(prompt)
       self.class.new(
-        messages,
+        prompt,
         client: @client,
         model: @model,
         temperature: @temperature,
@@ -118,7 +126,7 @@ module OmniAI
 
       if @tools && completion.tool_call_list.any?
         spawn!([
-          *@messages,
+          *@prompt.serialize,
           *completion.choices.map(&:message).map(&:data),
           *(completion.tool_call_list.map { |tool_call| execute_tool_call(tool_call) }),
         ])
@@ -144,23 +152,6 @@ module OmniAI
       end
 
       @stream.puts if @stream.is_a?(IO) || @stream.is_a?(StringIO)
-    end
-
-    # @return [Array<Hash>]
-    def messages
-      @messages.map do |content|
-        case content
-        when String then { role: Role::USER, content: }
-        when Hash then content
-        else raise Error, "Unsupported content=#{content.inspect}"
-        end
-      end
-    end
-
-    # @param value [Object, Array<Object>]
-    # @return [Array<Object>]
-    def arrayify(value)
-      value.is_a?(Array) ? value : [value]
     end
 
     # @return [HTTP::Response]
