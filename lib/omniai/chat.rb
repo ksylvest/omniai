@@ -57,7 +57,11 @@ module OmniAI
     # @param stream [Proc, IO, nil] optional
     # @param tools [Array<OmniAI::Tool>] optional
     # @param format [Symbol, nil] optional - :json
+    #
     # @yield [prompt] optional
+    # @yieldparam prompt [OmniAI::Chat::Prompt]
+    #
+    # @return [OmniAi::Chat]
     def initialize(prompt = nil, client:, model:, temperature: nil, stream: nil, tools: nil, format: nil, &block)
       raise ArgumentError, 'prompt or block is required' if !prompt && !block
 
