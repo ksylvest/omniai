@@ -131,8 +131,11 @@ module OmniAI
     # @param stream [Proc, nil] optional
     # @param tools [Array<OmniAI::Tool>] optional
     #
+    # @yield [prompt] optional
+    # @yieldparam prompt [OmniAI::Chat::Prompt]
+    #
     # @return [OmniAI::Chat::Completion]
-    def chat(messages, model:, temperature: nil, format: nil, stream: nil, tools: nil)
+    def chat(messages, model:, temperature: nil, format: nil, stream: nil, tools: nil, &)
       raise NotImplementedError, "#{self.class.name}#chat undefined"
     end
 
