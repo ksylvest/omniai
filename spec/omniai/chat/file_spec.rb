@@ -10,7 +10,7 @@ RSpec.describe OmniAI::Chat::File do
     end
   end
 
-  let(:type) { 'text/plain' }
+  let(:type) { 'image/png' }
 
   around do |example|
     example.call
@@ -20,7 +20,7 @@ RSpec.describe OmniAI::Chat::File do
   end
 
   describe '#type' do
-    it { expect(file.type).to eq('text/plain') }
+    it { expect(file.type).to eq('image/png') }
   end
 
   describe '#io' do
@@ -40,7 +40,7 @@ RSpec.describe OmniAI::Chat::File do
   end
 
   describe '#data_uri' do
-    it { expect(file.data_uri).to eq('data:text/plain;base64,SGVsbG8h') }
+    it { expect(file.data_uri).to eq('data:image/png;base64,SGVsbG8h') }
   end
 
   describe '#serialize' do
@@ -49,17 +49,25 @@ RSpec.describe OmniAI::Chat::File do
     context 'with a serializer' do
       let(:context) do
         OmniAI::Chat::Context.build do |context|
-          context.serializers[:file] = ->(file, *) { { type: 'text_url', text_url: { url: file.data_uri } } }
+          context.serializers[:file] = ->(file, *) { { type: 'image_url', image_url: { url: file.data_uri } } }
         end
       end
 
-      it { expect(serialize).to eql(type: 'text_url', text_url: { url: 'data:text/plain;base64,SGVsbG8h' }) }
+      it { expect(serialize).to eql(type: 'image_url', image_url: { url: 'data:image/png;base64,SGVsbG8h' }) }
     end
 
     context 'without a serializer' do
       let(:context) { OmniAI::Chat::Context.build }
 
-      it { expect(serialize).to eql(type: 'text_url', text_url: { url: 'data:text/plain;base64,SGVsbG8h' }) }
+      context 'when serializing non-text' do
+        it { expect(serialize).to eql(type: 'image_url', image_url: { url: 'data:image/png;base64,SGVsbG8h' }) }
+      end
+
+      context 'when serializing text' do
+        let(:type) { 'text/plain' }
+
+        it { expect(serialize).to eql({ type: 'text', text: "<file>#{File.basename(io)}: Hello!</file>" }) }
+      end
     end
   end
 end
