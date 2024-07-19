@@ -59,7 +59,7 @@ module OmniAI
       #
       # @return [HTTP::Response]
       def request!
-        response = HTTP.get(@uri)
+        response = HTTP.follow.get(@uri)
         raise FetchError, response.flush unless response.status.success?
 
         response
