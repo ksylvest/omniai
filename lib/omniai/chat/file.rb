@@ -29,10 +29,23 @@ module OmniAI
       # @param context [Context]
       # @return [Hash]
       def serialize(context: nil)
-        serializer = context&.serializers&.[](:file)
-        return serializer.call(self, context:) if serializer
+        if text?
+          content = fetch!
+          Text.new("<file>#{filename}: #{content}</file>").serialize(context:)
+        else
+          serializer = context&.serializers&.[](:file)
+          return serializer.call(self, context:) if serializer
 
-        { type: "#{kind}_url", "#{kind}_url": { url: data_uri } }
+          { type: "#{kind}_url", "#{kind}_url": { url: data_uri } }
+        end
+      end
+
+      # @return [String]
+      def filename
+        case @io
+        when Tempfile, File, String then ::File.basename(@io)
+        else 'DATA'
+        end
       end
     end
   end

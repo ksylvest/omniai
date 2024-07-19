@@ -36,13 +36,18 @@ module OmniAI
       #
       # @return [Hash]
       def serialize(context: nil)
-        serializer = context&.serializers&.[](:url)
-        return serializer.call(self, context:) if serializer
+        if text?
+          content = fetch!
+          Text.new("<file>#{filename}: #{content}</file>").serialize(context:)
+        else
+          serializer = context&.serializers&.[](:url)
+          return serializer.call(self, context:) if serializer
 
-        {
-          type: "#{kind}_url",
-          "#{kind}_url": { url: @uri },
-        }
+          {
+            type: "#{kind}_url",
+            "#{kind}_url": { url: @uri },
+          }
+        end
       end
 
       # @raise [FetchError]
@@ -51,6 +56,11 @@ module OmniAI
       def fetch!
         response = request!
         String(response.body)
+      end
+
+      # @return [String]
+      def filename
+        ::File.basename(@uri)
       end
 
       protected

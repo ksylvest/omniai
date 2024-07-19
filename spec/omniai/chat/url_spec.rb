@@ -1,15 +1,18 @@
 # frozen_string_literal: true
 
 RSpec.describe OmniAI::Chat::URL do
-  subject(:url) { described_class.new('https://localhost/greeting.txt', 'text/plain') }
+  subject(:url) { described_class.new(uri, type) }
+
+  let(:type) { 'image/png' }
+  let(:uri) { 'https://localhost/hamster.png' }
 
   describe '#url' do
-    it { expect(url.inspect).to eql('#<OmniAI::Chat::URL uri="https://localhost/greeting.txt">') }
+    it { expect(url.inspect).to eql('#<OmniAI::Chat::URL uri="https://localhost/hamster.png">') }
   end
 
   describe '#fetch!' do
     before do
-      stub_request(:get, 'https://localhost/greeting.txt')
+      stub_request(:get, 'https://localhost/hamster.png')
         .to_return(body: 'Hello!', status: 200)
     end
 
@@ -18,7 +21,7 @@ RSpec.describe OmniAI::Chat::URL do
 
   describe '#data' do
     before do
-      stub_request(:get, 'https://localhost/greeting.txt')
+      stub_request(:get, 'https://localhost/hamster.png')
         .to_return(body: 'Hello!', status: 200)
     end
 
@@ -27,17 +30,17 @@ RSpec.describe OmniAI::Chat::URL do
 
   describe '#data_uri' do
     before do
-      stub_request(:get, 'https://localhost/greeting.txt')
+      stub_request(:get, 'https://localhost/hamster.png')
         .to_return(body: 'Hello!', status: 200)
     end
 
-    it { expect(url.data_uri).to eq('data:text/plain;base64,SGVsbG8h') }
+    it { expect(url.data_uri).to eq('data:image/png;base64,SGVsbG8h') }
   end
 
   describe '.deserialize' do
     subject(:deserialize) { described_class.deserialize(data, context:) }
 
-    let(:data) { { 'type' => 'text_url', 'text_url' => { 'url' => 'https://localhost/greeting.txt' } } }
+    let(:data) { { 'type' => 'image_url', 'image_url' => { 'url' => 'https://localhost/hamster.png' } } }
 
     context 'with a deserializer' do
       let(:context) do
@@ -51,16 +54,16 @@ RSpec.describe OmniAI::Chat::URL do
       end
 
       it { expect(deserialize).to be_a(described_class) }
-      it { expect(deserialize.uri).to eq('https://localhost/greeting.txt') }
-      it { expect(deserialize.type).to eq('text') }
+      it { expect(deserialize.uri).to eq('https://localhost/hamster.png') }
+      it { expect(deserialize.type).to eq('image') }
     end
 
     context 'without a serializer' do
       let(:context) { OmniAI::Chat::Context.build }
 
       it { expect(deserialize).to be_a(described_class) }
-      it { expect(deserialize.uri).to eq('https://localhost/greeting.txt') }
-      it { expect(deserialize.type).to eq('text') }
+      it { expect(deserialize.uri).to eq('https://localhost/hamster.png') }
+      it { expect(deserialize.type).to eq('image') }
     end
   end
 
@@ -74,13 +77,27 @@ RSpec.describe OmniAI::Chat::URL do
         end
       end
 
-      it { expect(serialize).to eq(type: 'uri', uri: 'https://localhost/greeting.txt') }
+      it { expect(serialize).to eq(type: 'uri', uri: 'https://localhost/hamster.png') }
     end
 
     context 'without a serializer' do
       let(:context) { OmniAI::Chat::Context.build }
 
-      it { expect(serialize).to eq(type: 'text_url', text_url: { url: 'https://localhost/greeting.txt' }) }
+      context 'when serializing non-text' do
+        it { expect(serialize).to eq(type: 'image_url', image_url: { url: 'https://localhost/hamster.png' }) }
+      end
+
+      context 'when serializing text' do
+        let(:type) { 'text/plain' }
+        let(:uri) { 'https://localhost/demo.txt' }
+
+        before do
+          stub_request(:get, 'https://localhost/demo.txt')
+            .to_return(body: 'Hello!', status: 200)
+        end
+
+        it { expect(serialize).to eql({ type: 'text', text: '<file>demo.txt: Hello!</file>' }) }
+      end
     end
   end
 end
