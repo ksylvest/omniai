@@ -3,6 +3,28 @@
 RSpec.describe OmniAI::Chat::Content do
   subject(:content) { described_class.new }
 
+  describe '.summarize' do
+    subject(:summarize) { described_class.summarize(content) }
+
+    context 'with a string' do
+      let(:content) { 'Hello!' }
+
+      it { expect(summarize).to eq('Hello!') }
+    end
+
+    context 'with a content' do
+      let(:content) { OmniAI::Chat::Text.new('Hello!') }
+
+      it { expect(summarize).to eq('Hello!') }
+    end
+
+    context 'with an array' do
+      let(:content) { [OmniAI::Chat::Text.new('Hello!')] }
+
+      it { expect(summarize).to eq('Hello!') }
+    end
+  end
+
   describe '#serialize' do
     subject(:serialize) { content.serialize }
 

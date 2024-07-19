@@ -31,6 +31,14 @@ module OmniAI
         "#<#{self.class} role=#{@role.inspect} content=#{@content.inspect}>"
       end
 
+      # @return [String]
+      def summarize
+        <<~TEXT
+          #{@role}
+          #{Content.summarize(@content)}
+        TEXT
+      end
+
       # Usage:
       #
       #   Message.deserialize({ role: :user, content: 'Hello!' }) # => #<Message ...>

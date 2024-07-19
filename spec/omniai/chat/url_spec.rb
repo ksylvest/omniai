@@ -6,8 +6,16 @@ RSpec.describe OmniAI::Chat::URL do
   let(:type) { 'image/png' }
   let(:uri) { 'https://localhost/hamster.png' }
 
-  describe '#url' do
+  describe '#inspect' do
     it { expect(url.inspect).to eql('#<OmniAI::Chat::URL uri="https://localhost/hamster.png">') }
+  end
+
+  describe '#filename' do
+    it { expect(url.filename).to eql('hamster.png') }
+  end
+
+  describe '#summarize' do
+    it { expect(url.summarize).to eql('[hamster.png]') }
   end
 
   describe '#fetch!' do

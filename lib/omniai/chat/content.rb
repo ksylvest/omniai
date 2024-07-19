@@ -4,6 +4,14 @@ module OmniAI
   class Chat
     # A placeholder for parts of a message. Any subclass must implement the serializable interface.
     class Content
+      # @return [String]
+      def self.summarize(content)
+        return content.map { |entry| summarize(entry) }.join("\n\n") if content.is_a?(Array)
+        return content if content.is_a?(String)
+
+        content.summarize
+      end
+
       # @param context [Context] optional
       #
       # @return [String]

@@ -62,6 +62,11 @@ module OmniAI
         "#<#{self.class.name} messages=#{@messages.inspect}>"
       end
 
+      # @return [String]
+      def summarize
+        @messages.map(&:summarize).join("\n\n")
+      end
+
       # Usage:
       #
       #   prompt.serialize # => [{ content: "What is the capital of Canada?", role: :user }]

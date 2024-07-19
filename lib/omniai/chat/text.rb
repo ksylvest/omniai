@@ -18,6 +18,11 @@ module OmniAI
         "#<#{self.class} text=#{@text.inspect}>"
       end
 
+      # @return [String]
+      def summarize
+        @text
+      end
+
       # @param data [Hash]
       def self.deserialize(data, context: nil)
         deserialize = context&.deserializers&.[](:text)

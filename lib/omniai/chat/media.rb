@@ -15,6 +15,11 @@ module OmniAI
         @type = type
       end
 
+      # @return [String]
+      def summarize
+        "[#{filename}]"
+      end
+
       # @return [Boolean]
       def text?
         @type.match?(%r{^text/})

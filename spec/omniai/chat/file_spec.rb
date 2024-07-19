@@ -31,6 +31,14 @@ RSpec.describe OmniAI::Chat::File do
     it { expect(file.inspect).to eql("#<OmniAI::Chat::File io=#{io.inspect}>") }
   end
 
+  describe '#filename' do
+    it { expect(file.filename).to eql(File.basename(io)) }
+  end
+
+  describe '#summarize' do
+    it { expect(file.summarize).to eql("[#{file.filename}]") }
+  end
+
   describe '#fetch!' do
     it { expect(file.fetch!).to eql('Hello!') }
   end
