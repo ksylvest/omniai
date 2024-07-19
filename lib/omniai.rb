@@ -17,12 +17,18 @@ module OmniAI
 
   # An error that wraps an HTTP::Response for non-OK requests.
   class HTTPError < Error
+    # @return [HTTP::Response]
     attr_accessor :response
 
     # @param response [HTTP::Response]
     def initialize(response)
-      super("status=#{response.status.inspect} headers=#{response.headers.inspect} body=#{response.body}")
+      super("status=#{response.status} body=#{response.body}")
+
       @response = response
+    end
+
+    def inspect
+      "#<#{self.class} status=#{@response.status} body=#{@response.body}>"
     end
   end
 end
