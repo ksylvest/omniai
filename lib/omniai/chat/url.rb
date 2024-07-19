@@ -17,6 +17,11 @@ module OmniAI
       end
 
       # @return [String]
+      def summarize
+        "[#{filename}]"
+      end
+
+      # @return [String]
       def inspect
         "#<#{self.class} uri=#{@uri.inspect}>"
       end

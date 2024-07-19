@@ -17,6 +17,10 @@ RSpec.describe OmniAI::Chat::Prompt do
     it { expect(prompt.inspect).to eql('#<OmniAI::Chat::Prompt messages=[]>') }
   end
 
+  describe '#summarize' do
+    it { expect(prompt.summarize).to eql('') }
+  end
+
   describe '#message' do
     context 'without some text or a block' do
       it { expect { prompt.message }.to raise_error(ArgumentError, 'content or block is required') }
