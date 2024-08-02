@@ -286,3 +286,39 @@ Type 'exit' or 'quit' to abort.
 ```
 The warmest place on earth is Africa.
 ```
+
+### Embed
+
+#### w/ input
+
+```bash
+omniai embed "The quick brown fox jumps over a lazy dog."
+```
+
+```
+0.0
+...
+```
+
+#### w/o input
+
+```bash
+omniai embed --provider="openai" --model="text-embedding-ada-002"
+```
+
+```
+Type 'exit' or 'quit' to abort.
+# Whe quick brown fox jumps over a lazy dog.
+```
+
+```
+0.0
+...
+```
+
+0.0
+...
+
+```
+
+```
