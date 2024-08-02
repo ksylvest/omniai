@@ -173,5 +173,15 @@ module OmniAI
     def speak(input, model:, voice:, speed: nil, format: nil, &stream)
       raise NotImplementedError, "#{self.class.name}#speak undefined"
     end
+
+    # @raise [OmniAI::Error]
+    #
+    # @param input [String] required
+    # @param model [String] required
+    #
+    # @return [OmniAI::Embed::Embedding]
+    def embed(input, model:)
+      raise NotImplementedError, "#{self.class.name}#embed undefined"
+    end
   end
 end
