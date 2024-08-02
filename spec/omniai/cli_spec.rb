@@ -3,13 +3,13 @@
 RSpec.describe OmniAI::CLI do
   subject(:cli) { described_class.new(stdin:, stdout:, provider:) }
 
-  let(:stdin) { StringIO.new(prompt) }
+  let(:stdin) { StringIO.new(text) }
   let(:stdout) { StringIO.new }
   let(:provider) { 'fake' }
 
   let(:client) { instance_double(OmniAI::Client) }
 
-  let(:prompt) do
+  let(:text) do
     <<~TEXT
       What is the capital of Canada?
       exit
@@ -27,6 +27,15 @@ RSpec.describe OmniAI::CLI do
         allow(OmniAI::CLI::ChatHandler).to receive(:handle!)
         cli.parse(['chat', 'What is the capital of Canada?'])
         expect(OmniAI::CLI::ChatHandler).to have_received(:handle!)
+          .with(stdin:, stdout:, provider:, argv: ['What is the capital of Canada?'])
+      end
+    end
+
+    context 'with a embed command' do
+      it 'forwards the command to OmniAI::CLI::EmbedHandler' do
+        allow(OmniAI::CLI::EmbedHandler).to receive(:handle!)
+        cli.parse(['embed', 'What is the capital of Canada?'])
+        expect(OmniAI::CLI::EmbedHandler).to have_received(:handle!)
           .with(stdin:, stdout:, provider:, argv: ['What is the capital of Canada?'])
       end
     end

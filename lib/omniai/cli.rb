@@ -28,10 +28,14 @@ module OmniAI
       command = argv.shift
       return if command.nil?
 
-      case command
-      when 'chat' then ChatHandler.handle!(stdin: @stdin, stdout: @stdout, provider: @provider, argv:)
-      else raise Error, "unsupported command=#{command.inspect}"
-      end
+      handler =
+        case command
+        when 'chat' then ChatHandler
+        when 'embed' then EmbedHandler
+        else raise Error, "unsupported command=#{command.inspect}"
+        end
+
+      handler.handle!(stdin: @stdin, stdout: @stdout, provider: @provider, argv:)
     end
 
     private
