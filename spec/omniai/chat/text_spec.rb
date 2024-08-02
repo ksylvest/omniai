@@ -18,7 +18,7 @@ RSpec.describe OmniAI::Chat::Text do
 
     context 'with a deserializer' do
       let(:context) do
-        OmniAI::Chat::Context.build do |context|
+        OmniAI::Context.build do |context|
           context.deserializers[:text] = ->(data, *) { described_class.new(data['text']) }
         end
       end
@@ -28,7 +28,7 @@ RSpec.describe OmniAI::Chat::Text do
     end
 
     context 'without a serializer' do
-      let(:context) { OmniAI::Chat::Context.build }
+      let(:context) { OmniAI::Context.build }
 
       it { expect(deserialize).to be_a(described_class) }
       it { expect(deserialize.text).to eq('Hello!') }
@@ -40,7 +40,7 @@ RSpec.describe OmniAI::Chat::Text do
 
     context 'with a serializer' do
       let(:context) do
-        OmniAI::Chat::Context.build do |context|
+        OmniAI::Context.build do |context|
           context.serializers[:text] = ->(text, *) { { type: 'text', text: text.text } }
         end
       end
@@ -49,7 +49,7 @@ RSpec.describe OmniAI::Chat::Text do
     end
 
     context 'without a serializer' do
-      let(:context) { OmniAI::Chat::Context.build }
+      let(:context) { OmniAI::Context.build }
 
       it { expect(serialize).to eq(type: 'text', text: 'Hello!') }
     end

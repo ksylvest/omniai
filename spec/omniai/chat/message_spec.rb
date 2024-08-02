@@ -61,7 +61,7 @@ RSpec.describe OmniAI::Chat::Message do
 
     context 'with a deserializer' do
       let(:context) do
-        OmniAI::Chat::Context.build do |context|
+        OmniAI::Context.build do |context|
           context.deserializers[:message] = lambda do |data, *|
             role = data['role']
             content = data['content'].map { |content_data| OmniAI::Chat::Content.deserialize(content_data, context:) }
@@ -77,7 +77,7 @@ RSpec.describe OmniAI::Chat::Message do
     end
 
     context 'without a serializer' do
-      let(:context) { OmniAI::Chat::Context.build }
+      let(:context) { OmniAI::Context.build }
 
       it { expect(deserialize).to be_a(described_class) }
       it { expect(deserialize.role).to eq('user') }
@@ -91,7 +91,7 @@ RSpec.describe OmniAI::Chat::Message do
 
     context 'with a serializer' do
       let(:context) do
-        OmniAI::Chat::Context.build do |context|
+        OmniAI::Context.build do |context|
           context.serializers[:message] = lambda do |message, *|
             {
               role: message.role,
@@ -138,7 +138,7 @@ RSpec.describe OmniAI::Chat::Message do
     end
 
     context 'without a serializer' do
-      let(:context) { OmniAI::Chat::Context.build }
+      let(:context) { OmniAI::Context.build }
 
       context 'with text content' do
         let(:content) { 'What is the capital of Canada?' }

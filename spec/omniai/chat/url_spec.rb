@@ -52,7 +52,7 @@ RSpec.describe OmniAI::Chat::URL do
 
     context 'with a deserializer' do
       let(:context) do
-        OmniAI::Chat::Context.build do |context|
+        OmniAI::Context.build do |context|
           context.deserializers[:url] = lambda { |data, *|
             type = /(?<type>\w+)_url/.match(data['type'])[:type]
             uri = data["#{type}_url"]['url']
@@ -67,7 +67,7 @@ RSpec.describe OmniAI::Chat::URL do
     end
 
     context 'without a serializer' do
-      let(:context) { OmniAI::Chat::Context.build }
+      let(:context) { OmniAI::Context.build }
 
       it { expect(deserialize).to be_a(described_class) }
       it { expect(deserialize.uri).to eq('https://localhost/hamster.png') }
@@ -80,7 +80,7 @@ RSpec.describe OmniAI::Chat::URL do
 
     context 'with a serializer' do
       let(:context) do
-        OmniAI::Chat::Context.build do |context|
+        OmniAI::Context.build do |context|
           context.serializers[:url] = ->(url, *) { { type: 'uri', uri: url.uri } }
         end
       end
@@ -89,7 +89,7 @@ RSpec.describe OmniAI::Chat::URL do
     end
 
     context 'without a serializer' do
-      let(:context) { OmniAI::Chat::Context.build }
+      let(:context) { OmniAI::Context.build }
 
       context 'when serializing non-text' do
         it { expect(serialize).to eq(type: 'image_url', image_url: { url: 'https://localhost/hamster.png' }) }

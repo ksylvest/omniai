@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe OmniAI::Chat::Context do
+RSpec.describe OmniAI::Context do
   subject(:context) { described_class.new }
 
   describe '.build' do
