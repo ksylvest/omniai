@@ -229,6 +229,29 @@ tempfile.close
 tempfile.unlink
 ```
 
+### Embeddings
+
+Clients that support generating embeddings (e.g. OpenAI, Mistral, etc.) convert text to embeddings via the following:
+
+```ruby
+response = client.embed('The quick brown fox jumps over a lazy dog')
+response.usage # <OmniAI::Embed::Usage prompt_tokens=5 total_tokens=5>
+response.embedding # [0.1, 0.2, ...] >
+```
+
+Batches of text can also be converted to embeddings via the following:
+
+```ruby
+response = client.embed([
+  '',
+  '',
+])
+response.usage # <OmniAI::Embed::Usage prompt_tokens=5 total_tokens=5>
+response.embeddings.each do |embedding|
+  embedding # [0.1, 0.2, ...]
+end
+```
+
 ## CLI
 
 OmniAI packages a basic command line interface (CLI) to allow for exploration of various APIs. A detailed CLI documentation can be found via help:

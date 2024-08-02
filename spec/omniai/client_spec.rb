@@ -146,6 +146,10 @@ RSpec.describe OmniAI::Client do
     it { expect { client.chat('Hello!', model: '...') }.to raise_error(NotImplementedError) }
   end
 
+  describe '#embed' do
+    it { expect { client.embed('Hello!', model: '...') }.to raise_error(NotImplementedError) }
+  end
+
   describe '#inspect' do
     it { expect(client.inspect).to eq('#<OmniAI::Client api_key="abc***" host="http://localhost:8080">') }
   end
