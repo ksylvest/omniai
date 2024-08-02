@@ -56,7 +56,7 @@ RSpec.describe OmniAI::Chat::File do
 
     context 'with a serializer' do
       let(:context) do
-        OmniAI::Chat::Context.build do |context|
+        OmniAI::Context.build do |context|
           context.serializers[:file] = ->(file, *) { { type: 'image_url', image_url: { url: file.data_uri } } }
         end
       end
@@ -65,7 +65,7 @@ RSpec.describe OmniAI::Chat::File do
     end
 
     context 'without a serializer' do
-      let(:context) { OmniAI::Chat::Context.build }
+      let(:context) { OmniAI::Context.build }
 
       context 'when serializing non-text' do
         it { expect(serialize).to eql(type: 'image_url', image_url: { url: 'data:image/png;base64,SGVsbG8h' }) }
