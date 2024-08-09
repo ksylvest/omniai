@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe OmniAI::Embed::Usage do
-  subject(:usage) { described_class.new(prompt_tokens:, total_tokens:) }
+  subject(:usage) { build(:embed_usage, prompt_tokens:, total_tokens:) }
 
   let(:prompt_tokens) { 2 }
   let(:total_tokens) { 4 }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe OmniAI::Chat::URL do
-  subject(:url) { described_class.new(uri, type) }
+  subject(:url) { build(:chat_url, uri:, type:) }
 
   let(:type) { 'image/png' }
   let(:uri) { 'https://localhost/hamster.png' }

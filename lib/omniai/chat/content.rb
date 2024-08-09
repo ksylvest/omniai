@@ -16,14 +16,22 @@ module OmniAI
       #
       # @return [String]
       def serialize(context: nil)
-        raise NotImplementedError, ' # {self.class}#serialize undefined'
+        raise NotImplementedError, "#{self.class}#serialize undefined"
       end
 
-      # @param data [hash]
+      # @param data [Hash, Array, String]
       # @param context [Context] optional
       #
       # @return [Content]
       def self.deserialize(data, context: nil)
+        return data if data.nil?
+        return data.map { |data| deserialize(data, context:) } if data.is_a?(Array)
+
+        deserialize = context&.deserializer(:content)
+        return deserialize.call(data, context:) if deserialize
+
+        return data if data.is_a?(String)
+
         raise ArgumentError, "untyped data=#{data.inspect}" unless data.key?('type')
 
         case data['type']

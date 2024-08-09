@@ -76,8 +76,8 @@ RSpec.describe OmniAI::Chat do
         stub_request(:post, 'http://localhost:8080/chat')
           .with(body: {
             messages: [
-              { role: 'system', content: 'You are a helpful assistant.' },
-              { role: 'user', content: 'What is the name of the dummer for the Beatles?' },
+              { role: 'system', content: [{ type: 'text', text: 'You are a helpful assistant.' }] },
+              { role: 'user', content: [{ type: 'text', text: 'What is the name of the dummer for the Beatles?' }] },
             ],
             model:,
           })
@@ -86,13 +86,14 @@ RSpec.describe OmniAI::Chat do
               index: 0,
               message: {
                 role: 'system',
-                content: '{ "name": "Ringo" }',
+                content: 'Ringo!',
               },
             }],
           })
       end
 
-      it { expect(process!).to be_a(OmniAI::Chat::Response::Completion) }
+      it { expect(process!).to be_a(OmniAI::Chat::Response) }
+      it { expect(process!.text).to eql('Ringo!') }
     end
 
     context 'when UNPROCESSABLE' do
@@ -100,8 +101,8 @@ RSpec.describe OmniAI::Chat do
         stub_request(:post, 'http://localhost:8080/chat')
           .with(body: {
             messages: [
-              { role: 'system', content: 'You are a helpful assistant.' },
-              { role: 'user', content: 'What is the name of the dummer for the Beatles?' },
+              { role: 'system', content: [{ type: 'text', text: 'You are a helpful assistant.' }] },
+              { role: 'user', content: [{ type: 'text', text: 'What is the name of the dummer for the Beatles?' }] },
             ],
             model:,
           })
@@ -118,8 +119,8 @@ RSpec.describe OmniAI::Chat do
         stub_request(:post, 'http://localhost:8080/chat')
           .with(body: {
             messages: [
-              { role: 'system', content: 'You are a helpful assistant.' },
-              { role: 'user', content: 'What is the name of the dummer for the Beatles?' },
+              { role: 'system', content: [{ type: 'text', text: 'You are a helpful assistant.' }] },
+              { role: 'user', content: [{ type: 'text', text: 'What is the name of the dummer for the Beatles?' }] },
             ],
             model:,
           })
@@ -134,7 +135,7 @@ RSpec.describe OmniAI::Chat do
         chunks = []
         allow(stream).to receive(:call) { |chunk| chunks << chunk }
         process!
-        expect(chunks.map { |chunk| chunk.choice.delta.content }).to eql(%w[A B])
+        expect(chunks.map(&:text)).to eql(%w[A B])
       end
     end
 
@@ -145,8 +146,8 @@ RSpec.describe OmniAI::Chat do
         stub_request(:post, 'http://localhost:8080/chat')
           .with(body: {
             messages: [
-              { role: 'system', content: 'You are a helpful assistant.' },
-              { role: 'user', content: 'What is the name of the dummer for the Beatles?' },
+              { role: 'system', content: [{ type: 'text', text: 'You are a helpful assistant.' }] },
+              { role: 'user', content: [{ type: 'text', text: 'What is the name of the dummer for the Beatles?' }] },
             ],
             model:,
           })
@@ -170,8 +171,8 @@ RSpec.describe OmniAI::Chat do
         stub_request(:post, 'http://localhost:8080/chat')
           .with(body: {
             messages: [
-              { role: 'system', content: 'You are a helpful assistant.' },
-              { role: 'user', content: 'What is the name of the dummer for the Beatles?' },
+              { role: 'system', content: [{ type: 'text', text: 'You are a helpful assistant.' }] },
+              { role: 'user', content: [{ type: 'text', text: 'What is the name of the dummer for the Beatles?' }] },
             ],
             model:,
           })

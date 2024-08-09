@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe OmniAI::Chat::Content do
-  subject(:content) { described_class.new }
+  subject(:content) { build(:chat_content) }
 
   describe '.summarize' do
     subject(:summarize) { described_class.summarize(content) }

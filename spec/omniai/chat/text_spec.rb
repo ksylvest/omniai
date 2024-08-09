@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe OmniAI::Chat::Text do
-  subject(:text) { described_class.new('Hello!') }
+  subject(:text) { build(:chat_text, text: 'Hello!') }
 
   describe '#text' do
     it { expect(text.text).to eq('Hello!') }

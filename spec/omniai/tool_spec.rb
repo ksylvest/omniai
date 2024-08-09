@@ -21,9 +21,9 @@ RSpec.describe OmniAI::Tool do
     }, required: %i[n])
   end
 
-  describe '#prepare' do
+  describe '#serialize' do
     it 'converts the tool to a hash' do
-      expect(tool.prepare).to eq({
+      expect(tool.serialize).to eq({
         type: 'function',
         function: {
           name:,

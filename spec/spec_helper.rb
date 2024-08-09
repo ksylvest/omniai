@@ -10,6 +10,8 @@ end
 
 require 'omniai'
 
+Dir["#{__dir__}/support/**/*.rb"].each { |file| require file }
+
 RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
