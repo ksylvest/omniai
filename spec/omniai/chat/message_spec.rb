@@ -1,10 +1,36 @@
 # frozen_string_literal: true
 
 RSpec.describe OmniAI::Chat::Message do
-  subject(:message) { described_class.new(role:, content:) }
+  subject(:message) { build(:chat_message, role:, content:) }
 
   let(:role) { OmniAI::Chat::Role::USER }
   let(:content) { [] }
+
+  describe '.build' do
+    context 'with text' do
+      subject(:message) do
+        described_class.build('What is the capital of Canada?', role: 'user')
+      end
+
+      it 'builds a message' do
+        expect(message).to be_a(described_class)
+      end
+    end
+
+    context 'with block' do
+      subject(:message) do
+        described_class.build do |builder|
+          builder.text('What is the capital of Canada?')
+          builder.url('https://localhost/greeting.txt', 'text/plain')
+          builder.file('greeting.txt', 'Hello!')
+        end
+      end
+
+      it do
+        expect(message).to be_a(described_class)
+      end
+    end
+  end
 
   describe '#inspect' do
     it { expect(message.inspect).to eql('#<OmniAI::Chat::Message role="user" content=[]>') }
@@ -29,29 +55,31 @@ RSpec.describe OmniAI::Chat::Message do
   end
 
   describe '#system?' do
-    context 'when role is user' do
+    context 'when role is system' do
       let(:role) { OmniAI::Chat::Role::SYSTEM }
 
       it { expect(message).to be_system }
     end
 
-    context 'when role is system' do
+    context 'when role is user' do
       let(:role) { OmniAI::Chat::Role::USER }
 
       it { expect(message).not_to be_system }
     end
   end
 
-  describe '#text' do
-    it { expect { message.text('What is the capital of Canada?') }.to change(message.content, :count) }
-  end
+  describe '#tool' do
+    context 'when role is tool' do
+      let(:role) { OmniAI::Chat::Role::TOOL }
 
-  describe '#url' do
-    it { expect { message.url('https://localhost/greeting.txt', 'text/plain') }.to change(message.content, :count) }
-  end
+      it { expect(message).to be_tool }
+    end
 
-  describe '#file' do
-    it { expect { message.file('greeting.txt', 'Hello!') }.to change(message.content, :count) }
+    context 'when role is system' do
+      let(:role) { OmniAI::Chat::Role::USER }
+
+      it { expect(message).not_to be_tool }
+    end
   end
 
   describe '.deserialize' do

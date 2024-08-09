@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe OmniAI::Chat::Media do
-  subject(:media) { described_class.new(type) }
+  subject(:media) { build(:chat_media, type:) }
 
   let(:type) { 'text/plain' }
 

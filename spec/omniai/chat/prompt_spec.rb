@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe OmniAI::Chat::Prompt do
-  subject(:prompt) { described_class.new(messages:) }
+  subject(:prompt) { build(:chat_prompt, messages:) }
 
   let(:messages) { [] }
 
@@ -11,6 +11,14 @@ RSpec.describe OmniAI::Chat::Prompt do
 
       it { expect(prompt).to(be_a(described_class)) }
     end
+  end
+
+  describe '#dup' do
+    let(:dup) { prompt.dup }
+
+    it { expect(dup).to(be_a(described_class)) }
+    it { expect(dup).not_to(be(prompt)) }
+    it { expect(dup.messages).to(eq(prompt.messages)) }
   end
 
   describe '#inspect' do

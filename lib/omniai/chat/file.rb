@@ -21,8 +21,8 @@ module OmniAI
       # @return [String]
       def fetch!
         case @io
-        when IO then @io.read
-        else ::File.binread(@io)
+        when String then ::File.binread(@io)
+        else @io.read
         end
       end
 
@@ -33,7 +33,7 @@ module OmniAI
           content = fetch!
           Text.new("<file>#{filename}: #{content}</file>").serialize(context:)
         else
-          serializer = context&.serializers&.[](:file)
+          serializer = context&.serializer(:file)
           return serializer.call(self, context:) if serializer
 
           { type: "#{kind}_url", "#{kind}_url": { url: data_uri } }

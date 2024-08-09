@@ -27,11 +27,20 @@ module OmniAI
   class Chat
     JSON_PROMPT = 'Respond with valid JSON. Do not include any non-JSON in the response.'
 
-    # An error raised when a chat makes a tool-call for a tool that cannot be found.
-    class ToolCallLookupError < Error
-      def initialize(tool_call)
-        super("missing tool for tool_call=#{tool_call.inspect}")
+    # An error raised for tool-call issues.
+    class ToolCallError < Error
+      # @param tool_call [OmniAI::Chat::ToolCall]
+      # @param message [String]
+      def initialize(tool_call:, message:)
+        super(message)
         @tool_call = tool_call
+      end
+    end
+
+    # An error raised when a tool-call is missing.
+    class ToolCallMissingError < ToolCallError
+      def initialize(tool_call:)
+        super(tool_call:, message: "missing tool for tool_call=#{tool_call.inspect}")
       end
     end
 
@@ -87,10 +96,22 @@ module OmniAI
 
     protected
 
+    # Override  to provide an context for serializers / deserializes for a provider.
+    #
+    # @return [Context, nil]
+    def context
+      nil
+    end
+
+    # @return [Logger, nil]
+    def logger
+      @client.logger
+    end
+
     # Used to spawn another chat with the same configuration using different messages.
     #
     # @param prompt [OmniAI::Chat::Prompt]
-    # @return [OmniAI::Chat::Prompt]
+    # @return [OmniAI::Chat]
     def spawn!(prompt)
       self.class.new(
         prompt,
@@ -100,7 +121,7 @@ module OmniAI
         stream: @stream,
         tools: @tools,
         format: @format
-      ).process!
+      )
     end
 
     # @return [Hash]
@@ -114,7 +135,7 @@ module OmniAI
     end
 
     # @param response [HTTP::Response]
-    # @return [OmniAI::Chat::Response::Completion]
+    # @return [OmniAI::Chat::Response]
     def parse!(response:)
       if @stream
         stream!(response:)
@@ -124,31 +145,32 @@ module OmniAI
     end
 
     # @param response [HTTP::Response]
-    # @return [OmniAI::Chat::Response::Completion]
+    # @return [OmniAI::Chat::Response]
     def complete!(response:)
-      completion = self.class::Response::Completion.new(data: response.parse)
+      completion = self.class::Response.new(data: response.parse, context:)
 
-      if @tools && completion.tool_call_list.any?
-        spawn!([
-          *@prompt.serialize,
-          *completion.choices.map(&:message).map(&:data),
-          *(completion.tool_call_list.map { |tool_call| execute_tool_call(tool_call) }),
-        ])
+      if @tools && completion.tool_call_list?
+        spawn!(
+          @prompt.dup.tap do |prompt|
+            prompt.messages += completion.messages
+            prompt.messages += build_tool_call_messages(completion.tool_call_list)
+          end
+        ).process!
       else
         completion
       end
     end
 
     # @param response [HTTP::Response]
-    # @return [OmniAI::Chat::Response::Stream]
+    # @return [OmniAI::Chat::Stream]
     def stream!(response:)
       raise Error, "#{self.class.name}#stream! unstreamable" unless @stream
 
-      self.class::Response::Stream.new(response:).stream! do |chunk|
+      self.class::Stream.new(body: response.body, logger:, context:).stream! do |chunk|
         case @stream
         when IO, StringIO
-          if chunk.content?
-            @stream << chunk.content
+          if chunk.text
+            @stream << chunk.text
             @stream.flush
           end
         else @stream.call(chunk)
@@ -160,31 +182,36 @@ module OmniAI
 
     # @return [HTTP::Response]
     def request!
+      logger&.debug("Chat#request! payload=#{payload.inspect}")
+
       @client
         .connection
         .accept(:json)
         .post(path, json: payload)
     end
 
-    # @param tool_call [OmniAI::Chat::ToolCall]
-    def execute_tool_call(tool_call)
-      function = tool_call.function
-
-      tool = @tools.find { |entry| function.name == entry.name } || raise(ToolCallLookupError, tool_call)
-      result = tool.call(function.arguments)
-
-      prepare_tool_call_message(tool_call:, content: result)
+    # @param tool_call_list [Array<OmniAI::Chat::ToolCall>]
+    # @return [Array<Message>]
+    def build_tool_call_messages(tool_call_list)
+      tool_call_list.map do |tool_call|
+        content = execute_tool_call(tool_call)
+        ToolCallMessage.new(content:, tool_call_id: tool_call.id)
+      end
     end
 
+    # @raise [ToolCallError]
     # @param tool_call [OmniAI::Chat::ToolCall]
-    # @param content [String]
-    def prepare_tool_call_message(tool_call:, content:)
-      {
-        role: Role::TOOL,
-        name: tool_call.function.name,
-        tool_call_id: tool_call.id,
-        content:,
-      }
+    # @return [ToolCallResult]
+    def execute_tool_call(tool_call)
+      logger&.debug("Chat#execute_tool_call tool_call=#{tool_call.inspect}")
+
+      function = tool_call.function
+      tool = @tools.find { |entry| function.name == entry.name } || raise(ToolCallMissingError, tool_call)
+      content = tool.call(function.arguments)
+
+      logger&.debug("Chat#execute_tool_call content=#{content.inspect}")
+
+      content
     end
   end
 end

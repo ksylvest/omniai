@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe OmniAI::Chat::File do
-  subject(:file) { described_class.new(io, type) }
+  subject(:file) { build(:chat_file, io:, type:) }
 
   let(:io) do
     Tempfile.new.tap do |tempfile|

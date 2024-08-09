@@ -57,6 +57,11 @@ module OmniAI
         @messages = messages
       end
 
+      # @return [Prompt]
+      def dup
+        self.class.new(messages: @messages.dup)
+      end
+
       # @return [String]
       def inspect
         "#<#{self.class.name} messages=#{@messages.inspect}>"
@@ -75,57 +80,66 @@ module OmniAI
       #
       # @return [Array<Hash>]
       def serialize(context: nil)
-        serializer = context&.serializers&.[](:prompt)
+        serializer = context&.serializer(:prompt)
         return serializer.call(self, context:) if serializer
 
         @messages.map { |message| message.serialize(context:) }
       end
 
-      # Usage:
+      # @example
+      #   prompt.message 'What is the capital of Canada?', role: '...'
       #
-      #   prompt.message('What is the capital of Canada?')
+      # @example
+      #   prompt.message role: '...' do |message|
+      #     message.text 'What is the capital of Canada?'
+      #   end
       #
       # @param content [String, nil]
       # @param role [Symbol]
       #
-      # @yield [Message]
+      # @yield [builder]
+      # @yieldparam builder [Message::Builder]
+      #
       # @return [Message]
-      def message(content = nil, role: :user, &block)
-        raise ArgumentError, 'content or block is required' if content.nil? && block.nil?
-
-        Message.new(content:, role:).tap do |message|
-          block&.call(message)
+      def message(content = nil, role: Role::USER, &)
+        Message.build(content, role:, &).tap do |message|
           @messages << message
         end
       end
 
-      # Usage:
+      # @example
+      #   prompt.system 'You are a helpful assistant.'
       #
-      #   prompt.system('You are a helpful assistant.')
-      #
+      # @example
       #   prompt.system do |message|
       #     message.text 'You are a helpful assistant.'
       #   end
       #
       # @param content [String, nil]
       #
-      # @yield [Message]
+      # @yield [builder]
+      # @yieldparam builder [Message::Builder]
+      #
       # @return [Message]
       def system(content = nil, &)
         message(content, role: Role::SYSTEM, &)
       end
 
-      # Usage:
-      #
+      # @example
       #   prompt.user('What is the capital of Canada?')
       #
+      # @example
       #   prompt.user do |message|
       #     message.text 'What is the capital of Canada?'
+      #     message.url 'https://...', type: "image/gif"
+      #     message.file File.open('...'), type: "image/gif"
       #   end
       #
       # @param content [String, nil]
       #
-      # @yield [Message]
+      # @yield [builder]
+      # @yieldparam builder [Message::Builder]
+      #
       # @return [Message]
       def user(content = nil, &)
         message(content, role: Role::USER, &)

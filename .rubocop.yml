@@ -1,4 +1,5 @@
 require:
+  - rubocop-factory_bot
   - rubocop-rake
   - rubocop-rspec
 
@@ -14,6 +15,15 @@ Layout/FirstHashElementIndentation:
 
 Layout/FirstArrayElementIndentation:
   EnforcedStyle: consistent
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
 
 Metrics/ClassLength:
   Enabled: false

@@ -44,7 +44,7 @@ module OmniAI
     end
 
     # @example
-    #   tool.prepare
+    #   tool.serialize
     #   # {
     #   #   type: 'function',
     #   #   function: {
@@ -60,8 +60,12 @@ module OmniAI
     #   #   }
     #   # }
     #
+    # @param context [Context] optional
     # @return [Hash]
-    def prepare
+    def serialize(context: nil)
+      serialize = context&.serializer(:tool)
+      return serialize.call(self, context:) if serialize
+
       {
         type: 'function',
         function: {

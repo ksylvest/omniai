@@ -10,20 +10,50 @@ module OmniAI
     #       message.url 'https://example.com/cat.jpg', type: "image/jpeg"
     #       message.url 'https://example.com/dog.jpg', type: "image/jpeg"
     #       message.file File.open('hamster.jpg'), type: "image/jpeg"
+    #       message.
     #     end
     #   end
     class Message
+      # @example
+      #   prompt.build('What is the capital of Canada?')
+      #
+      # @example
+      #   prompt.build(role: 'user') do |message|
+      #     message.text 'What is the capital of Canada?'
+      #   end
+      #
+      # @param content [String, nil]
+      # @param role [Symbol]
+      #
+      # @yield [builder]
+      # @yieldparam builder [Message::Builder]
+      #
+      # @return [Message]
+      def self.build(content = nil, role: Role::USER, &block)
+        raise ArgumentError, 'content or block is required' if content.nil? && block.nil?
+
+        Builder.build(role:) do |builder|
+          builder.text(content) if content
+          block&.call(builder)
+        end
+      end
+
       # @return [Array<Content>, String]
       attr_accessor :content
 
       # @return [String]
       attr_accessor :role
 
+      # @return [Array<ToolCall>, nil]
+      attr_accessor :tool_call_list
+
       # @param content [String, nil]
       # @param role [String]
-      def initialize(content: nil, role: Role::USER)
-        @content = content || []
+      # @param tool_call_list [Array<ToolCall>, nil]
+      def initialize(content:, role: Role::USER, tool_call_list: nil)
+        @content = content
         @role = role
+        @tool_call_list = tool_call_list
       end
 
       # @return [String]
@@ -48,13 +78,14 @@ module OmniAI
       #
       # @return [Message]
       def self.deserialize(data, context: nil)
-        deserialize = context&.deserializers&.[](:message)
+        deserialize = context&.deserializer(:message)
         return deserialize.call(data, context:) if deserialize
 
-        new(
-          content: data['content'].map { |content| Content.deserialize(content, context:) },
-          role: data['role']
-        )
+        role = data['role']
+        content = Content.deserialize(data['content'], context:)
+        tool_call_list = data['tool_calls']&.map { |subdata| ToolCall.deserialize(subdata, context:) }
+
+        new(content:, role:, tool_call_list:)
       end
 
       # Usage:
@@ -66,12 +97,13 @@ module OmniAI
       #
       # @return [Hash]
       def serialize(context: nil)
-        serializer = context&.serializers&.[](:message)
+        serializer = context&.serializer(:message)
         return serializer.call(self, context:) if serializer
 
-        content = @content.is_a?(String) ? @content : @content.map { |content| content.serialize(context:) }
+        content = @content.is_a?(Array) ? @content.map { |content| content.serialize(context:) } : @content
+        tool_calls = @tool_call_list&.map { |tool_call| tool_call.serialize(context:) }
 
-        { role: @role, content: }
+        { role: @role, content:, tool_calls: }.compact
       end
 
       # @return [Boolean]
@@ -89,45 +121,32 @@ module OmniAI
         role?(Role::USER)
       end
 
-      # Usage:
-      #
-      #   message.text('What are these photos of?')
-      #
-      # @param value [String]
-      #
-      # @return [Text]
-      def text(value)
-        Text.new(value).tap do |text|
-          @content << text
-        end
+      # @return [Boolean]
+      def tool?
+        role?(Role::TOOL)
       end
 
-      # Usage:
-      #
-      #   message.url('https://example.com/hamster.jpg', type: "image/jpeg")
-      #
-      # @param uri [String]
-      # @param type [String]
-      #
-      # @return [URL]
-      def url(uri, type)
-        URL.new(uri, type).tap do |url|
-          @content << url
-        end
+      # @return [Boolean]
+      def text?
+        !text.nil?
       end
 
-      # Usage:
-      #
-      #   message.file(File.open('hamster.jpg'), type: "image/jpeg")
-      #
-      # @param io [IO]
-      # @param type [String]
-      #
-      # @return [File]
-      def file(io, type)
-        File.new(io, type).tap do |file|
-          @content << file
-        end
+      # @return [String, nil]
+      def text
+        return if @content.nil?
+        return @content if @content.is_a?(String)
+
+        parts = arrayify(@content).filter { |content| content.is_a?(Text) }
+        parts.map(&:text).join("\n") unless parts.empty?
+      end
+
+      # @param object [Object]
+      # @return [Array]
+      def arrayify(object)
+        return if object.nil?
+        return object if object.is_a?(Array)
+
+        [object]
       end
     end
   end

@@ -22,7 +22,7 @@ module OmniAI
       # @return [Usage]
       def usage
         @usage ||= begin
-          deserializer = @context&.deserializers&.[](:usage)
+          deserializer = @context&.deserializer(:usage)
 
           if deserializer
             deserializer.call(@data, context: @context)
@@ -45,7 +45,7 @@ module OmniAI
       # @return [Array<Array<Float>>]
       def embeddings
         @embeddings ||= begin
-          deserializer = @context&.deserializers&.[](:embeddings)
+          deserializer = @context&.deserializer(:embeddings)
 
           if deserializer
             deserializer.call(@data, context: @context)

@@ -28,7 +28,7 @@ module OmniAI
 
       # @param data [Hash]
       def self.deserialize(data, context: nil)
-        deserialize = context&.deserializers&.[](:url)
+        deserialize = context&.deserializer(:url)
         return deserialize.call(data, context:) if deserialize
 
         type = /(?<type>\w+)_url/.match(data['type'])[:type]
@@ -45,7 +45,7 @@ module OmniAI
           content = fetch!
           Text.new("<file>#{filename}: #{content}</file>").serialize(context:)
         else
-          serializer = context&.serializers&.[](:url)
+          serializer = context&.serializer(:url)
           return serializer.call(self, context:) if serializer
 
           {

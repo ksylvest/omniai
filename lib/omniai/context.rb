@@ -39,5 +39,17 @@ module OmniAI
       @serializers = {}
       @deserializers = {}
     end
+
+    # @param name [Symbol]
+    # @return [Proc, nil]
+    def serializer(name)
+      @serializers[name]
+    end
+
+    # @param name [Symbol]
+    # @return [Proc, nil]
+    def deserializer(name)
+      @deserializers[name]
+    end
   end
 end

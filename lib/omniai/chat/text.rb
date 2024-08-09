@@ -25,7 +25,7 @@ module OmniAI
 
       # @param data [Hash]
       def self.deserialize(data, context: nil)
-        deserialize = context&.deserializers&.[](:text)
+        deserialize = context&.deserializer(:text)
         return deserialize.call(data, context:) if deserialize
 
         new(data['text'])
@@ -35,7 +35,7 @@ module OmniAI
       #
       # @return [Hash]
       def serialize(context: nil)
-        serializer = context&.serializers&.[](:text)
+        serializer = context&.serializer(:text)
         return serializer.call(self, context:) if serializer
 
         { type: 'text', text: @text }
