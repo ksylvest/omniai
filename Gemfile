@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 gemspec
 
+gem 'factory_bot'
 gem 'logger'
 gem 'rake'
 gem 'rspec'

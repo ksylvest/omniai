@@ -9,18 +9,33 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    activesupport (7.1.3.4)
+      base64
+      bigdecimal
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      connection_pool (>= 2.2.5)
+      drb
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      mutex_m
+      tzinfo (~> 2.0)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.2)
     base64 (0.2.0)
     bigdecimal (3.1.8)
+    concurrent-ruby (1.3.3)
+    connection_pool (2.4.1)
     crack (1.0.0)
       bigdecimal
       rexml
     diff-lcs (1.5.1)
     docile (1.4.0)
     domain_name (0.6.20240107)
+    drb (2.2.1)
     event_stream_parser (1.0.0)
+    factory_bot (6.4.6)
+      activesupport (>= 5.0.0)
     ffi (1.17.0)
     ffi (1.17.0-aarch64-linux-gnu)
     ffi (1.17.0-aarch64-linux-musl)
@@ -45,12 +60,16 @@ GEM
     http-cookie (1.0.6)
       domain_name (~> 0.5)
     http-form_data (2.3.0)
+    i18n (1.14.5)
+      concurrent-ruby (~> 1.0)
     json (2.7.2)
     language_server-protocol (3.17.0.3)
     llhttp-ffi (0.5.0)
       ffi-compiler (~> 1.0)
       rake (~> 13.0)
     logger (1.6.0)
+    minitest (5.24.1)
+    mutex_m (0.2.0)
     parallel (1.25.1)
     parser (3.3.4.0)
       ast (~> 2.4.1)
@@ -102,6 +121,8 @@ GEM
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
     strscan (3.1.0)
+    tzinfo (2.0.6)
+      concurrent-ruby (~> 1.0)
     unicode-display_width (2.5.0)
     webmock (3.23.1)
       addressable (>= 2.8.0)
@@ -124,6 +145,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  factory_bot
   logger
   omniai!
   rake

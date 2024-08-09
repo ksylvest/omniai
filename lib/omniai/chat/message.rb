@@ -10,6 +10,7 @@ module OmniAI
     #       message.url 'https://example.com/cat.jpg', type: "image/jpeg"
     #       message.url 'https://example.com/dog.jpg', type: "image/jpeg"
     #       message.file File.open('hamster.jpg'), type: "image/jpeg"
+    #       message.
     #     end
     #   end
     class Message
@@ -21,6 +22,7 @@ module OmniAI
 
       # @param content [String, nil]
       # @param role [String]
+      # @param tool_call_collection [ToolCallBatch, nil]
       def initialize(content: nil, role: Role::USER)
         @content = content || []
         @role = role
@@ -51,10 +53,10 @@ module OmniAI
         deserialize = context&.deserializers&.[](:message)
         return deserialize.call(data, context:) if deserialize
 
-        new(
-          content: data['content'].map { |content| Content.deserialize(content, context:) },
-          role: data['role']
-        )
+        role = data['role']
+        content = Content.deserialize(data['content'], context:)
+
+        new(content:, role:)
       end
 
       # Usage:
@@ -87,6 +89,11 @@ module OmniAI
       # @return [Boolean]
       def user?
         role?(Role::USER)
+      end
+
+      # @return [Boolean]
+      def content?
+        !@content.nil?
       end
 
       # Usage:

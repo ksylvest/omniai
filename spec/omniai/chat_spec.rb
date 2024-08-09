@@ -86,13 +86,14 @@ RSpec.describe OmniAI::Chat do
               index: 0,
               message: {
                 role: 'system',
-                content: '{ "name": "Ringo" }',
+                content: 'Ringo!',
               },
             }],
           })
       end
 
-      it { expect(process!).to be_a(OmniAI::Chat::Response::Completion) }
+      it { expect(process!).to be_a(OmniAI::Chat::Response) }
+      it { expect(process!.content).to eql('Ringo!') }
     end
 
     context 'when UNPROCESSABLE' do
@@ -134,7 +135,7 @@ RSpec.describe OmniAI::Chat do
         chunks = []
         allow(stream).to receive(:call) { |chunk| chunks << chunk }
         process!
-        expect(chunks.map { |chunk| chunk.choice.delta.content }).to eql(%w[A B])
+        expect(chunks.map(&:content)).to eql(%w[A B])
       end
     end
 
