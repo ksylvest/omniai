@@ -179,12 +179,12 @@ tool = OmniAI::Tool.new(
   parameters: OmniAI::Tool::Parameters.new(
     properties: {
       location: OmniAI::Tool::Property.string(description: 'e.g. Toronto'),
-      unit: OmniAI::Tool::Property.string(enum: %w[celcius farenheit]),
+      unit: OmniAI::Tool::Property.string(enum: %w[celcius fahrenheit]),
     },
     required: %i[location]
   )
 )
-client.chat('What is the weather in "London" and "Madrid"?', tools: [tool])
+client.chat('What is the weather in "London" in celcius and "Paris" in fahrenheit?', tools: [tool])
 ```
 
 ### Transcribe
