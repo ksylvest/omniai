@@ -53,7 +53,10 @@ module OmniAI
     #   #     parameters: {
     #   #       type: 'object',
     #   #       properties: {
-    #   #         n: OmniAI::Tool::Property.integer(description: 'The nth Fibonacci number to calculate')
+    #   #         n: {
+    #   #           description: 'The nth Fibonacci number to calculate')
+    #   #           type: 'integer'
+    #   #         }
     #   #       },
     #   #       required: ['n']
     #   #     }
@@ -71,7 +74,7 @@ module OmniAI
         function: {
           name: @name,
           description: @description,
-          parameters: @parameters&.prepare,
+          parameters: @parameters.is_a?(Tool::Parameters) ? @parameters.serialize : @parameters,
         }.compact,
       }
     end
@@ -83,7 +86,7 @@ module OmniAI
     # @param args [Hash]
     # @return [String]
     def call(args = {})
-      @function.call(**(@parameters ? @parameters.parse(args) : args))
+      @function.call(**(@parameters.is_a?(Tool::Parameters) ? @parameters.parse(args) : args))
     end
   end
 end

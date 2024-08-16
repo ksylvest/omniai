@@ -31,9 +31,9 @@ RSpec.describe OmniAI::Tool::Property do
     it { expect(property.type).to eq('number') }
   end
 
-  describe '#prepare' do
+  describe '#serialize' do
     it 'converts the property to a hash' do
-      expect(property.prepare).to eq({
+      expect(property.serialize).to eq({
         type: 'string',
         description: 'The unit (e.g. "fahrenheit" or "celsius")',
         enum: %w[fahrenheit celsius],
