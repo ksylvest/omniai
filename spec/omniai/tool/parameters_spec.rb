@@ -11,9 +11,9 @@ RSpec.describe OmniAI::Tool::Parameters do
 
   let(:required) { %i[n] }
 
-  describe '#prepare' do
+  describe '#serialize' do
     it 'converts the parameters to a hash' do
-      expect(parameters.prepare).to eq({
+      expect(parameters.serialize).to eq({
         type: 'object',
         properties: {
           n: { type: 'integer', description: 'The nth number to calculate.' },

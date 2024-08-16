@@ -24,10 +24,10 @@ module OmniAI
       end
 
       # @return [Hash]
-      def prepare
+      def serialize
         {
           type: @type,
-          properties: @properties.transform_values(&:prepare),
+          properties: @properties.transform_values(&:serialize),
           required: @required,
         }.compact
       end

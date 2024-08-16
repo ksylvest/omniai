@@ -60,7 +60,7 @@ module OmniAI
       end
 
       # @example
-      #   property.prepare
+      #   property.serialize
       #   # {
       #   #   type: 'string',
       #   #   description: 'The unit (e.g. "fahrenheit" or "celsius").'
@@ -68,7 +68,7 @@ module OmniAI
       #   # }
       #
       # @return [Hash]
-      def prepare
+      def serialize
         {
           type: @type,
           description: @description,
