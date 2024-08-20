@@ -11,7 +11,7 @@ module OmniAI
       attr_accessor :tool_call_id
 
       # @param content [Object]
-      # @param tool_call [ToolCall]
+      # @param tool_call_id [String]
       def initialize(content:, tool_call_id:)
         @content = content
         @tool_call_id = tool_call_id
