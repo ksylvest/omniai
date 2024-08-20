@@ -2,7 +2,8 @@
 
 module OmniAI
   class Chat
-    # For for.
+    # A choice wraps a message and index returned by an LLM. The default is to generate a single choice. Some LLMs
+    # support generating multiple choices at once (e.g. giving you multiple options to choose from).
     class Choice
       # @return [Integer]
       attr_accessor :index
