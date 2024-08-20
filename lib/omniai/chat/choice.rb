@@ -59,7 +59,7 @@ module OmniAI
         message.content
       end
 
-      # @return [Array<ToolCall, nil]
+      # @return [Array<ToolCall>, nil]
       def tool_call_list
         message.tool_call_list
       end
