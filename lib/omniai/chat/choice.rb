@@ -12,7 +12,6 @@ module OmniAI
 
       # @param message [Message]
       # @param index [Integer]
-      # @param tool_call_list [Array<ToolCall>]
       def initialize(message:, index: 0)
         @message = message
         @index = index
