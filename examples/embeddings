@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'omniai/mistral'
+
+CLIENT = OmniAI::Mistral::Client.new
+
+Entry = Data.define(:text, :embedding) do
+  def initialize(text:)
+    super(text:, embedding: CLIENT.embed(text).embedding)
+  end
+end
+
+ENTRIES = [
+  Entry.new(text: 'John is a musician.'),
+  Entry.new(text: 'Paul is a plumber.'),
+  Entry.new(text: 'George is a teacher.'),
+  Entry.new(text: 'Ringo is a doctor.'),
+].freeze
+
+def search(query)
+  embedding = CLIENT.embed(query).embedding
+
+  results = ENTRIES.sort_by do |data|
+    Math.sqrt(data.embedding.zip(embedding).map { |a, b| (a - b)**2 }.reduce(:+))
+  end
+
+  puts "'#{query}': '#{results.first.text}'"
+end
+
+search('What does George do?')
+search('Who is a doctor?')
+search('Who do you call to fix a toilet?')
