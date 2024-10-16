@@ -11,7 +11,7 @@ OmniAI standardizes the APIs of various AI / LLM companies such as Anthropic, Go
 
 ## Examples
 
-### Example #1: [Chat](examples/chat)
+### Example #1: [Chat](https://github.com/ksylvest/omniai/blob/main/examples/chat)
 
 ```ruby
 require 'omniai/anthropic'
@@ -38,7 +38,7 @@ The animals in the photos are:
 2. A dog (*Canis familiaris*).
 ```
 
-### Example #2: [Text-to-Speech](examples/text_to_speech)
+### Example #2: [Text-to-Speech](https://github.com/ksylvest/omniai/blob/main/examples/text_to_speech)
 
 ```ruby
 require 'omniai/openai'
@@ -52,7 +52,7 @@ File.open(File.join(__dir__, 'audio.wav'), 'wb') do |file|
 end
 ```
 
-### Example #3: [Speech-to-Text](examples/speech_to_text)
+### Example #3: [Speech-to-Text](https://github.com/ksylvest/omniai/blob/main/examples/speech_to_text)
 
 ```ruby
 require 'omniai/openai'
@@ -65,7 +65,7 @@ File.open(File.join(__dir__, 'audio.wav'), 'rb') do |file|
 end
 ```
 
-### Example #4: [Tools](examples/tools)
+### Example #4: [Tools](https://github.com/ksylvest/omniai/blob/main/examples/tools)
 
 ```ruby
 require 'omniai/google'
@@ -98,7 +98,7 @@ puts(completion.text)
 The weather is 24° celcius in London and 42° fahrenheit in Seattle.
 ```
 
-### Example #5: [Embeddings](examples/embeddings)
+### Example #5: [Embeddings](https://github.com/ksylvest/omniai/blob/main/examples/embeddings)
 
 ```ruby
 require 'omniai/mistral'
@@ -211,7 +211,7 @@ require 'omniai/openai'
 require 'logger'
 
 logger = Logger.new(STDOUT)
-client = OmniAI::Example::Client.new(logger:)
+client = OmniAI::OpenAI::Client.new(logger:)
 ```
 
 ```
