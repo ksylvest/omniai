@@ -2,14 +2,142 @@
 
 [![CircleCI](https://circleci.com/gh/ksylvest/omniai.svg?style=svg)](https://circleci.com/gh/ksylvest/omniai)
 
-OmniAI is a flexible AI library that standardizes the APIs of many different AIs:
+OmniAI standardizes the APIs of various AI / LLM companies such as Anthropic, Google, Mistral and OpenAI for the generation of text, the conversion of text-to-speech, the conversion of speech-to-text, the generation of embeddings, and more. It offers a unified API regardless of the provider and task.
 
 - [OmniAI::Anthropic](https://github.com/ksylvest/omniai-anthropic)
 - [OmniAI::Google](https://github.com/ksylvest/omniai-google)
 - [OmniAI::Mistral](https://github.com/ksylvest/omniai-mistral)
 - [OmniAI::OpenAI](https://github.com/ksylvest/omniai-openai)
 
-All libraries are community maintained.
+## Examples
+
+### Example #1: [Chat](examples/chat)
+
+```ruby
+require 'omniai/anthropic'
+
+CLIENT = OmniAI::Anthropic::Client.new
+
+CAT_URL = 'https://images.unsplash.com/photo-1472491235688-bdc81a63246e?q=80&w=1024&h=1024&fit=crop&fm=jpg'
+DOG_URL = 'https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1024&h=1024&fit=crop&fm=jpg'
+
+CLIENT.chat(stream: $stdout) do |prompt|
+  prompt.system('You are a helpful biologist with an expertise in animals that responds with the latin names.')
+  prompt.user do |message|
+    message.text('What animals are in the attached photos?')
+    message.url(CAT_URL, 'image/jpeg')
+    message.url(DOG_URL, 'image/jpeg')
+  end
+end
+```
+
+```
+The animals in the photos are:
+
+1. A cat (*Felis catus*).
+2. A dog (*Canis familiaris*).
+```
+
+### Example #2: [Text-to-Speech](examples/text_to_speech)
+
+```ruby
+require 'omniai/openai'
+
+CLIENT = OmniAI::OpenAI::Client.new
+
+File.open(File.join(__dir__, 'audio.wav'), 'wb') do |file|
+  CLIENT.speak('Sally sells seashells by the seashore.', format: OmniAI::Speak::Format::WAV) do |chunk|
+    file << chunk
+  end
+end
+```
+
+### Example #3: [Speech-to-Text](examples/speech_to_text)
+
+```ruby
+require 'omniai/openai'
+
+CLIENT = OmniAI::OpenAI::Client.new
+
+File.open(File.join(__dir__, 'audio.wav'), 'rb') do |file|
+  transcription = CLIENT.transcribe(file)
+  puts(transcription.text)
+end
+```
+
+### Example #4: [Tools](examples/tools)
+
+```ruby
+require 'omniai/google'
+
+CLIENT = OmniAI::Google::Client.new
+
+TOOL = OmniAI::Tool.new(
+  proc { |location:, unit: 'celsius'| "#{rand(20..50)}° #{unit} in #{location}" },
+  name: 'Weather',
+  description: 'Lookup the weather in a location',
+  parameters: OmniAI::Tool::Parameters.new(
+    properties: {
+      location: OmniAI::Tool::Property.string(description: 'e.g. Toronto'),
+      unit: OmniAI::Tool::Property.string(enum: %w[celcius fahrenheit]),
+    },
+    required: %i[location]
+  )
+)
+
+completion = CLIENT.chat(tools: [TOOL]) do |prompt|
+  prompt.user do |message|
+    message.text('What is the weather in "London" in celcius and "Seattle" in fahrenheit?')
+  end
+end
+
+puts(completion.text)
+```
+
+```
+The weather is 24° celcius in London and 42° fahrenheit in Seattle.
+```
+
+### Example #5: [Embeddings](examples/embeddings)
+
+```ruby
+require 'omniai/mistral'
+
+CLIENT = OmniAI::Mistral::Client.new
+
+Entry = Data.define(:text, :embedding) do
+  def initialize(text:)
+    super(text:, embedding: CLIENT.embed(text).embedding)
+  end
+end
+
+ENTRIES = [
+  Entry.new(text: 'John is a musician.'),
+  Entry.new(text: 'Paul is a plumber.'),
+  Entry.new(text: 'George is a teacher.'),
+  Entry.new(text: 'Ringo is a doctor.'),
+].freeze
+
+def search(query)
+  embedding = CLIENT.embed(query).embedding
+
+  results = ENTRIES.sort_by do |data|
+    Math.sqrt(data.embedding.zip(embedding).map { |a, b| (a - b)**2 }.reduce(:+))
+  end
+
+  puts "'#{query}': '#{results.first.text}'"
+end
+
+search('What does George do?')
+search('Who is a doctor?')
+search('Who do you call to fix a toilet?')
+```
+
+```
+'What does George do?': 'George is a teacher.'
+'Who is a doctor?': 'Ringo is a doctor.'
+'Who do you call to fix a toilet?': 'Paul is a plumber.'
+```
 
 ## Installation
 

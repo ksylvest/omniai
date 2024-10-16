@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'omniai/google'
+
+CLIENT = OmniAI::Google::Client.new
+
+TOOL = OmniAI::Tool.new(
+  proc { |location:, unit: 'celsius'| "#{rand(20..50)}° #{unit} in #{location}" },
+  name: 'Weather',
+  description: 'Lookup the weather in a location',
+  parameters: OmniAI::Tool::Parameters.new(
+    properties: {
+      location: OmniAI::Tool::Property.string(description: 'e.g. Toronto'),
+      unit: OmniAI::Tool::Property.string(enum: %w[celcius fahrenheit]),
+    },
+    required: %i[location]
+  )
+)
+
+completion = CLIENT.chat(tools: [TOOL]) do |prompt|
+  prompt.user do |message|
+    message.text('What is the weather in "London" in celcius and "Seattle" in fahrenheit?')
+  end
+end
+
+puts(completion.text)
