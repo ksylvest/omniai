@@ -75,15 +75,15 @@ module OmniAI
     # Initialize a client by provider (e.g. 'openai'). This method attempts to require the provider.
     #
     # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
-    # @param provider [String] required (e.g. 'anthropic', 'google', 'mistral', 'openai', etc)
+    # @param provider [String, Symbol] required (e.g. 'anthropic', 'google', 'mistral', 'openai', etc)
     # @return [OmniAI::Client]
     def self.find(provider:, **)
       klass =
         case provider
-        when 'anthropic' then anthropic
-        when 'google' then google
-        when 'mistral' then mistral
-        when 'openai' then openai
+        when :anthropic, 'anthropic' then anthropic
+        when :google, 'google' then google
+        when :mistral, 'mistral' then mistral
+        when :openai, 'openai' then openai
         else raise Error, "unknown provider=#{provider.inspect}"
         end
 
