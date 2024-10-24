@@ -144,6 +144,24 @@ module OmniAI
       def user(content = nil, &)
         message(content, role: Role::USER, &)
       end
+
+      # @example
+      #   prompt.agent('the capital of Canada is Ottawa.')
+      #
+      # @example
+      #   prompt.agent do |message|
+      #     message.text 'the capital of Canada is Ottawa.'
+      #   end
+      #
+      # @param content [String, nil]
+      #
+      # @yield [builder]
+      # @yieldparam builder [Message::Builder]
+      #
+      # @return [Message]
+      def agent(content = nil, &)
+        message(content, role: Role::AGENT, &)
+      end
     end
   end
 end
