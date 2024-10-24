@@ -75,9 +75,9 @@ RSpec.describe OmniAI::Chat::Prompt do
     end
   end
 
-  describe '#agent' do
+  describe '#assistant' do
     context 'with some text' do
-      let(:message) { prompt.user('The capital of Canada is Ottawa.') }
+      let(:message) { prompt.assistant('The capital of Canada is Ottawa.') }
 
       it { expect { message }.to(change { prompt.messages.size }) }
     end
