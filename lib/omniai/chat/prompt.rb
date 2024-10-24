@@ -146,10 +146,10 @@ module OmniAI
       end
 
       # @example
-      #   prompt.agent('the capital of Canada is Ottawa.')
+      #   prompt.assistant('the capital of Canada is Ottawa.')
       #
       # @example
-      #   prompt.agent do |message|
+      #   prompt.assistant do |message|
       #     message.text 'the capital of Canada is Ottawa.'
       #   end
       #
@@ -159,8 +159,8 @@ module OmniAI
       # @yieldparam builder [Message::Builder]
       #
       # @return [Message]
-      def agent(content = nil, &)
-        message(content, role: Role::AGENT, &)
+      def assistant(content = nil, &)
+        message(content, role: Role::ASSISTANT, &)
       end
     end
   end
