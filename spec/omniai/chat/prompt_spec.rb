@@ -75,6 +75,20 @@ RSpec.describe OmniAI::Chat::Prompt do
     end
   end
 
+  describe '#agent' do
+    context 'with some text' do
+      let(:message) { prompt.user('The capital of Canada is Ottawa.') }
+
+      it { expect { message }.to(change { prompt.messages.size }) }
+    end
+
+    context 'with a block' do
+      let(:message) { prompt.user { |message| message.text('The capital of Canada is Ottawa.') } }
+
+      it { expect { message }.to(change { prompt.messages.size }) }
+    end
+  end
+
   describe '#serialize' do
     subject(:serialize) { prompt.serialize }
 
