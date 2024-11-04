@@ -2,46 +2,22 @@
 
 module OmniAI
   class Tool
-    # Usage:
+    # Parameters are used to define the arguments for a tool.
     #
-    # parameters = OmniAI::Tool::Parameters.new(properties: {
-    #   n: OmniAI::Tool::Parameters.integer(description: 'The nth number to calculate.')
-    #   required: %i[n]
-    # })
-    class Parameters
-      module Type
-        OBJECT = 'object'
-      end
-
-      # @param type [String]
-      # @param properties [Hash]
-      # @param required [Array<String>]
-      # @return [OmniAI::Tool::Parameters]
-      def initialize(type: Type::OBJECT, properties: {}, required: [])
-        @type = type
-        @properties = properties
-        @required = required
-      end
-
-      # @return [Hash]
-      def serialize
-        {
-          type: @type,
-          properties: @properties.transform_values(&:serialize),
-          required: @required,
-        }.compact
-      end
-
-      # @param args [Hash]
-      # @return [Hash]
-      def parse(args)
-        result = {}
-        @properties.each do |name, property|
-          value = args[String(name)]
-          result[name.intern] = property.parse(value) if value
-        end
-        result
-      end
+    # @example
+    #    parameters = OmniAI::Tool::Parameters.new(properties: {
+    #      people: OmniAI::Tool::Parameters.array(
+    #        items: OmniAI::Tool::Parameters.object(
+    #          properties: {
+    #            name: OmniAI::Tool::Parameters.string(description: 'The name of the person.'),
+    #            age: OmniAI::Tool::Parameters.integer(description: 'The age of the person.'),
+    #            employeed: OmniAI::Tool::Parameters.boolean(description: 'Is the person employeed?'),
+    #          }
+    #      n: OmniAI::Tool::Parameters.integer(description: 'The nth number to calculate.')
+    #      required: %i[n]
+    #    })
+    #    tool = OmniAI::Tool.new(fibonacci, parameters: parameters)
+    class Parameters < Object
     end
   end
 end
