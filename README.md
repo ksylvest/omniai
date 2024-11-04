@@ -72,16 +72,38 @@ require 'omniai/google'
 
 CLIENT = OmniAI::Google::Client.new
 
+LOCATION = OmniAI::Tool::Property.object(
+  properties: {
+    city: OmniAI::Tool::Property.string(description: 'e.g. "Toronto"'),
+    country: OmniAI::Tool::Property.string(description: 'e.g. "Canada"'),
+  },
+  required: %i[city country]
+)
+
+LOCATIONS = OmniAI::Tool::Property.array(
+  min_items: 1,
+  max_items: 5,
+  items: LOCATION
+)
+
+UNIT = OmniAI::Tool::Property.string(enum: %w[celcius fahrenheit])
+
+WEATHER = proc do |locations:, unit: 'celsius'|
+  locations.map do |location|
+    "#{rand(20..50)}° #{unit} in #{location[:city]}, #{location[:country]}"
+  end.join("\n")
+end
+
 TOOL = OmniAI::Tool.new(
-  proc { |location:, unit: 'celsius'| "#{rand(20..50)}° #{unit} in #{location}" },
+  WEATHER,
   name: 'Weather',
   description: 'Lookup the weather in a location',
   parameters: OmniAI::Tool::Parameters.new(
     properties: {
-      location: OmniAI::Tool::Property.string(description: 'e.g. Toronto'),
-      unit: OmniAI::Tool::Property.string(enum: %w[celcius fahrenheit]),
+      locations: LOCATIONS,
+      unit: UNIT,
     },
-    required: %i[location]
+    required: %i[locations]
   )
 )
 
