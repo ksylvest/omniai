@@ -1,5 +1,8 @@
 # OmniAI
 
+[![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ksylvest/omniai/blob/main/LICENSE)
+[![RubyGems](https://img.shields.io/gem/v/omniai)](https://rubygems.org/gems/omniai)
+[![Yard](https://img.shields.io/badge/docs-site-blue.svg)](https://omniai.ksylvest.com)
 [![CircleCI](https://circleci.com/gh/ksylvest/omniai.svg?style=svg)](https://circleci.com/gh/ksylvest/omniai)
 
 OmniAI standardizes the APIs of various AI / LLM companies such as Anthropic, Google, Mistral and OpenAI for the generation of text, the conversion of text-to-speech, the conversion of speech-to-text, the generation of embeddings, and more. It offers a unified API regardless of the provider and task.
