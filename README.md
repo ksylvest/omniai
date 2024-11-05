@@ -2,6 +2,7 @@
 
 [![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ksylvest/omniai/blob/main/LICENSE)
 [![RubyGems](https://img.shields.io/gem/v/omniai)](https://rubygems.org/gems/omniai)
+[![GitHub](https://img.shields.io/badge/github-repo-blue.svg)](https://github.com/ksylvest/omniai)
 [![Yard](https://img.shields.io/badge/docs-site-blue.svg)](https://omniai.ksylvest.com)
 [![CircleCI](https://img.shields.io/circleci/build/github/ksylvest/omniai)](https://circleci.com/gh/ksylvest/omniai)
 
