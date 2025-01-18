@@ -70,7 +70,7 @@ module OmniAI
       return serialize.call(self, context:) if serialize
 
       {
-        type: 'function',
+        type: "function",
         function: {
           name: @name,
           description: @description,

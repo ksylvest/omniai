@@ -3,55 +3,55 @@
 RSpec.describe OmniAI::CLI::ChatHandler do
   let(:stdin) { StringIO.new }
   let(:stdout) { StringIO.new }
-  let(:provider) { 'fake' }
-  let(:model) { 'fake' }
-  let(:temperature) { '0.7' }
-  let(:format) { 'text' }
+  let(:provider) { "fake" }
+  let(:model) { "fake" }
+  let(:temperature) { "0.7" }
+  let(:format) { "text" }
 
-  describe '.handle!' do
+  describe ".handle!" do
     subject(:handle!) { described_class.handle!(argv:, stdin:, stdout:, provider:) }
 
     let(:client) { instance_double(OmniAI::Client) }
 
-    context 'when chatting' do
+    context "when chatting" do
       let(:argv) do
         [
-          '--model', model,
-          '--temperature', temperature,
-          '--provider', provider,
-          '--format', format,
+          "--model", model,
+          "--temperature", temperature,
+          "--provider", provider,
+          "--format", format,
           prompt,
         ]
       end
 
       before do
         allow(OmniAI::Client).to receive(:find).with(provider:) { client }
-        allow(client).to receive(:chat) { stdout << 'Ottawa' }
+        allow(client).to receive(:chat) { stdout << "Ottawa" }
       end
 
-      context 'with a prompt' do
-        let(:prompt) { 'What is the capital of Canada?' }
+      context "with a prompt" do
+        let(:prompt) { "What is the capital of Canada?" }
 
-        it 'runs calls chat' do
+        it "runs calls chat" do
           handle!
-          expect(stdout.string).to eql('Ottawa')
+          expect(stdout.string).to eql("Ottawa")
         end
       end
 
-      context 'without a prompt' do
+      context "without a prompt" do
         let(:prompt) { nil }
 
         let(:stdin) { StringIO.new("What is the capital of Canada?\n") }
 
-        it 'runs calls listen' do
+        it "runs calls listen" do
           handle!
           expect(stdout.string).to include('Type "exit" or "quit" to leave.')
-          expect(stdout.string).to include('Ottawa')
+          expect(stdout.string).to include("Ottawa")
         end
       end
     end
 
-    context 'with a help flag' do
+    context "with a help flag" do
       %w[-h --help].each do |option|
         let(:argv) { [option] }
 

@@ -27,8 +27,8 @@ module OmniAI
           if deserializer
             deserializer.call(@data, context: @context)
           else
-            prompt_tokens = @data.dig('usage', 'prompt_tokens')
-            total_tokens = @data.dig('usage', 'total_tokens')
+            prompt_tokens = @data.dig("usage", "prompt_tokens")
+            total_tokens = @data.dig("usage", "total_tokens")
 
             Usage.new(prompt_tokens:, total_tokens:)
           end
@@ -50,7 +50,7 @@ module OmniAI
           if deserializer
             deserializer.call(@data, context: @context)
           else
-            @data['data'].map { |embedding| embedding['embedding'] }
+            @data["data"].map { |embedding| embedding["embedding"] }
           end
         end
       end

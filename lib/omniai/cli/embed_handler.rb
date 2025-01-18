@@ -11,17 +11,17 @@ module OmniAI
         if argv.empty?
           listen!
         else
-          embed(input: argv.join(' '))
+          embed(input: argv.join(" "))
         end
       end
 
-      private
+    private
 
       def listen!
         @stdout.puts('Type "exit" or "quit" to leave.')
 
         loop do
-          @stdout.print('# ')
+          @stdout.print("# ")
           @stdout.flush
           input = @stdin.gets&.chomp
 
@@ -44,13 +44,13 @@ module OmniAI
         OptionParser.new do |options|
           options.banner = 'usage: omniai embed [options] "<prompt>"'
 
-          options.on('-h', '--help', 'help') do
+          options.on("-h", "--help", "help") do
             @stdout.puts(options)
             exit
           end
 
-          options.on('-p', '--provider=PROVIDER', 'provider') { |provider| @provider = provider }
-          options.on('-m', '--model=MODEL', 'model') { |model| @args[:model] = model }
+          options.on("-p", "--provider=PROVIDER", "provider") { |provider| @provider = provider }
+          options.on("-m", "--model=MODEL", "model") { |model| @args[:model] = model }
         end
       end
     end

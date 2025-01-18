@@ -13,7 +13,7 @@ module OmniAI
     #      required: %i[name]
     #    })
     class Object
-      TYPE = 'object'
+      TYPE = "object"
 
       # @!attribute [rw] properties
       #   @return [Hash]

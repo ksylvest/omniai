@@ -31,8 +31,8 @@ module OmniAI
         deserialize = context&.deserializer(:choice)
         return deserialize.call(data, context:) if deserialize
 
-        index = data['index']
-        message = Message.deserialize(data['message'] || data['delta'], context:)
+        index = data["index"]
+        message = Message.deserialize(data["message"] || data["delta"], context:)
 
         new(message:, index:)
       end

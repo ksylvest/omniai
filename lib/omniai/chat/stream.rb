@@ -23,7 +23,7 @@ module OmniAI
         end
       end
 
-      protected
+    protected
 
       # @param type [String]
       # @param data [String]
@@ -47,7 +47,7 @@ module OmniAI
       def process!(type, data, id, &block)
         log(type, data, id)
 
-        return if data.eql?('[DONE]')
+        return if data.eql?("[DONE]")
 
         block.call(Payload.deserialize(JSON.parse(data), context: @context))
       end

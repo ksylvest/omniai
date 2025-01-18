@@ -30,8 +30,8 @@ module OmniAI
         deserialize = context&.deserializer(:tool_call)
         return deserialize.call(data, context:) if deserialize
 
-        id = data['id']
-        function = Function.deserialize(data['function'], context:)
+        id = data["id"]
+        function = Function.deserialize(data["function"], context:)
 
         new(id:, function:)
       end
@@ -45,7 +45,7 @@ module OmniAI
 
         {
           id: @id,
-          type: 'function',
+          type: "function",
           function: @function.serialize(context:),
         }
       end

@@ -44,7 +44,7 @@ module OmniAI
       def filename
         case @io
         when Tempfile, File, String then ::File.basename(@io)
-        else 'DATA'
+        else "DATA"
         end
       end
     end

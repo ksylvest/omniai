@@ -28,7 +28,7 @@ module OmniAI
         deserialize = context&.deserializer(:text)
         return deserialize.call(data, context:) if deserialize
 
-        new(data['text'])
+        new(data["text"])
       end
 
       # @param context [Context] optional
@@ -38,7 +38,7 @@ module OmniAI
         serializer = context&.serializer(:text)
         return serializer.call(self, context:) if serializer
 
-        { type: 'text', text: @text }
+        { type: "text", text: @text }
       end
     end
   end

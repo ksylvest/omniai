@@ -30,7 +30,7 @@ module OmniAI
       #
       # @return [Message]
       def self.build(content = nil, role: Role::USER, &block)
-        raise ArgumentError, 'content or block is required' if content.nil? && block.nil?
+        raise ArgumentError, "content or block is required" if content.nil? && block.nil?
 
         Builder.build(role:) do |builder|
           builder.text(content) if content
@@ -81,9 +81,9 @@ module OmniAI
         deserialize = context&.deserializer(:message)
         return deserialize.call(data, context:) if deserialize
 
-        role = data['role']
-        content = Content.deserialize(data['content'], context:)
-        tool_call_list = data['tool_calls']&.map { |subdata| ToolCall.deserialize(subdata, context:) }
+        role = data["role"]
+        content = Content.deserialize(data["content"], context:)
+        tool_call_list = data["tool_calls"]&.map { |subdata| ToolCall.deserialize(subdata, context:) }
 
         new(content:, role:, tool_call_list:)
       end

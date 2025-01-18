@@ -1,19 +1,10 @@
+inherit_gem:
+  rubocop-basic: rubocop.yml
+
 require:
   - rubocop-factory_bot
   - rubocop-rake
   - rubocop-rspec
-
-AllCops:
-  NewCops: enable
-
-Layout/MultilineMethodCallIndentation:
-  EnforcedStyle: indented
-
-Layout/FirstHashElementIndentation:
-  EnforcedStyle: consistent
-
-Layout/FirstArrayElementIndentation:
-  EnforcedStyle: consistent
 
 Metrics/AbcSize:
   Enabled: false
@@ -48,9 +39,3 @@ RSpec/MultipleMemoizedHelpers:
 RSpec/SpecFilePathFormat:
   CustomTransform:
     OmniAI: omniai
-
-Style/TrailingCommaInArrayLiteral:
-  EnforcedStyleForMultiline: consistent_comma
-
-Style/TrailingCommaInHashLiteral:
-  EnforcedStyleForMultiline: consistent_comma

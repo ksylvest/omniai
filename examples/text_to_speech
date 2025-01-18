@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'omniai/openai'
+require "omniai/openai"
 
 CLIENT = OmniAI::OpenAI::Client.new
 
-File.open(File.join(__dir__, 'audio.wav'), 'wb') do |file|
-  CLIENT.speak('Sally sells seashells by the seashore.', format: OmniAI::Speak::Format::WAV) do |chunk|
+File.open(File.join(__dir__, "audio.wav"), "wb") do |file|
+  CLIENT.speak("Sally sells seashells by the seashore.", format: OmniAI::Speak::Format::WAV) do |chunk|
     file << chunk
   end
 end

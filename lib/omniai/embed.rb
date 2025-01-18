@@ -51,7 +51,7 @@ module OmniAI
       parse!(response:)
     end
 
-    protected
+  protected
 
     # @param response [HTTP::Response]
     # @return [Response]

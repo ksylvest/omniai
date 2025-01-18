@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require 'logger'
-require 'event_stream_parser'
-require 'http'
-require 'uri'
-require 'zeitwerk'
+require "logger"
+require "event_stream_parser"
+require "http"
+require "uri"
+require "zeitwerk"
 
 loader = Zeitwerk::Loader.for_gem
-loader.inflector.inflect 'omniai' => 'OmniAI'
-loader.inflector.inflect 'url' => 'URL'
-loader.inflector.inflect 'cli' => 'CLI'
+loader.inflector.inflect "omniai" => "OmniAI"
+loader.inflector.inflect "url" => "URL"
+loader.inflector.inflect "cli" => "CLI"
 loader.setup
 
 module OmniAI

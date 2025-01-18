@@ -18,7 +18,7 @@ module OmniAI
     #      max_items: 5,
     #    })
     class Array
-      TYPE = 'array'
+      TYPE = "array"
 
       # @!attribute [rw] items
       #   @return [OmniAI::Tool::Object, OmniAI::Tool::Array, OmniAI::Tool::Property]

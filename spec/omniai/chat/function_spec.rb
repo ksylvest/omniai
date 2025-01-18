@@ -3,52 +3,52 @@
 RSpec.describe OmniAI::Chat::Function do
   subject(:function) { build(:chat_function, name:, arguments:) }
 
-  let(:name) { 'temperature' }
-  let(:arguments) { { 'unit' => 'celsius' } }
+  let(:name) { "temperature" }
+  let(:arguments) { { "unit" => "celsius" } }
 
-  it { expect(function.name).to eq('temperature') }
-  it { expect(function.arguments).to eq({ 'unit' => 'celsius' }) }
+  it { expect(function.name).to eq("temperature") }
+  it { expect(function.arguments).to eq({ "unit" => "celsius" }) }
 
-  describe '#inspect' do
+  describe "#inspect" do
     subject(:inspect) { function.inspect }
 
-    it { is_expected.to eq '#<OmniAI::Chat::Function name="temperature" arguments={"unit"=>"celsius"}>' }
+    it { is_expected.to eq '#<OmniAI::Chat::Function name="temperature" arguments={"unit" => "celsius"}>' }
   end
 
-  describe '.deserialize' do
+  describe ".deserialize" do
     subject(:deserialize) { described_class.deserialize(data, context:) }
 
-    let(:data) { { 'name' => 'temperature', 'arguments' => '{"unit": "celsius"}' } }
+    let(:data) { { "name" => "temperature", "arguments" => '{"unit": "celsius"}' } }
 
-    context 'with a deserializer' do
+    context "with a deserializer" do
       let(:context) do
         OmniAI::Context.build do |context|
           context.deserializers[:function] = lambda { |data, *|
-            name = data['name']
-            arguments = JSON.parse(data['arguments'])
+            name = data["name"]
+            arguments = JSON.parse(data["arguments"])
             described_class.new(name:, arguments:)
           }
         end
       end
 
       it { expect(deserialize).to be_a(described_class) }
-      it { expect(deserialize.name).to eq('temperature') }
-      it { expect(deserialize.arguments).to eq({ 'unit' => 'celsius' }) }
+      it { expect(deserialize.name).to eq("temperature") }
+      it { expect(deserialize.arguments).to eq({ "unit" => "celsius" }) }
     end
 
-    context 'without a serializer' do
+    context "without a serializer" do
       let(:context) { OmniAI::Context.build }
 
       it { expect(deserialize).to be_a(described_class) }
-      it { expect(deserialize.name).to eq('temperature') }
-      it { expect(deserialize.arguments).to eq({ 'unit' => 'celsius' }) }
+      it { expect(deserialize.name).to eq("temperature") }
+      it { expect(deserialize.arguments).to eq({ "unit" => "celsius" }) }
     end
   end
 
-  describe '#serialize' do
+  describe "#serialize" do
     subject(:serialize) { function.serialize(context:) }
 
-    context 'with a serializer' do
+    context "with a serializer" do
       let(:context) do
         OmniAI::Context.build do |context|
           context.serializers[:function] = lambda do |function, *|
@@ -60,13 +60,13 @@ RSpec.describe OmniAI::Chat::Function do
         end
       end
 
-      it { expect(serialize).to eq(name: 'temperature', arguments: '{"unit":"celsius"}') }
+      it { expect(serialize).to eq(name: "temperature", arguments: '{"unit":"celsius"}') }
     end
 
-    context 'without a serializer' do
+    context "without a serializer" do
       let(:context) { OmniAI::Context.build }
 
-      it { expect(serialize).to eq(name: 'temperature', arguments: '{"unit":"celsius"}') }
+      it { expect(serialize).to eq(name: "temperature", arguments: '{"unit":"celsius"}') }
     end
   end
 end
