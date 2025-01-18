@@ -28,8 +28,8 @@ module OmniAI
         deserialize = context&.deserializer(:payload)
         return deserialize.call(data, context:) if deserialize
 
-        choices = data['choices'].map { |choice_data| Choice.deserialize(choice_data, context:) }
-        usage = Usage.deserialize(data['usage'], context:) if data['usage']
+        choices = data["choices"].map { |choice_data| Choice.deserialize(choice_data, context:) }
+        usage = Usage.deserialize(data["usage"], context:) if data["usage"]
 
         new(choices:, usage:)
       end

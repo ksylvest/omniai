@@ -30,11 +30,11 @@ module OmniAI
         deserialize = context&.deserializer(:function)
         return deserialize.call(data, context:) if deserialize
 
-        name = data['name']
+        name = data["name"]
         arguments = begin
-          JSON.parse(data['arguments']) if data['arguments']
+          JSON.parse(data["arguments"]) if data["arguments"]
         rescue JSON::ParserError
-          data['arguments']
+          data["arguments"]
         end
 
         new(name:, arguments:)

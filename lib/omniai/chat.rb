@@ -25,7 +25,7 @@ module OmniAI
   #
   #   client.chat(messages, model: "...", temperature: 0.0, format: :text)
   class Chat
-    JSON_PROMPT = 'Respond with valid JSON. Do not include any non-JSON in the response.'
+    JSON_PROMPT = "Respond with valid JSON. Do not include any non-JSON in the response."
 
     # An error raised for tool-call issues.
     class ToolCallError < Error
@@ -45,10 +45,10 @@ module OmniAI
     end
 
     module Role
-      ASSISTANT = 'assistant'
-      USER = 'user'
-      SYSTEM = 'system'
-      TOOL = 'tool'
+      ASSISTANT = "assistant"
+      USER = "user"
+      SYSTEM = "system"
+      TOOL = "tool"
     end
 
     module Format
@@ -72,7 +72,7 @@ module OmniAI
     #
     # @return [OmniAi::Chat]
     def initialize(prompt = nil, client:, model:, temperature: nil, stream: nil, tools: nil, format: nil, &block)
-      raise ArgumentError, 'prompt or block is required' if !prompt && !block
+      raise ArgumentError, "prompt or block is required" if !prompt && !block
 
       @prompt = prompt ? Prompt.parse(prompt) : Prompt.new
       block&.call(@prompt)
@@ -94,7 +94,7 @@ module OmniAI
       parse!(response:)
     end
 
-    protected
+  protected
 
     # Override  to provide an context for serializers / deserializes for a provider.
     #

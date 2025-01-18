@@ -31,8 +31,8 @@ module OmniAI
         deserialize = context&.deserializer(:url)
         return deserialize.call(data, context:) if deserialize
 
-        type = /(?<type>\w+)_url/.match(data['type'])[:type]
-        uri = data["#{type}_url"]['url']
+        type = /(?<type>\w+)_url/.match(data["type"])[:type]
+        uri = data["#{type}_url"]["url"]
 
         new(uri, type)
       end
@@ -68,7 +68,7 @@ module OmniAI
         ::File.basename(@uri)
       end
 
-      protected
+    protected
 
       # @raise [FetchError]
       #

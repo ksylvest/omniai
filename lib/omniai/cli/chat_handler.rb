@@ -11,17 +11,17 @@ module OmniAI
         if argv.empty?
           listen!
         else
-          chat(prompt: argv.join(' '))
+          chat(prompt: argv.join(" "))
         end
       end
 
-      private
+    private
 
       def listen!
         @stdout.puts('Type "exit" or "quit" to leave.')
 
         loop do
-          @stdout.print('# ')
+          @stdout.print("# ")
           @stdout.flush
           prompt = @stdin.gets&.chomp
 
@@ -43,17 +43,17 @@ module OmniAI
         OptionParser.new do |options|
           options.banner = 'usage: omniai chat [options] "<prompt>"'
 
-          options.on('-h', '--help', 'help') do
+          options.on("-h", "--help", "help") do
             @stdout.puts(options)
             exit
           end
 
-          options.on('-p', '--provider=PROVIDER', 'provider') { |provider| @provider = provider }
-          options.on('-m', '--model=MODEL', 'model') { |model| @args[:model] = model }
-          options.on('-t', '--temperature=TEMPERATURE', Float, 'temperature') do |temperature|
+          options.on("-p", "--provider=PROVIDER", "provider") { |provider| @provider = provider }
+          options.on("-m", "--model=MODEL", "model") { |model| @args[:model] = model }
+          options.on("-t", "--temperature=TEMPERATURE", Float, "temperature") do |temperature|
             @args[:temperature] = temperature
           end
-          options.on('-f', '--format=FORMAT', 'format') { |format| @args[:format] = format.intern }
+          options.on("-f", "--format=FORMAT", "format") { |format| @args[:format] = format.intern }
         end
       end
     end

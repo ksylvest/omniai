@@ -16,7 +16,7 @@ orbs:
 executors:
   default:
     docker:
-      - image: cimg/ruby:3.3.5
+      - image: cimg/ruby:3.4.1
 
 jobs:
   doc:

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    omniai (1.9.2)
+    omniai (1.9.3)
       event_stream_parser
       http
       zeitwerk
@@ -9,8 +9,9 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.2.1.1)
+    activesupport (8.0.1)
       base64
+      benchmark (>= 0.3)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.3.1)
       connection_pool (>= 2.2.5)
@@ -20,13 +21,15 @@ GEM
       minitest (>= 5.1)
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
+      uri (>= 0.13.1)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.2)
     base64 (0.2.0)
-    bigdecimal (3.1.8)
-    concurrent-ruby (1.3.4)
-    connection_pool (2.4.1)
+    benchmark (0.4.0)
+    bigdecimal (3.1.9)
+    concurrent-ruby (1.3.5)
+    connection_pool (2.5.0)
     crack (1.0.0)
       bigdecimal
       rexml
@@ -37,28 +40,28 @@ GEM
     event_stream_parser (1.0.0)
     factory_bot (6.5.0)
       activesupport (>= 5.0.0)
-    ffi (1.17.0)
-    ffi (1.17.0-aarch64-linux-gnu)
-    ffi (1.17.0-aarch64-linux-musl)
-    ffi (1.17.0-arm-linux-gnu)
-    ffi (1.17.0-arm-linux-musl)
-    ffi (1.17.0-arm64-darwin)
-    ffi (1.17.0-x86-linux-gnu)
-    ffi (1.17.0-x86-linux-musl)
-    ffi (1.17.0-x86_64-darwin)
-    ffi (1.17.0-x86_64-linux-gnu)
-    ffi (1.17.0-x86_64-linux-musl)
+    ffi (1.17.1)
+    ffi (1.17.1-aarch64-linux-gnu)
+    ffi (1.17.1-aarch64-linux-musl)
+    ffi (1.17.1-arm-linux-gnu)
+    ffi (1.17.1-arm-linux-musl)
+    ffi (1.17.1-arm64-darwin)
+    ffi (1.17.1-x86-linux-gnu)
+    ffi (1.17.1-x86-linux-musl)
+    ffi (1.17.1-x86_64-darwin)
+    ffi (1.17.1-x86_64-linux-gnu)
+    ffi (1.17.1-x86_64-linux-musl)
     ffi-compiler (1.3.2)
       ffi (>= 1.15.5)
       rake
-    hashdiff (1.1.1)
+    hashdiff (1.1.2)
     http (5.2.0)
       addressable (~> 2.8)
       base64 (~> 0.1)
       http-cookie (~> 1.0)
       http-form_data (~> 2.2)
       llhttp-ffi (~> 0.5.0)
-    http-cookie (1.0.7)
+    http-cookie (1.0.8)
       domain_name (~> 0.5)
     http-form_data (2.3.0)
     i18n (1.14.6)
@@ -69,9 +72,9 @@ GEM
       ffi-compiler (~> 1.0)
       rake (~> 13.0)
     logger (1.6.5)
-    minitest (5.25.1)
+    minitest (5.25.4)
     parallel (1.26.3)
-    parser (3.3.6.0)
+    parser (3.3.7.0)
       ast (~> 2.4.1)
       racc
     public_suffix (6.0.1)
@@ -79,12 +82,12 @@ GEM
     rainbow (3.1.1)
     rake (13.2.1)
     regexp_parser (2.10.0)
-    rexml (3.3.9)
+    rexml (3.4.0)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
       rspec-mocks (~> 3.13.0)
-    rspec-core (3.13.1)
+    rspec-core (3.13.2)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.3)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -92,7 +95,7 @@ GEM
     rspec-mocks (3.13.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-support (3.13.1)
+    rspec-support (3.13.2)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
     rubocop (1.70.0)
@@ -107,6 +110,7 @@ GEM
       unicode-display_width (>= 2.4.0, < 4.0)
     rubocop-ast (1.37.0)
       parser (>= 3.3.1.0)
+    rubocop-basic (0.2.0)
     rubocop-factory_bot (2.26.1)
       rubocop (~> 1.61)
     rubocop-rake (0.6.0)
@@ -114,7 +118,7 @@ GEM
     rubocop-rspec (3.3.0)
       rubocop (~> 1.61)
     ruby-progressbar (1.13.0)
-    securerandom (0.3.1)
+    securerandom (0.4.1)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -123,9 +127,10 @@ GEM
     simplecov_json_formatter (0.1.4)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (3.1.3)
+    unicode-display_width (3.1.4)
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
+    uri (1.0.2)
     webmock (3.24.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
@@ -154,6 +159,7 @@ DEPENDENCIES
   rspec
   rspec_junit_formatter
   rubocop
+  rubocop-basic
   rubocop-factory_bot
   rubocop-rake
   rubocop-rspec
@@ -162,4 +168,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   2.5.21
+   2.6.3

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'omniai/mistral'
+require "omniai/mistral"
 
 CLIENT = OmniAI::Mistral::Client.new
 
@@ -12,10 +12,10 @@ Entry = Data.define(:text, :embedding) do
 end
 
 ENTRIES = [
-  Entry.new(text: 'John is a musician.'),
-  Entry.new(text: 'Paul is a plumber.'),
-  Entry.new(text: 'George is a teacher.'),
-  Entry.new(text: 'Ringo is a doctor.'),
+  Entry.new(text: "John is a musician."),
+  Entry.new(text: "Paul is a plumber."),
+  Entry.new(text: "George is a teacher."),
+  Entry.new(text: "Ringo is a doctor."),
 ].freeze
 
 def search(query)
@@ -28,6 +28,6 @@ def search(query)
   puts "'#{query}': '#{results.first.text}'"
 end
 
-search('What does George do?')
-search('Who is a doctor?')
-search('Who do you call to fix a toilet?')
+search("What does George do?")
+search("Who is a doctor?")
+search("Who do you call to fix a toilet?")

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :chat_usage, class: 'OmniAI::Chat::Usage' do
+  factory :chat_usage, class: "OmniAI::Chat::Usage" do
     initialize_with { new(**attributes) }
 
     input_tokens { 2 }

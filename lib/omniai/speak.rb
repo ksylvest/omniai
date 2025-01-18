@@ -26,12 +26,12 @@ module OmniAI
   #   client.transcribe(File.open("..."), model: "...", format: :json)
   class Speak
     module Format
-      AAC = 'aac'
-      FLAC = 'flac'
-      MP3 = 'mp3'
-      OPUS = 'opus'
-      PCM = 'pcm'
-      WAV = 'wav'
+      AAC = "aac"
+      FLAC = "flac"
+      MP3 = "mp3"
+      OPUS = "opus"
+      PCM = "pcm"
+      WAV = "wav"
     end
 
     # @raise [HTTPError]
@@ -94,7 +94,7 @@ module OmniAI
       end
     end
 
-    protected
+  protected
 
     # @param response [HTTP::Response]
     #

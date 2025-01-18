@@ -32,10 +32,10 @@ module OmniAI
 
         return data if data.is_a?(String)
 
-        raise ArgumentError, "untyped data=#{data.inspect}" unless data.key?('type')
+        raise ArgumentError, "untyped data=#{data.inspect}" unless data.key?("type")
 
-        case data['type']
-        when 'text' then Text.deserialize(data, context:)
+        case data["type"]
+        when "text" then Text.deserialize(data, context:)
         when /(.*)_url/ then URL.deserialize(data, context:)
         else raise ArgumentError, "unknown type=#{data['type'].inspect}"
         end

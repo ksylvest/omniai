@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'logger'
-require 'simplecov'
-require 'webmock/rspec'
+require "logger"
+require "simplecov"
+require "webmock/rspec"
 
 SimpleCov.start do
   enable_coverage :branch
 end
 
-require 'omniai'
+require "omniai"
 
 Dir["#{__dir__}/support/**/*.rb"].each { |file| require file }
 

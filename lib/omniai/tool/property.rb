@@ -13,10 +13,10 @@ module OmniAI
     #   OmniAI::Tool::Property.boolean(description: '...')
     class Property
       module Type
-        BOOLEAN = 'boolean'
-        INTEGER = 'integer'
-        STRING = 'string'
-        NUMBER = 'number'
+        BOOLEAN = "boolean"
+        INTEGER = "integer"
+        STRING = "string"
+        NUMBER = "number"
       end
 
       # @return [String]

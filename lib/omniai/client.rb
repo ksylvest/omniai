@@ -33,7 +33,7 @@ module OmniAI
     # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
     # @return [Class<OmniAI::Client>]
     def self.anthropic
-      require 'omniai/anthropic' unless defined?(OmniAI::Anthropic::Client)
+      require "omniai/anthropic" unless defined?(OmniAI::Anthropic::Client)
       OmniAI::Anthropic::Client
     rescue LoadError
       raise Error, "requires 'omniai-anthropic': `gem install omniai-anthropic`"
@@ -44,7 +44,7 @@ module OmniAI
     # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
     # @return [Class<OmniAI::Client>]
     def self.google
-      require 'omniai/google' unless defined?(OmniAI::Google::Client)
+      require "omniai/google" unless defined?(OmniAI::Google::Client)
       OmniAI::Google::Client
     rescue LoadError
       raise Error, "requires 'omniai-google': `gem install omniai-google`"
@@ -55,7 +55,7 @@ module OmniAI
     # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
     # @return [Class<OmniAI::Client>]
     def self.mistral
-      require 'omniai/mistral' unless defined?(OmniAI::Mistral::Client)
+      require "omniai/mistral" unless defined?(OmniAI::Mistral::Client)
       OmniAI::Mistral::Client
     rescue LoadError
       raise Error, "requires 'omniai-mistral': `gem install omniai-mistral`"
@@ -66,7 +66,7 @@ module OmniAI
     # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
     # @return [Class<OmniAI::Client>]
     def self.openai
-      require 'omniai/openai' unless defined?(OmniAI::OpenAI::Client)
+      require "omniai/openai" unless defined?(OmniAI::OpenAI::Client)
       OmniAI::OpenAI::Client
     rescue LoadError
       raise Error, "requires 'omniai-openai': `gem install omniai-openai`"
@@ -80,10 +80,10 @@ module OmniAI
     def self.find(provider:, **)
       klass =
         case provider
-        when :anthropic, 'anthropic' then anthropic
-        when :google, 'google' then google
-        when :mistral, 'mistral' then mistral
-        when :openai, 'openai' then openai
+        when :anthropic, "anthropic" then anthropic
+        when :google, "google" then google
+        when :mistral, "mistral" then mistral
+        when :openai, "openai" then openai
         else raise Error, "unknown provider=#{provider.inspect}"
         end
 

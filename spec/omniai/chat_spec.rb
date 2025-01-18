@@ -2,17 +2,17 @@
 
 class FakeClient < OmniAI::Client
   def connection
-    HTTP.persistent('http://localhost:8080')
+    HTTP.persistent("http://localhost:8080")
   end
 end
 
 class FakeChat < OmniAI::Chat
   module Model
-    FAKE = 'fake'
+    FAKE = "fake"
   end
 
   def path
-    '/chat'
+    "/chat"
   end
 
   def payload
@@ -23,61 +23,61 @@ end
 RSpec.describe OmniAI::Chat do
   subject(:chat) { described_class.new(prompt, model:, client:) }
 
-  let(:model) { '...' }
-  let(:client) { OmniAI::Client.new(api_key: '...') }
+  let(:model) { "..." }
+  let(:client) { OmniAI::Client.new(api_key: "...") }
 
   let(:prompt) do
     OmniAI::Chat::Prompt.new.tap do |prompt|
-      prompt.system('You are a helpful assistant.')
-      prompt.user('What is the name of the dummer for the Beatles?')
+      prompt.system("You are a helpful assistant.")
+      prompt.user("What is the name of the dummer for the Beatles?")
     end
   end
 
-  describe '#initialize' do
-    context 'with a prompt' do
-      it 'returns a chat' do
-        expect(described_class.new('What is the capital of France', model:, client:))
+  describe "#initialize" do
+    context "with a prompt" do
+      it "returns a chat" do
+        expect(described_class.new("What is the capital of France", model:, client:))
           .to be_a(described_class)
       end
     end
 
-    context 'with a block' do
-      it 'returns a chat' do
-        expect(described_class.new(model:, client:) { |prompt| prompt.user('What is the capital of Spain') })
+    context "with a block" do
+      it "returns a chat" do
+        expect(described_class.new(model:, client:) { |prompt| prompt.user("What is the capital of Spain") })
           .to be_a(described_class)
       end
     end
 
-    context 'without a prompt or block' do
-      it 'raises an error' do
+    context "without a prompt or block" do
+      it "raises an error" do
         expect { described_class.new(model:, client:) }
-          .to raise_error(ArgumentError, 'prompt or block is required')
+          .to raise_error(ArgumentError, "prompt or block is required")
       end
     end
   end
 
-  describe '#path' do
+  describe "#path" do
     it { expect { chat.send(:path) }.to raise_error(NotImplementedError) }
   end
 
-  describe '#payload' do
+  describe "#payload" do
     it { expect { chat.send(:payload) }.to raise_error(NotImplementedError) }
   end
 
-  describe '.process!' do
+  describe ".process!" do
     subject(:process!) { FakeChat.process!(prompt, model:, client:, stream:) }
 
     let(:stream) { nil }
-    let(:client) { FakeClient.new(api_key: '...') }
+    let(:client) { FakeClient.new(api_key: "...") }
     let(:model) { FakeChat::Model::FAKE }
 
-    context 'when OK' do
+    context "when OK" do
       before do
-        stub_request(:post, 'http://localhost:8080/chat')
+        stub_request(:post, "http://localhost:8080/chat")
           .with(body: {
             messages: [
-              { role: 'system', content: [{ type: 'text', text: 'You are a helpful assistant.' }] },
-              { role: 'user', content: [{ type: 'text', text: 'What is the name of the dummer for the Beatles?' }] },
+              { role: "system", content: [{ type: "text", text: "You are a helpful assistant." }] },
+              { role: "user", content: [{ type: "text", text: "What is the name of the dummer for the Beatles?" }] },
             ],
             model:,
           })
@@ -85,42 +85,42 @@ RSpec.describe OmniAI::Chat do
             choices: [{
               index: 0,
               message: {
-                role: 'system',
-                content: 'Ringo!',
+                role: "system",
+                content: "Ringo!",
               },
             }],
           })
       end
 
       it { expect(process!).to be_a(OmniAI::Chat::Response) }
-      it { expect(process!.text).to eql('Ringo!') }
+      it { expect(process!.text).to eql("Ringo!") }
     end
 
-    context 'when UNPROCESSABLE' do
+    context "when UNPROCESSABLE" do
       before do
-        stub_request(:post, 'http://localhost:8080/chat')
+        stub_request(:post, "http://localhost:8080/chat")
           .with(body: {
             messages: [
-              { role: 'system', content: [{ type: 'text', text: 'You are a helpful assistant.' }] },
-              { role: 'user', content: [{ type: 'text', text: 'What is the name of the dummer for the Beatles?' }] },
+              { role: "system", content: [{ type: "text", text: "You are a helpful assistant." }] },
+              { role: "user", content: [{ type: "text", text: "What is the name of the dummer for the Beatles?" }] },
             ],
             model:,
           })
-          .to_return(status: 422, body: 'An unknown error occurred.')
+          .to_return(status: 422, body: "An unknown error occurred.")
       end
 
       it { expect { process! }.to raise_error(OmniAI::HTTPError) }
     end
 
-    context 'when OK with stream using a proc' do
+    context "when OK with stream using a proc" do
       let(:stream) { proc { |chunk| } }
 
       before do
-        stub_request(:post, 'http://localhost:8080/chat')
+        stub_request(:post, "http://localhost:8080/chat")
           .with(body: {
             messages: [
-              { role: 'system', content: [{ type: 'text', text: 'You are a helpful assistant.' }] },
-              { role: 'user', content: [{ type: 'text', text: 'What is the name of the dummer for the Beatles?' }] },
+              { role: "system", content: [{ type: "text", text: "You are a helpful assistant." }] },
+              { role: "user", content: [{ type: "text", text: "What is the name of the dummer for the Beatles?" }] },
             ],
             model:,
           })
@@ -139,15 +139,15 @@ RSpec.describe OmniAI::Chat do
       end
     end
 
-    context 'when OK with stream using IO' do
+    context "when OK with stream using IO" do
       let(:stream) { StringIO.new }
 
       before do
-        stub_request(:post, 'http://localhost:8080/chat')
+        stub_request(:post, "http://localhost:8080/chat")
           .with(body: {
             messages: [
-              { role: 'system', content: [{ type: 'text', text: 'You are a helpful assistant.' }] },
-              { role: 'user', content: [{ type: 'text', text: 'What is the name of the dummer for the Beatles?' }] },
+              { role: "system", content: [{ type: "text", text: "You are a helpful assistant." }] },
+              { role: "user", content: [{ type: "text", text: "What is the name of the dummer for the Beatles?" }] },
             ],
             model:,
           })
@@ -164,19 +164,19 @@ RSpec.describe OmniAI::Chat do
       end
     end
 
-    context 'when UNPROCESSABLE with stream' do
+    context "when UNPROCESSABLE with stream" do
       let(:stream) { proc { |chunk| } }
 
       before do
-        stub_request(:post, 'http://localhost:8080/chat')
+        stub_request(:post, "http://localhost:8080/chat")
           .with(body: {
             messages: [
-              { role: 'system', content: [{ type: 'text', text: 'You are a helpful assistant.' }] },
-              { role: 'user', content: [{ type: 'text', text: 'What is the name of the dummer for the Beatles?' }] },
+              { role: "system", content: [{ type: "text", text: "You are a helpful assistant." }] },
+              { role: "user", content: [{ type: "text", text: "What is the name of the dummer for the Beatles?" }] },
             ],
             model:,
           })
-          .to_return(status: 422, body: 'An unknown error occurred.')
+          .to_return(status: 422, body: "An unknown error occurred.")
       end
 
       it { expect { process! }.to raise_error(OmniAI::HTTPError) }

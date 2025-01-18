@@ -41,8 +41,8 @@ module OmniAI
         deserialize = context&.deserializer(:tool_call_result)
         return deserialize.call(data, context:) if deserialize
 
-        content = JSON.parse(data['content'])
-        tool_call_id = data['tool_call_id']
+        content = JSON.parse(data["content"])
+        tool_call_id = data["tool_call_id"]
 
         new(content:, tool_call_id:)
       end

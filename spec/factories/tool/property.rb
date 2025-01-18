@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :tool_property, class: 'OmniAI::Tool::Property' do
+  factory :tool_property, class: "OmniAI::Tool::Property" do
     initialize_with { new(**attributes) }
 
     trait :integer do
