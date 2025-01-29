@@ -15,10 +15,10 @@ module OmniAI
 
       # @yield [payload]
       # @yieldparam payload [OmniAI::Chat::Payload]
-      def stream!(&)
+      def stream!(&block)
         @body.each do |chunk|
           parser.feed(chunk) do |type, data, id|
-            process!(type, data, id, &)
+            process!(type, data, id, &block)
           end
         end
       end
