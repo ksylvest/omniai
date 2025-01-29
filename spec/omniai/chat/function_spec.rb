@@ -12,7 +12,10 @@ RSpec.describe OmniAI::Chat::Function do
   describe "#inspect" do
     subject(:inspect) { function.inspect }
 
-    it { is_expected.to eq '#<OmniAI::Chat::Function name="temperature" arguments={"unit" => "celsius"}>' }
+    it do
+      expect(inspect)
+        .to eq "#<OmniAI::Chat::Function name=\"temperature\" arguments=#{{ 'unit' => 'celsius' }.inspect}>"
+    end
   end
 
   describe ".deserialize" do
