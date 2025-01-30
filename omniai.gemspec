@@ -27,5 +27,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "event_stream_parser"
   spec.add_dependency "http"
+  spec.add_dependency "logger"
   spec.add_dependency "zeitwerk"
 end

@@ -4,6 +4,7 @@ PATH
     omniai (1.9.3)
       event_stream_parser
       http
+      logger
       zeitwerk
 
 GEM
@@ -153,7 +154,6 @@ PLATFORMS
 
 DEPENDENCIES
   factory_bot
-  logger
   omniai!
   rake
   rspec
