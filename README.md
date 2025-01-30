@@ -9,6 +9,7 @@
 OmniAI standardizes the APIs of various AI / LLM companies such as Anthropic, Google, Mistral and OpenAI for the generation of text, the conversion of text-to-speech, the conversion of speech-to-text, the generation of embeddings, and more. It offers a unified API regardless of the provider and task.
 
 - [OmniAI::Anthropic](https://github.com/ksylvest/omniai-anthropic)
+- [OmniAI::DeepSeek](https://github.com/ksylvest/omniai-deepseek)
 - [OmniAI::Google](https://github.com/ksylvest/omniai-google)
 - [OmniAI::Mistral](https://github.com/ksylvest/omniai-mistral)
 - [OmniAI::OpenAI](https://github.com/ksylvest/omniai-openai)
@@ -167,12 +168,17 @@ search('Who do you call to fix a toilet?')
 
 ## Installation
 
+The main `omniai` gem is installed with:
+
 ```sh
 gem install omniai
 ```
 
+Specific provider gems are installed with:
+
 ```sh
 gem install omniai-anthropic
+gem install omniai-deepseek
 gem install omniai-mistral
 gem install omniai-google
 gem install omniai-openai
@@ -190,6 +196,14 @@ OmniAI implements APIs for a number of popular clients by default. A client can 
 require 'omniai/anthropic'
 
 client = OmniAI::Anthropic::Client.new
+```
+
+#### [OmniAI::DeepSeek](https://github.com/ksylvest/omniai-deepseek)
+
+```ruby
+require 'omniai/deepseek'
+
+client = OmniAI::DeepSeek::Client.new
 ```
 
 #### [OmniAI::Google](https://github.com/ksylvest/omniai-google)
