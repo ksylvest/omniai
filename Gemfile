@@ -5,6 +5,7 @@ source "https://rubygems.org"
 gemspec
 
 gem "factory_bot"
+gem "irb"
 gem "rake"
 gem "rspec"
 gem "rspec_junit_formatter"

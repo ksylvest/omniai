@@ -34,6 +34,7 @@ GEM
     crack (1.0.0)
       bigdecimal
       rexml
+    date (3.4.1)
     diff-lcs (1.5.1)
     docile (1.4.1)
     domain_name (0.6.20240107)
@@ -67,6 +68,11 @@ GEM
     http-form_data (2.3.0)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
+    io-console (0.8.0)
+    irb (1.15.1)
+      pp (>= 0.6.0)
+      rdoc (>= 4.0.0)
+      reline (>= 0.4.2)
     json (2.9.1)
     language_server-protocol (3.17.0.3)
     llhttp-ffi (0.5.0)
@@ -78,11 +84,21 @@ GEM
     parser (3.3.7.0)
       ast (~> 2.4.1)
       racc
+    pp (0.6.2)
+      prettyprint
+    prettyprint (0.2.0)
+    psych (5.2.3)
+      date
+      stringio
     public_suffix (6.0.1)
     racc (1.8.1)
     rainbow (3.1.1)
     rake (13.2.1)
+    rdoc (6.11.0)
+      psych (>= 4.0.0)
     regexp_parser (2.10.0)
+    reline (0.6.0)
+      io-console (~> 0.5)
     rexml (3.4.0)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
@@ -126,6 +142,7 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.13.1)
     simplecov_json_formatter (0.1.4)
+    stringio (3.1.2)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (3.1.4)
@@ -154,6 +171,7 @@ PLATFORMS
 
 DEPENDENCIES
   factory_bot
+  irb
   omniai!
   rake
   rspec
