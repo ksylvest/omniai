@@ -6,7 +6,6 @@
 [![Yard](https://img.shields.io/badge/docs-site-blue.svg)](https://omniai.ksylvest.com)
 [![CircleCI](https://img.shields.io/circleci/build/github/ksylvest/omniai)](https://circleci.com/gh/ksylvest/omniai)
 
-OmniAI standardizes the APIs of various AI / LLM companies such as Anthropic, Google, Mistral and OpenAI for the generation of text, the conversion of text-to-speech, the conversion of speech-to-text, the generation of embeddings, and more. It offers a unified API regardless of the provider and task.
 
 - [OmniAI::Anthropic](https://github.com/ksylvest/omniai-anthropic)
 - [OmniAI::DeepSeek](https://github.com/ksylvest/omniai-deepseek)
