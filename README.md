@@ -6,6 +6,7 @@
 [![Yard](https://img.shields.io/badge/docs-site-blue.svg)](https://omniai.ksylvest.com)
 [![CircleCI](https://img.shields.io/circleci/build/github/ksylvest/omniai)](https://circleci.com/gh/ksylvest/omniai)
 
+OmniAI provides a unified Ruby API for integrating with multiple AI providers, including Anthropic, DeepSeek, Google, Mistral, and OpenAI. It streamlines AI development by offering a consistent interface for features such as chat, text-to-speech, speech-to-text, and embeddings—ensuring seamless interoperability across platforms. Switching between providers is effortless, making any integration more flexible and reliable.
 
 - [OmniAI::Anthropic](https://github.com/ksylvest/omniai-anthropic)
 - [OmniAI::DeepSeek](https://github.com/ksylvest/omniai-deepseek)
@@ -16,6 +17,8 @@
 ## Examples
 
 ### Example #1: [Chat](https://github.com/ksylvest/omniai/blob/main/examples/chat)
+
+This example demonstrates using `OmniAI` with **Anthropic** to prompt a “biologist” for an analysis of photos, identifying the animals within each one. A system and user message are provided, and the response is streamed in real time.
 
 ```ruby
 require 'omniai/anthropic'
@@ -44,6 +47,8 @@ The animals in the photos are:
 
 ### Example #2: [Text-to-Speech](https://github.com/ksylvest/omniai/blob/main/examples/text_to_speech)
 
+This example demonstrates using `OmniAI` with **OpenAI** to convert text to speech and save it to a file.
+
 ```ruby
 require 'omniai/openai'
 
@@ -58,6 +63,8 @@ end
 
 ### Example #3: [Speech-to-Text](https://github.com/ksylvest/omniai/blob/main/examples/speech_to_text)
 
+This example demonstrates using `OmniAI` with **OpenAI** to convert speech to text.
+
 ```ruby
 require 'omniai/openai'
 
@@ -70,6 +77,8 @@ end
 ```
 
 ### Example #4: [Tools](https://github.com/ksylvest/omniai/blob/main/examples/tools)
+
+This example demonstrates how to use `OmniAI` with **Google** to call a custom tool that generates a weather report. The tool accepts a list of locations (city and country) and returns a temperature — randomly generated for demonstration purposes — based on the provided parameters.
 
 ```ruby
 require 'omniai/google'
@@ -125,6 +134,8 @@ The weather is 24° celcius in London and 42° fahrenheit in Seattle.
 ```
 
 ### Example #5: [Embeddings](https://github.com/ksylvest/omniai/blob/main/examples/embeddings)
+
+This example demonstrates using `OmniAI` with **Mistral** to generate embeddings for a dataset. It defines a set of entries (e.g. "George is a teacher." or "Ringo is a doctor.") and then compares the embeddings generated from a query (e.g. "What does George do?" or "Who is a doctor?") to rank the entries by relevance.
 
 ```ruby
 require 'omniai/mistral'
