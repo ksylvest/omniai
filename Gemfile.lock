@@ -153,6 +153,7 @@ GEM
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
+    yard (0.9.37)
     zeitwerk (2.7.1)
 
 PLATFORMS
@@ -173,7 +174,6 @@ DEPENDENCIES
   irb
   omniai!
   rake
-  rdoc
   rspec
   rspec_junit_formatter
   rubocop
@@ -183,6 +183,7 @@ DEPENDENCIES
   rubocop-rspec
   simplecov
   webmock
+  yard
 
 BUNDLED WITH
    2.6.3
