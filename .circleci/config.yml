@@ -29,7 +29,7 @@ jobs:
     steps:
       - checkout
       - ruby/install-deps
-      - run: bundle exec yard doc
+      - run: bundle exec rdoc lib README.md --main=README.md
   rspec:
     parameters:
       ruby-version:
