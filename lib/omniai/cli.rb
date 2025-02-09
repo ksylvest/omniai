@@ -10,8 +10,6 @@ module OmniAI
   #   cli = OmniAI::CLI.new
   #   cli.parse
   class CLI
-    ChatArgs = Struct.new(:provider, :model, :temperature)
-
     # @param stdin [IO] a stream
     # @param stdout [IO] a stream
     # @param provider [String] a provider
