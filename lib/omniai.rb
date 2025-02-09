@@ -27,6 +27,7 @@ module OmniAI
       @response = response
     end
 
+    # @return [String]
     def inspect
       "#<#{self.class} status=#{@response.status} body=#{@response.body}>"
     end
