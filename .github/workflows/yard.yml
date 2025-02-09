@@ -1,4 +1,4 @@
-name: rdoc
+name: yard
 
 on:
   push:

@@ -27,13 +27,8 @@ module OmniAI
   #
   #   client.embed(input, model: "...")
   class Embed
-    # @param input [String] required
-    # @param client [Client] the client
-    # @param model [String] required
-    #
-    # @return [Response]
-    def self.process!(input, client:, model:)
-      new(input, client:, model:).process!
+    def self.process!(...)
+      new(...).process!
     end
 
     # @param input [String] required
