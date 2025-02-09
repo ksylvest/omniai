@@ -4,6 +4,8 @@ module OmniAI
   class Chat
     # A file is media that can be sent to many LLMs.
     class File < Media
+      # @!attribute [rw] io
+      #   @return [IO, Pathname, String]
       attr_accessor :io
 
       # @param io [IO, Pathname, String]
