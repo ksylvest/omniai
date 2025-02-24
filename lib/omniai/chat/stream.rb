@@ -2,23 +2,35 @@
 
 module OmniAI
   class Chat
-    # Used when streaming to process chunks of data.
+    # A stream is used to process a series of chunks of data. It converts the following into a combined payload:
+    #
+    #   { "id":"...", "choices": [{ "index": 0,"delta": { "role" :"assistant", "content":"" } }] }
+    #   { "id":"...", "choices": [{ "index": 0,"delta": { "content" :"A" } }] }
+    #   { "id":"...", "choices": [{ "index": 0,"delta": { "content" :"B" } }] }
+    #   ...
+    #
+    # Every
     class Stream
       # @param logger [OmniAI::Client]
-      # @param body [HTTP::Response::Body]
+      # @param chunks [Enumerable<String>]
       # @param context [Context, nil]
-      def initialize(body:, logger: nil, context: nil)
-        @body = body
+      def initialize(chunks:, logger: nil, context: nil)
+        @chunks = chunks
         @logger = logger
         @context = context
       end
 
       # @yield [payload]
       # @yieldparam payload [OmniAI::Chat::Payload]
+      #
+      # @return [OmniAI::Chat::Payload]
       def stream!(&block)
-        @body.each do |chunk|
-          parser.feed(chunk) do |type, data, id|
-            process!(type, data, id, &block)
+        OmniAI::Chat::Payload.new.tap do |payload|
+          @chunks.map do |chunk|
+            parser.feed(chunk) do |type, data, id|
+              result = process!(type, data, id, &block)
+              payload.merge!(result) if result.is_a?(OmniAI::Chat::Payload)
+            end
           end
         end
       end
@@ -42,14 +54,15 @@ module OmniAI
       # @param data [String]
       # @param id [String]
       #
-      # @yield [payload]
-      # @yieldparam payload [OmniAI::Chat::Payload]
+      # @return [OmniAI::Chat::Payload, nil]
       def process!(type, data, id, &block)
         log(type, data, id)
 
         return if data.eql?("[DONE]")
 
-        block.call(Payload.deserialize(JSON.parse(data), context: @context))
+        payload = Payload.deserialize(JSON.parse(data), context: @context)
+        block&.call(payload)
+        payload
       end
 
       # @return [EventStreamParser::Parser]

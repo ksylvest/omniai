@@ -38,13 +38,16 @@ module OmniAI
         end
       end
 
-      # @return [Array<Content>, String]
+      # @!attribute [rw] content
+      #   @return [Array<Content>, String]
       attr_accessor :content
 
-      # @return [String]
+      # @!attribute [rw] role
+      #   @return [String]
       attr_accessor :role
 
-      # @return [Array<ToolCall>, nil]
+      # @!attribute [rw] tool_call_list
+      #   @return [Array<ToolCall>, nil]
       attr_accessor :tool_call_list
 
       # @param content [String, nil]
@@ -104,6 +107,27 @@ module OmniAI
         tool_calls = @tool_call_list&.map { |tool_call| tool_call.serialize(context:) }
 
         { role: @role, content:, tool_calls: }.compact
+      end
+
+      # @param other [OmniAI::Chat::Message]
+      #
+      # @return [OmniAI::Chat::Message]
+      def merge(other)
+        content =
+          if @content && other.content
+            @content + other.content
+          else
+            @content || other.content
+          end
+
+        tool_call_list =
+          if @tool_call_list && other.tool_call_list
+            @tool_call_list + other.tool_call_list
+          else
+            @tool_call_list || other.tool_call_list
+          end
+
+        self.class.new(content:, role:, tool_call_list:)
       end
 
       # @return [Boolean]
