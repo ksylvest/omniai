@@ -166,7 +166,7 @@ module OmniAI
     def stream!(response:)
       raise Error, "#{self.class.name}#stream! unstreamable" unless @stream
 
-      self.class::Stream.new(body: response.body, logger:, context:).stream! do |chunk|
+      self.class::Stream.new(chunks: response.body, logger:, context:).stream! do |chunk|
         case @stream
         when IO, StringIO
           if chunk.text
