@@ -85,7 +85,7 @@ RSpec.describe OmniAI::Chat do
             choices: [{
               index: 0,
               message: {
-                role: "system",
+                role: "assistant",
                 content: "Ringo!",
               },
             }],
@@ -113,7 +113,8 @@ RSpec.describe OmniAI::Chat do
     end
 
     context "when OK with stream using a proc" do
-      let(:stream) { proc { |chunk| } }
+      let(:stream) { proc { |chunk| chunks << chunk } }
+      let(:chunks) { [] }
 
       before do
         stub_request(:post, "http://localhost:8080/chat")
@@ -125,17 +126,16 @@ RSpec.describe OmniAI::Chat do
             model:,
           })
           .to_return(status: 200, body: <<~STREAM)
-            data: #{JSON.generate({ choices: [{ delta: { role: 'system', content: 'A' } }] })}\n
-            data: #{JSON.generate({ choices: [{ delta: { role: 'system', content: 'B' } }] })}\n
-            data: [DONE]\n
+            data: #{JSON.generate({ choices: [{ index: 0, delta: { role: 'assistant', content: '' } }] })}\n\n
+            data: #{JSON.generate({ choices: [{ index: 0, delta: { role: 'assistant', content: 'A' } }] })}\n\n
+            data: #{JSON.generate({ choices: [{ index: 0, delta: { role: 'assistant', content: 'B' } }] })}\n\n
+            data: [DONE]\n\n
           STREAM
       end
 
       it do
-        chunks = []
-        allow(stream).to receive(:call) { |chunk| chunks << chunk }
         process!
-        expect(chunks.map(&:text)).to eql(%w[A B])
+        expect(chunks.map(&:text).join).to eql("AB")
       end
     end
 
@@ -152,9 +152,10 @@ RSpec.describe OmniAI::Chat do
             model:,
           })
           .to_return(status: 200, body: <<~STREAM)
-            data: #{JSON.generate({ choices: [{ delta: { role: 'system', content: 'A' } }] })}\n
-            data: #{JSON.generate({ choices: [{ delta: { role: 'system', content: 'B' } }] })}\n
-            data: [DONE]\n
+            data: #{JSON.generate({ choices: [{ index: 0, delta: { role: 'assistant', content: '' } }] })}\n\n
+            data: #{JSON.generate({ choices: [{ index: 0, delta: { role: 'assistant', content: 'A' } }] })}\n\n
+            data: #{JSON.generate({ choices: [{ index: 0, delta: { role: 'assistant', content: 'B' } }] })}\n\n
+            data: [DONE]\n\n
           STREAM
       end
 
@@ -165,7 +166,8 @@ RSpec.describe OmniAI::Chat do
     end
 
     context "when UNPROCESSABLE with stream" do
-      let(:stream) { proc { |chunk| } }
+      let(:stream) { proc { |chunk| chunks << chunk } }
+      let(:chunks) { [] }
 
       before do
         stub_request(:post, "http://localhost:8080/chat")

@@ -12,7 +12,8 @@ module OmniAI
 
       # @param choices [Array<Choice>]
       # @param usage [Usage, nil]
-      def initialize(choices:, usage: nil)
+      def initialize(choices: [], usage: nil)
+        @id = SecureRandom.alphanumeric
         @choices = choices
         @usage = usage
       end
@@ -46,10 +47,31 @@ module OmniAI
         }
       end
 
+      # @param other [OmniAI::Chat::Payload]
+      def merge!(other)
+        return unless other
+
+        @usage = other.usage if other.usage
+
+        other.choices.each do |choice|
+          if choice?(index: choice.index)
+            choices[choice.index] = choices[choice.index].merge(choice)
+          else
+            @choices[choice.index] = choice
+          end
+        end
+      end
+
       # @param index [Integer]
       # @return [Choice]
       def choice(index: 0)
         @choices[index]
+      end
+
+      # @param index [Integer]
+      # @return [Boolean]
+      def choice?(index: 0)
+        !choice(index:).nil?
       end
 
       # @param index [Integer]

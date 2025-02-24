@@ -162,11 +162,12 @@ module OmniAI
     end
 
     # @param response [HTTP::Response]
-    # @return [OmniAI::Chat::Stream]
+    #
+    # @return [OmniAI::Chat::Payload]
     def stream!(response:)
       raise Error, "#{self.class.name}#stream! unstreamable" unless @stream
 
-      self.class::Stream.new(body: response.body, logger:, context:).stream! do |chunk|
+      payload = self.class::Stream.new(chunks: response.body, logger:, context:).stream! do |chunk|
         case @stream
         when IO, StringIO
           if chunk.text
@@ -178,6 +179,8 @@ module OmniAI
       end
 
       @stream.puts if @stream.is_a?(IO) || @stream.is_a?(StringIO)
+
+      payload
     end
 
     # @return [HTTP::Response]
