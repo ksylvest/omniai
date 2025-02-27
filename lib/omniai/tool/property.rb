@@ -58,7 +58,7 @@ module OmniAI
       #   )
       #
       # @param properties [Hash<String, OmniAI::Tool::Property>] required - the properties of the object
-      # @param requird [Array<Symbol>] optional - the required properties
+      # @param required [Array<Symbol>] optional - the required properties
       # @param description [String] optional - a description of the object
       #
       # @return [OmniAI::Tool::Array]
