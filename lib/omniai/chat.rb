@@ -210,7 +210,7 @@ module OmniAI
 
       function = tool_call.function
       tool = @tools.find { |entry| function.name == entry.name } || raise(ToolCallMissingError, tool_call)
-      content = tool.call(function.arguments)
+      content = tool.call(function.arguments!)
 
       logger&.debug("Chat#execute_tool_call content=#{content.inspect}")
 

@@ -4,7 +4,7 @@ RSpec.describe OmniAI::Chat::ToolCall do
   subject(:tool_call) { build(:chat_tool_call, id:, function:) }
 
   let(:id) { "fake_tool_call_id" }
-  let(:function) { build(:chat_function, name: "temperature", arguments: { "unit" => "celsius" }) }
+  let(:function) { build(:chat_function, name: "temperature", arguments: JSON.generate(unit: "celsius")) }
 
   describe "#id" do
     it { expect(tool_call.id).to eq(id) }
