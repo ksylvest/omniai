@@ -5,15 +5,20 @@ module OmniAI
     # A choice wraps a message and index returned by an LLM. The default is to generate a single choice. Some LLMs
     # support generating multiple choices at once (e.g. giving you multiple options to choose from).
     class Choice
-      # @return [Integer]
+      DEFAULT_INDEX = 0
+      private_constant :DEFAULT_INDEX
+
+      # @!attribute [rw] index
+      #   @return [Integer]
       attr_accessor :index
 
-      # @return [Message]
+      # @!attribute [rw] message
+      #   @return [Message]
       attr_accessor :message
 
       # @param message [Message]
       # @param index [Integer]
-      def initialize(message:, index: 0)
+      def initialize(message:, index: DEFAULT_INDEX)
         @message = message
         @index = index
       end
@@ -31,7 +36,7 @@ module OmniAI
         deserialize = context&.deserializer(:choice)
         return deserialize.call(data, context:) if deserialize
 
-        index = data["index"]
+        index = data["index"] || DEFAULT_INDEX
         message = Message.deserialize(data["message"] || data["delta"], context:)
 
         new(message:, index:)
