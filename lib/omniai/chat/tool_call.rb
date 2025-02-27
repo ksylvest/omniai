@@ -32,6 +32,11 @@ module OmniAI
         "#<#{self.class.name} id=#{id.inspect} function=#{function.inspect}>"
       end
 
+      # @param other [ToolCall]
+      def merge(other)
+        self.class.new(id: @id, index: @index, function: @function.merge(other.function))
+      end
+
       # @param data [Hash]
       # @param context [Context] optional
       #

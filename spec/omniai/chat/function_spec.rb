@@ -15,6 +15,12 @@ RSpec.describe OmniAI::Chat::Function do
     it { expect(inspect).to eq "#<OmniAI::Chat::Function name=#{name.inspect} arguments=#{arguments.inspect}>" }
   end
 
+  describe "#arguments!" do
+    subject(:arguments!) { function.arguments! }
+
+    it { expect(arguments!).to eql("unit" => "celsius") }
+  end
+
   describe ".deserialize" do
     subject(:deserialize) { described_class.deserialize(data, context:) }
 

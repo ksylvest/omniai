@@ -22,6 +22,11 @@ module OmniAI
         "#<#{self.class.name} name=#{name.inspect} arguments=#{arguments.inspect}>"
       end
 
+      # @param other [Function]
+      def merge(other)
+        self.class.new(name: @name, arguments: @arguments + other.arguments)
+      end
+
       # @return [Hash]
       def arguments!
         return @arguments unless @arguments.is_a?(String)
