@@ -54,11 +54,7 @@ module OmniAI
         @usage = other.usage if other.usage
 
         other.choices.each do |choice|
-          if choice?(index: choice.index)
-            choices[choice.index] = choices[choice.index].merge(choice)
-          else
-            @choices[choice.index] = choice
-          end
+          @choices[choice.index] = @choices[choice.index] ? choices[choice.index].merge(choice) : choice
         end
       end
 
