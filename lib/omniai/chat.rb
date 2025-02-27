@@ -86,12 +86,25 @@ module OmniAI
     end
 
     # @raise [HTTPError]
+    #
+    # @return [OmniAI::Chat::Payload]
     def process!
       response = request!
 
       raise HTTPError, response.flush unless response.status.ok?
 
-      parse!(response:)
+      completion = parse!(response:)
+
+      if @tools && completion.tool_call_list?
+        spawn!(
+          @prompt.dup.tap do |prompt|
+            prompt.messages += completion.messages
+            prompt.messages += build_tool_call_messages(completion.tool_call_list)
+          end
+        ).process!
+      else
+        completion
+      end
     end
 
   protected
@@ -135,7 +148,8 @@ module OmniAI
     end
 
     # @param response [HTTP::Response]
-    # @return [OmniAI::Chat::Response]
+    #
+    # @return [OmniAI::Chat::Payload]
     def parse!(response:)
       if @stream
         stream!(response:)
@@ -145,20 +159,10 @@ module OmniAI
     end
 
     # @param response [HTTP::Response]
-    # @return [OmniAI::Chat::Response]
+    #
+    # @return [OmniAI::Chat::Payload]
     def complete!(response:)
-      completion = self.class::Response.new(data: response.parse, context:)
-
-      if @tools && completion.tool_call_list?
-        spawn!(
-          @prompt.dup.tap do |prompt|
-            prompt.messages += completion.messages
-            prompt.messages += build_tool_call_messages(completion.tool_call_list)
-          end
-        ).process!
-      else
-        completion
-      end
+      OmniAI::Chat::Payload.deserialize(response.parse, context:)
     end
 
     # @param response [HTTP::Response]
@@ -167,10 +171,10 @@ module OmniAI
     def stream!(response:)
       raise Error, "#{self.class.name}#stream! unstreamable" unless @stream
 
-      payload = self.class::Stream.new(chunks: response.body, logger:, context:).stream! do |chunk|
+      response = self.class::Stream.new(chunks: response.body, logger:, context:).stream! do |chunk|
         case @stream
         when IO, StringIO
-          if chunk.text
+          if chunk.text?
             @stream << chunk.text
             @stream.flush
           end
@@ -178,9 +182,9 @@ module OmniAI
         end
       end
 
-      @stream.puts if @stream.is_a?(IO) || @stream.is_a?(StringIO)
+      @stream.puts if response.text? && (@stream.is_a?(IO) || @stream.is_a?(StringIO))
 
-      payload
+      response
     end
 
     # @return [HTTP::Response]

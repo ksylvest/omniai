@@ -2,7 +2,7 @@
 
 module OmniAI
   class Chat
-    # A chunk or completion.
+    # An `OmniAI::Chat::Payload` encapsulates the result of generating a chat completion.
     class Payload
       # @return [Array<Choice>]
       attr_accessor :choices
@@ -95,8 +95,13 @@ module OmniAI
 
       # @param index [Integer]
       # @return [Array<ToolCall>]
-      def tool_call_list(index:)
+      def tool_call_list(index: 0)
         message(index:).tool_call_list
+      end
+
+      # @return [Boolean]
+      def tool_call_list?(index: 0)
+        tool_call_list(index:)&.any?
       end
     end
   end

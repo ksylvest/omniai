@@ -92,7 +92,7 @@ RSpec.describe OmniAI::Chat do
           })
       end
 
-      it { expect(process!).to be_a(OmniAI::Chat::Response) }
+      it { expect(process!).to be_a(OmniAI::Chat::Payload) }
       it { expect(process!.text).to eql("Ringo!") }
     end
 

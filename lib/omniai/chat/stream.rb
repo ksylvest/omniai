@@ -20,8 +20,8 @@ module OmniAI
         @context = context
       end
 
-      # @yield [payload]
-      # @yieldparam payload [OmniAI::Chat::Payload]
+      # @yield [response]
+      # @yieldparam response [OmniAI::Chat::Payload]
       #
       # @return [OmniAI::Chat::Payload]
       def stream!(&block)
@@ -60,9 +60,9 @@ module OmniAI
 
         return if data.eql?("[DONE]")
 
-        payload = Payload.deserialize(JSON.parse(data), context: @context)
-        block&.call(payload)
-        payload
+        response = OmniAI::Chat::Payload.deserialize(JSON.parse(data), context: @context)
+        block&.call(response)
+        response
       end
 
       # @return [EventStreamParser::Parser]
