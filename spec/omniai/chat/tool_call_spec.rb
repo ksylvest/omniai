@@ -67,6 +67,7 @@ RSpec.describe OmniAI::Chat::ToolCall do
           context.serializers[:tool_call] = lambda do |tool_call, *|
             {
               id: tool_call.id,
+              index: tool_call.index,
               type: "function",
               function: tool_call.function.serialize(context:),
             }
@@ -77,6 +78,7 @@ RSpec.describe OmniAI::Chat::ToolCall do
       it do
         expect(serialize).to eq(
           id: "fake_tool_call_id",
+          index: 0,
           type: "function",
           function: { name: "temperature", arguments: '{"unit":"celsius"}' }
         )
@@ -89,6 +91,7 @@ RSpec.describe OmniAI::Chat::ToolCall do
       it do
         expect(serialize).to eq(
           id: "fake_tool_call_id",
+          index: 0,
           type: "function",
           function: { name: "temperature", arguments: '{"unit":"celsius"}' }
         )
