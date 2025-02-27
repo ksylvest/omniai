@@ -4,10 +4,12 @@ module OmniAI
   class Chat
     # A tool-call that includes an ID / function.
     class ToolCall
-      # @return [String]
+      # @!attribute [rw] id
+      #   @return [String]
       attr_accessor :id
 
-      # @return [Function]
+      # @!attribute [rw] function
+      #   @return [Function]
       attr_accessor :function
 
       # @param id [String]
@@ -25,7 +27,7 @@ module OmniAI
       # @param data [Hash]
       # @param context [Context] optional
       #
-      # @return [Function]
+      # @return [ToolCall]
       def self.deserialize(data, context: nil)
         deserialize = context&.deserializer(:tool_call)
         return deserialize.call(data, context:) if deserialize
