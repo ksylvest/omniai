@@ -2,7 +2,7 @@
 
 module OmniAI
   class Chat
-    # A chunk or completion.
+    # An `OmniAI::Chat::Payload` encapsulates the result of generating a chat completion.
     class Payload
       # @return [Array<Choice>]
       attr_accessor :choices
@@ -54,30 +54,36 @@ module OmniAI
         @usage = other.usage if other.usage
 
         other.choices.each do |choice|
-          if choice?(index: choice.index)
-            choices[choice.index] = choices[choice.index].merge(choice)
-          else
-            @choices[choice.index] = choice
-          end
+          @choices[choice.index] = @choices[choice.index] ? choices[choice.index].merge(choice) : choice
         end
       end
 
       # @param index [Integer]
-      # @return [Choice]
+      #
+      # @return [Choice, nil]
       def choice(index: 0)
         @choices[index]
       end
 
       # @param index [Integer]
+      #
       # @return [Boolean]
       def choice?(index: 0)
         !choice(index:).nil?
       end
 
       # @param index [Integer]
-      # @return [Message]
+      #
+      # @return [Message, nil]
       def message(index: 0)
-        choice(index:).message
+        choice(index:)&.message
+      end
+
+      # @param index [Integer]
+      #
+      # @return [Boolean]
+      def message?
+        !message(index:).nil?
       end
 
       # @return [Array<Message>]
@@ -86,21 +92,33 @@ module OmniAI
       end
 
       # @param index [Integer]
+      #
       # @return [String, nil]
       def text(index: 0)
-        message(index:).text
+        message(index:)&.text
       end
 
       # @param index [Integer]
+      #
       # @return [Boolean]
       def text?(index: 0)
-        message(index:).text?
+        message = message(index:)
+
+        !message.nil? && message.text?
       end
 
       # @param index [Integer]
-      # @return [Array<ToolCall>]
-      def tool_call_list(index:)
-        message(index:).tool_call_list
+      #
+      # @return [ToolCallList]
+      def tool_call_list(index: 0)
+        message(index:)&.tool_call_list
+      end
+
+      # @return [Boolean]
+      def tool_call_list?(index: 0)
+        tool_call_list = tool_call_list(index:)
+
+        !tool_call_list.nil? && tool_call_list.any?
       end
     end
   end

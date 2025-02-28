@@ -4,7 +4,9 @@ RSpec.describe OmniAI::Chat::Payload do
   subject(:payload) { build(:chat_payload, choices:, usage:) }
 
   let(:usage) { build(:chat_usage) }
-  let(:choices) { [] }
+  let(:choice) { build(:chat_choice, message:) }
+  let(:message) { build(:chat_message, content: "Hello!") }
+  let(:choices) { [choice] }
 
   describe "#inspect" do
     it { expect(payload.inspect).to eql("#<OmniAI::Chat::Payload choices=#{choices.inspect} usage=#{usage.inspect}>") }
@@ -60,13 +62,49 @@ RSpec.describe OmniAI::Chat::Payload do
         end
       end
 
-      it { expect(serialize).to eq(choices: [], usage: { input_tokens: 2, output_tokens: 3, total_tokens: 5 }) }
+      it { expect(serialize).to eq(choices: [choice.serialize(context:)], usage: usage.serialize(context:)) }
     end
 
     context "without a serializer" do
       let(:context) { OmniAI::Context.build }
 
-      it { expect(serialize).to eq(choices: [], usage: { input_tokens: 2, output_tokens: 3, total_tokens: 5 }) }
+      it { expect(serialize).to eq(choices: [choice.serialize(context:)], usage: usage.serialize(context:)) }
+    end
+  end
+
+  describe "#usage" do
+    it "returns the usage" do
+      expect(payload.usage).to be_a(OmniAI::Chat::Usage)
+    end
+  end
+
+  describe "#choices" do
+    it "returns the choices" do
+      expect(payload.choices).to all(be_a(OmniAI::Chat::Choice))
+    end
+  end
+
+  describe "#messages" do
+    it "returns the messages" do
+      expect(payload.messages).to all(be_a(OmniAI::Chat::Message))
+    end
+  end
+
+  describe "#choice" do
+    it "returns the choice" do
+      expect(payload.choice).to be_a(OmniAI::Chat::Choice)
+    end
+  end
+
+  describe "#message" do
+    it "returns the message" do
+      expect(payload.message).to be_a(OmniAI::Chat::Message)
+    end
+  end
+
+  describe "#text" do
+    it "returns the content" do
+      expect(payload.text).to eq("Hello!")
     end
   end
 end

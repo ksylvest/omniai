@@ -4,16 +4,26 @@ module OmniAI
   class Chat
     # A tool-call that includes an ID / function.
     class ToolCall
-      # @return [String]
+      DEFAULT_INDEX = 0
+
+      # @!attribute [rw] id
+      #   @return [String]
       attr_accessor :id
 
-      # @return [Function]
+      # @!attribute [rw] index
+      #   @return [Integer]
+      attr_accessor :index
+
+      # @!attribute [rw] function
+      #   @return [Function]
       attr_accessor :function
 
       # @param id [String]
+      # @param index [Integer]
       # @param function [Function]
-      def initialize(id:, function:)
+      def initialize(id:, function:, index: DEFAULT_INDEX)
         @id = id
+        @index = index
         @function = function
       end
 
@@ -22,18 +32,24 @@ module OmniAI
         "#<#{self.class.name} id=#{id.inspect} function=#{function.inspect}>"
       end
 
+      # @param other [ToolCall]
+      def merge(other)
+        self.class.new(id: @id, index: @index, function: @function.merge(other.function))
+      end
+
       # @param data [Hash]
       # @param context [Context] optional
       #
-      # @return [Function]
+      # @return [ToolCall]
       def self.deserialize(data, context: nil)
         deserialize = context&.deserializer(:tool_call)
         return deserialize.call(data, context:) if deserialize
 
         id = data["id"]
+        index = data["index"] || DEFAULT_INDEX
         function = Function.deserialize(data["function"], context:)
 
-        new(id:, function:)
+        new(id:, index:, function:)
       end
 
       # @param context [Context] optional
@@ -45,6 +61,7 @@ module OmniAI
 
         {
           id: @id,
+          index: @index,
           type: "function",
           function: @function.serialize(context:),
         }

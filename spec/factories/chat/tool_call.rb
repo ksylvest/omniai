@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :chat_tool_call, class: "OmniAI::Chat::ToolCall" do
     initialize_with { new(**attributes) }
     id { "fake_tool_call_id" }
+    index { 0 }
     function factory: :chat_function
   end
 end

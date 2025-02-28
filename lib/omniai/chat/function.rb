@@ -7,11 +7,11 @@ module OmniAI
       # @return [String]
       attr_accessor :name
 
-      # @return [Hash]
+      # @return [String]
       attr_accessor :arguments
 
       # @param name [String]
-      # @param arguments [Hash]
+      # @param arguments [String]
       def initialize(name:, arguments:)
         @name = name
         @arguments = arguments
@@ -20,6 +20,21 @@ module OmniAI
       # @return [String]
       def inspect
         "#<#{self.class.name} name=#{name.inspect} arguments=#{arguments.inspect}>"
+      end
+
+      # @param other [Function]
+      def merge(other)
+        self.class.new(name: @name, arguments: @arguments + other.arguments)
+      end
+
+      # @return [Hash]
+      def arguments!
+        return {} if @arguments.nil? || @arguments.empty?
+        return @arguments unless @arguments.is_a?(String)
+
+        JSON.parse(@arguments)
+      rescue JSON::ParserError
+        @arguments
       end
 
       # @param data [Hash]
@@ -31,11 +46,7 @@ module OmniAI
         return deserialize.call(data, context:) if deserialize
 
         name = data["name"]
-        arguments = begin
-          JSON.parse(data["arguments"]) if data["arguments"]
-        rescue JSON::ParserError
-          data["arguments"]
-        end
+        arguments = data["arguments"]
 
         new(name:, arguments:)
       end
@@ -49,7 +60,7 @@ module OmniAI
 
         {
           name: @name,
-          arguments: (JSON.generate(@arguments) if @arguments),
+          arguments: @arguments,
         }
       end
     end
