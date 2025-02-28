@@ -61,7 +61,7 @@ module OmniAI
         return if data.eql?("[DONE]")
 
         response = OmniAI::Chat::Payload.deserialize(JSON.parse(data), context: @context)
-        block&.call(response)
+        block&.call(response) if response.text?
         response
       end
 
