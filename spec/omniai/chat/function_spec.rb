@@ -18,7 +18,29 @@ RSpec.describe OmniAI::Chat::Function do
   describe "#arguments!" do
     subject(:arguments!) { function.arguments! }
 
-    it { expect(arguments!).to eql("unit" => "celsius") }
+    context "when arguments is a string" do
+      let(:arguments) { JSON.generate(unit: "celsius") }
+
+      it { expect(arguments!).to eql("unit" => "celsius") }
+    end
+
+    context "when arguments is a hash" do
+      let(:arguments) { { unit: "celsius" } }
+
+      it { expect(arguments!).to eql(unit: "celsius") }
+    end
+
+    context "when arguments is nil" do
+      let(:arguments) { nil }
+
+      it { expect(arguments!).to eql({}) }
+    end
+
+    context "when arguments is blank" do
+      let(:arguments) { "" }
+
+      it { expect(arguments!).to eql({}) }
+    end
   end
 
   describe ".deserialize" do

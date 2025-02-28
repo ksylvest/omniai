@@ -29,6 +29,7 @@ module OmniAI
 
       # @return [Hash]
       def arguments!
+        return {} if @arguments.nil? || @arguments.empty?
         return @arguments unless @arguments.is_a?(String)
 
         JSON.parse(@arguments)
