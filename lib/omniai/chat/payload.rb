@@ -59,21 +59,31 @@ module OmniAI
       end
 
       # @param index [Integer]
-      # @return [Choice]
+      #
+      # @return [Choice, nil]
       def choice(index: 0)
         @choices[index]
       end
 
       # @param index [Integer]
+      #
       # @return [Boolean]
       def choice?(index: 0)
         !choice(index:).nil?
       end
 
       # @param index [Integer]
-      # @return [Message]
+      #
+      # @return [Message, nil]
       def message(index: 0)
-        choice(index:).message
+        choice(index:)&.message
+      end
+
+      # @param index [Integer]
+      #
+      # @return [Boolean]
+      def message?
+        !message(index:).nil?
       end
 
       # @return [Array<Message>]
@@ -82,26 +92,33 @@ module OmniAI
       end
 
       # @param index [Integer]
+      #
       # @return [String, nil]
       def text(index: 0)
-        message(index:).text
+        message(index:)&.text
       end
 
       # @param index [Integer]
+      #
       # @return [Boolean]
       def text?(index: 0)
-        message(index:).text?
+        message = message(index:)
+
+        !message.nil? && message.text?
       end
 
       # @param index [Integer]
-      # @return [Array<ToolCall>]
+      #
+      # @return [ToolCallList]
       def tool_call_list(index: 0)
-        message(index:).tool_call_list
+        message(index:)&.tool_call_list
       end
 
       # @return [Boolean]
       def tool_call_list?(index: 0)
-        tool_call_list(index:)&.any?
+        tool_call_list = tool_call_list(index:)
+
+        !tool_call_list.nil? && tool_call_list.any?
       end
     end
   end
