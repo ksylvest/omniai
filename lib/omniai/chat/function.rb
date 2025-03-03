@@ -4,10 +4,12 @@ module OmniAI
   class Chat
     # A function that includes a name / arguments.
     class Function
-      # @return [String]
+      # @!attribute [rw] name
+      #   @return [String]
       attr_accessor :name
 
-      # @return [Hash]
+      # @!attribute [rw] arguments
+      #   @return [Hash]
       attr_accessor :arguments
 
       # @param name [String]

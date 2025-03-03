@@ -9,15 +9,6 @@ RSpec.describe OmniAI::Chat::Choice do
     it { expect(choice.inspect).to eq(%(#<OmniAI::Chat::Choice index=0 message=#{message.inspect}>)) }
   end
 
-  describe "#merge" do
-    subject(:merge) { parent_choice.merge(child_choice) }
-
-    let(:parent_choice) { build(:chat_choice) }
-    let(:child_choice) { build(:chat_choice) }
-
-    it { expect(merge).to be_a(described_class) }
-  end
-
   describe "#index" do
     it { expect(choice.index).to eq(0) }
   end

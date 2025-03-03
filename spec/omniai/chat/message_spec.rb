@@ -36,17 +36,6 @@ RSpec.describe OmniAI::Chat::Message do
     it { expect(message.inspect).to eql('#<OmniAI::Chat::Message role="user" content=[]>') }
   end
 
-  describe "#merge" do
-    subject(:merge) { parent_message.merge(child_message) }
-
-    let(:parent_message) { build(:chat_message, content: "ABC") }
-    let(:child_message) { build(:chat_message, content: "DEF") }
-
-    it { expect(merge).to be_a(described_class) }
-    it { expect(merge.role).to eql("user") }
-    it { expect(merge.content).to eql("ABCDEF") }
-  end
-
   describe "#role" do
     it { expect(message.role).to eq("user") }
   end

@@ -54,13 +54,6 @@ module OmniAI
         }
       end
 
-      # @param other [OmniAI::Chat::Choice]
-      #
-      # @return [OmniAI::Chat::Choice]
-      def merge(other)
-        self.class.new(index: @index, message: @message.merge(other.message))
-      end
-
       # @return [Message]
       def delta
         message

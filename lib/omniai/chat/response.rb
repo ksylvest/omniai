@@ -2,68 +2,116 @@
 
 module OmniAI
   class Chat
-    # Used when processing everything at once.
+    # An `OmniAI::Chat::Response` encapsulates the result of generating a chat completion.
     class Response
       # @return [Hash]
       attr_accessor :data
 
-      # @param data [Hash]
-      # @param context [Context, nil]
-      def initialize(data:, context: nil)
-        @data = data
-        @context = context
-      end
-
-      # @return [Payload]
-      def completion
-        @completion ||= Payload.deserialize(@data, context: @context)
-      end
+      # @return [Array<Choice>]
+      attr_accessor :choices
 
       # @return [Usage, nil]
-      def usage
-        completion.usage
+      attr_accessor :usage
+
+      # @param data [Hash]
+      # @param choices [Array<Choice>]
+      # @param usage [Usage, nil]
+      def initialize(data:, choices: [], usage: nil)
+        @data = data
+        @choices = choices
+        @usage = usage
       end
 
-      # @return [Array<Choice>]
-      def choices
-        completion.choices
+      # @return [String]
+      def inspect
+        "#<#{self.class.name} choices=#{choices.inspect} usage=#{usage.inspect}>"
+      end
+
+      # @param data [Hash]
+      # @param context [OmniAI::Context] optional
+      def self.deserialize(data, context: nil)
+        deserialize = context&.deserializer(:response)
+        return deserialize.call(data, context:) if deserialize
+
+        choices = data["choices"].map { |choice_data| Choice.deserialize(choice_data, context:) }
+        usage = Usage.deserialize(data["usage"], context:) if data["usage"]
+
+        new(data:, choices:, usage:)
+      end
+
+      # @param context [OmniAI::Context] optional
+      # @return [Hash]
+      def serialize(context:)
+        serialize = context&.serializer(:response)
+        return serialize.call(self, context:) if serialize
+
+        {
+          choices: choices.map { |choice| choice.serialize(context:) },
+          usage: usage&.serialize(context:),
+        }
+      end
+
+      # @param index [Integer]
+      #
+      # @return [Choice, nil]
+      def choice(index: 0)
+        @choices[index]
+      end
+
+      # @param index [Integer]
+      #
+      # @return [Boolean]
+      def choice?(index: 0)
+        !choice(index:).nil?
+      end
+
+      # @param index [Integer]
+      #
+      # @return [Message, nil]
+      def message(index: 0)
+        choice(index:)&.message
+      end
+
+      # @param index [Integer]
+      #
+      # @return [Boolean]
+      def message?
+        !message(index:).nil?
       end
 
       # @return [Array<Message>]
       def messages
-        completion.messages
+        @choices.map(&:message)
       end
 
       # @param index [Integer]
-      # @return [Choice]
-      def choice(index: 0)
-        completion.choice(index:)
+      #
+      # @return [String, nil]
+      def text(index: 0)
+        message(index:)&.text
       end
 
       # @param index [Integer]
-      # @return [Message]
-      def message(index: 0)
-        completion.message(index:)
+      #
+      # @return [Boolean]
+      def text?(index: 0)
+        message = message(index:)
+
+        !message.nil? && message.text?
       end
 
-      # @return [String]
-      def text
-        message.text
+      # @param index [Integer]
+      #
+      # @return [ToolCallList]
+      def tool_call_list(index: 0)
+        message(index:)&.tool_call_list
       end
 
       # @return [Boolean]
-      def text?
-        message.text?
-      end
+      def tool_call_list?(index: 0)
+        tool_call_list = tool_call_list(index:)
 
-      # @return [Array<ToolCall>]
-      def tool_call_list
-        choice.tool_call_list
-      end
-
-      # @return [Boolean]
-      def tool_call_list?
-        tool_call_list&.any?
+        !tool_call_list.nil? && tool_call_list.any?
       end
     end
   end

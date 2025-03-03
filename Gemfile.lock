@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    omniai (1.9.6)
+    omniai (2.0.0)
       event_stream_parser
       http
       logger

@@ -28,7 +28,7 @@ module OmniAI
       #
       # @return [ToolMessage]
       def self.deserialize(data, context: nil)
-        deserialize = context&.deserializer(:tool_message)
+        deserialize = context&.deserializer(:tool_call_message)
         return deserialize.call(data, context:) if deserialize
 
         role = data["role"]
@@ -47,7 +47,7 @@ module OmniAI
       #
       # @return [Hash]
       def serialize(context: nil)
-        serializer = context&.serializer(:tool_message)
+        serializer = context&.serializer(:tool_call_message)
         return serializer.call(self, context:) if serializer
 
         role = @role

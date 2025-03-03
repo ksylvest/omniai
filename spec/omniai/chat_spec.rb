@@ -127,15 +127,23 @@ RSpec.describe OmniAI::Chat do
           })
           .to_return(status: 200, body: <<~STREAM)
             data: #{JSON.generate({ choices: [{ index: 0, delta: { role: 'assistant', content: '' } }] })}\n\n
-            data: #{JSON.generate({ choices: [{ index: 0, delta: { role: 'assistant', content: 'A' } }] })}\n\n
-            data: #{JSON.generate({ choices: [{ index: 0, delta: { role: 'assistant', content: 'B' } }] })}\n\n
+            data: #{JSON.generate({ choices: [{ index: 0, delta: { role: 'assistant', content: 'Hello' } }] })}\n\n
+            data: #{JSON.generate({ choices: [{ index: 0, delta: { role: 'assistant', content: ' ' } }] })}\n\n
+            data: #{JSON.generate({ choices: [{ index: 0, delta: { role: 'assistant', content: 'World' } }] })}\n\n
             data: [DONE]\n\n
           STREAM
       end
 
+      it { expect(process!).to be_a(OmniAI::Chat::Response) }
+      it { expect(process!.text).to eql("Hello World") }
+
       it do
         process!
-        expect(chunks.map(&:text).join).to eql("AB")
+        expect(chunks.filter(&:text?).map(&:text)).to eql([
+          "Hello",
+          " ",
+          "World",
+        ])
       end
     end
 
