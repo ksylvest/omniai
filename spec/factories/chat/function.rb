@@ -5,6 +5,6 @@ FactoryBot.define do
     initialize_with { new(**attributes) }
 
     name { "temperature" }
-    arguments { { "unit" => "celsius" } }
+    arguments { JSON.generate(unit: "celsius") }
   end
 end

@@ -47,12 +47,12 @@ module OmniAI
       attr_accessor :role
 
       # @!attribute [rw] tool_call_list
-      #   @return [Array<ToolCall>, nil]
+      #   @return [ToolCallList, nil]
       attr_accessor :tool_call_list
 
       # @param content [String, nil]
       # @param role [String]
-      # @param tool_call_list [Array<ToolCall>, nil]
+      # @param tool_call_list [ToolCallList, nil]
       def initialize(content:, role: Role::USER, tool_call_list: nil)
         @content = content
         @role = role
@@ -86,7 +86,7 @@ module OmniAI
 
         role = data["role"]
         content = Content.deserialize(data["content"], context:)
-        tool_call_list = data["tool_calls"]&.map { |subdata| ToolCall.deserialize(subdata, context:) }
+        tool_call_list = ToolCallList.deserialize(data["tool_calls"], context:)
 
         new(content:, role:, tool_call_list:)
       end
@@ -104,30 +104,9 @@ module OmniAI
         return serializer.call(self, context:) if serializer
 
         content = @content.is_a?(Array) ? @content.map { |content| content.serialize(context:) } : @content
-        tool_calls = @tool_call_list&.map { |tool_call| tool_call.serialize(context:) }
+        tool_calls = @tool_call_list&.serialize(context:)
 
         { role: @role, content:, tool_calls: }.compact
-      end
-
-      # @param other [OmniAI::Chat::Message]
-      #
-      # @return [OmniAI::Chat::Message]
-      def merge(other)
-        content =
-          if @content && other.content
-            @content + other.content
-          else
-            @content || other.content
-          end
-
-        tool_call_list =
-          if @tool_call_list && other.tool_call_list
-            @tool_call_list + other.tool_call_list
-          else
-            @tool_call_list || other.tool_call_list
-          end
-
-        self.class.new(content:, role:, tool_call_list:)
       end
 
       # @return [Boolean]

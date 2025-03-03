@@ -13,30 +13,32 @@ module OmniAI
     class Stream
       # @param logger [OmniAI::Client]
       # @param chunks [Enumerable<String>]
-      # @param context [Context, nil]
-      def initialize(chunks:, logger: nil, context: nil)
+      def initialize(chunks:, logger: nil)
         @chunks = chunks
         @logger = logger
-        @context = context
       end
 
-      # @yield [payload]
-      # @yieldparam payload [OmniAI::Chat::Payload]
+      # @yield [delta]
+      # @yieldparam delta [OmniAI::Chat::Delta]
       #
-      # @return [OmniAI::Chat::Payload]
+      # @return [Hash]
       def stream!(&block)
-        OmniAI::Chat::Payload.new.tap do |payload|
-          @chunks.map do |chunk|
-            parser.feed(chunk) do |type, data, id|
-              result = process!(type, data, id, &block)
-              payload.merge!(result) if result.is_a?(OmniAI::Chat::Payload)
-            end
+        @data = { "choices" => [] }
+
+        @chunks.map do |chunk|
+          parser.feed(chunk) do |type, data, id|
+            process!(type, data, id, &block)
           end
         end
+
+        @data
       end
 
     protected
 
+      # @yield [delta]
+      # @yieldparam delta [OmniAI::Chat::Delta]
+      #
       # @param type [String]
       # @param data [String]
       # @param id [String]
@@ -50,19 +52,78 @@ module OmniAI
         @logger&.debug("Stream#process! #{arguments.join(' ')}")
       end
 
+      # @yield [delta]
+      # @yieldparam delta [OmniAI::Chat::Delta]
+      #
       # @param type [String]
       # @param data [String]
       # @param id [String]
-      #
-      # @return [OmniAI::Chat::Payload, nil]
-      def process!(type, data, id, &block)
+      def process!(type, data, id, &)
         log(type, data, id)
 
         return if data.eql?("[DONE]")
 
-        payload = Payload.deserialize(JSON.parse(data), context: @context)
-        block&.call(payload)
-        payload
+        process_data!(data: JSON.parse(data), &)
+      end
+
+      # @yield [delta]
+      # @yieldparam delta [OmniAI::Chat::Delta]
+      #
+      # @param data [Hash]
+      def process_data!(data:, &block)
+        data.each do |key, value|
+          @data[key] = value unless key.eql?("choices") || key.eql?("object")
+        end
+
+        data["choices"].each do |choice|
+          merge_choice!(choice:)
+
+          text = choice["delta"]["content"]
+          block&.call(Delta.new(text:)) if text
+        end
+      end
+
+      # @param choice [Hash]
+      def merge_choice!(choice:)
+        index = choice["index"]
+        delta = choice["delta"]
+
+        if @data["choices"][index].nil?
+          @data["choices"][index] = {
+            "index" => index,
+            "message" => delta,
+          }
+        else
+          message = @data["choices"][index]["message"]
+
+          message["content"] += delta["content"] if delta["content"]
+
+          merge_tool_call_list!(tool_call_list: delta["tool_calls"], message:)
+        end
+      end
+
+      # @param tool_call_list [Array<Hash>, nil]
+      # @param message [Hash]
+      def merge_tool_call_list!(tool_call_list:, message:)
+        return unless tool_call_list
+
+        message["tool_calls"] ||= []
+
+        tool_call_list.each do |tool_call|
+          merge_tool_call_data!(tool_call:, message:)
+        end
+      end
+
+      # @param tool_call [Hash]
+      # @param message [Hash]
+      def merge_tool_call_data!(tool_call:, message:)
+        tool_call_index = tool_call["index"]
+
+        if message["tool_calls"][tool_call_index].nil?
+          message["tool_calls"][tool_call_index] = tool_call
+        else
+          message["tool_calls"][tool_call_index]["function"]["arguments"] += tool_call["function"]["arguments"]
+        end
       end
 
       # @return [EventStreamParser::Parser]

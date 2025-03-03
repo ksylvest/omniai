@@ -2,19 +2,10 @@
 
 FactoryBot.define do
   factory :chat_response, class: "OmniAI::Chat::Response" do
-    initialize_with { new(data:) }
+    initialize_with { new(**attributes) }
 
-    data do
-      {
-        "choices" => [
-          { "index" => 0, "message" => { "role" => "system", "content" => "Hello!" } },
-        ],
-        "usage" => {
-          "input_tokens" => 0,
-          "output_tokens" => 0,
-          "total_tokens" => 0,
-        },
-      }
-    end
+    usage factory: :chat_usage
+    choices { [] }
+    data { {} }
   end
 end
