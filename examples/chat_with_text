@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "omniai/anthropic"
+
+CLIENT = OmniAI::Anthropic::Client.new
+
+puts "> [USER] Tell me a joke"
+
+response = CLIENT.chat("Tell me a joke")
+
+puts response.text

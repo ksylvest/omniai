@@ -1,15 +1,18 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require "omniai/anthropic"
+require "omniai/openai"
 
-CLIENT = OmniAI::Anthropic::Client.new
+CLIENT = OmniAI::OpenAI::Client.new
 
 CAT_URL = "https://images.unsplash.com/photo-1472491235688-bdc81a63246e?q=80&w=1024&h=1024&fit=crop&fm=jpg"
 DOG_URL = "https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1024&h=1024&fit=crop&fm=jpg"
 
+puts "> [SYSTEM] You are a helpful biologist with expertise in animals who responds with the Latin names."
+puts "> [USER] What animals are in the attached photos?"
+
 CLIENT.chat(stream: $stdout) do |prompt|
-  prompt.system("You are a helpful biologist with an expertise in animals that responds with the latin names.")
+  prompt.system("You are a helpful biologist with expertise in animals who responds with the Latin names.")
   prompt.user do |message|
     message.text("What animals are in the attached photos?")
     message.url(CAT_URL, "image/jpeg")
