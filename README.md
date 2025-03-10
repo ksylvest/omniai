@@ -16,36 +16,118 @@ OmniAI provides a unified Ruby API for integrating with multiple AI providers, i
 
 ## Examples
 
-### Example #1: [Chat](https://github.com/ksylvest/omniai/blob/main/examples/chat)
+### Example #1: [Chat w/ Text](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_text)
 
-This example demonstrates using `OmniAI` with **Anthropic** to prompt a “biologist” for an analysis of photos, identifying the animals within each one. A system and user message are provided, and the response is streamed in real time.
+This example demonstrates using `OmniAI` with **Anthropic** to ask for a joke. The response is parsed and printed.
 
 ```ruby
 require 'omniai/anthropic'
 
 CLIENT = OmniAI::Anthropic::Client.new
 
-CAT_URL = 'https://images.unsplash.com/photo-1472491235688-bdc81a63246e?q=80&w=1024&h=1024&fit=crop&fm=jpg'
-DOG_URL = 'https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1024&h=1024&fit=crop&fm=jpg'
+puts "> [USER] Tell me a joke"
+
+response = CLIENT.chat("Tell me a joke")
+puts response.text
+```
+
+```
+> [USER] Tell me a joke
+Why don't scientists trust atoms? Because they make up everything!
+```
+
+### Example #2: [Chat w/ Prompt](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_prompt)
+
+This example demonstrates using `OmniAI` with **Mistral** to ask for the fastest animal. It includes a system and user message in the prompt. The response is streamed in real time.
+
+```ruby
+require "omniai/mistral"
+
+CLIENT = OmniAI::Mistral::Client.new
+
+puts "> [SYSTEM] Respond in both English and French."
+puts "> [USER] What is the fastest animal?"
 
 CLIENT.chat(stream: $stdout) do |prompt|
-  prompt.system('You are a helpful biologist with an expertise in animals that responds with the latin names.')
-  prompt.user do |message|
-    message.text('What animals are in the attached photos?')
-    message.url(CAT_URL, 'image/jpeg')
-    message.url(DOG_URL, 'image/jpeg')
-  end
+  prompt.system "Respond in both English and French."
+  prompt.user "What is the fastest animal?"
 end
 ```
 
 ```
-The animals in the photos are:
-
-1. A cat (*Felis catus*).
-2. A dog (*Canis familiaris*).
+> [SYSTEM] Respond in both English and French.
+> [USER] What is the fastest animal?
+**English**: The peregrine falcon is generally considered the fastest animal, reaching speeds of over 390 km/h.
+**French**: Le faucon pèlerin est généralement considéré comme l'animal le plus rapide, atteignant des vitesses de plus de 390 km/h.
 ```
 
-### Example #2: [Text-to-Speech](https://github.com/ksylvest/omniai/blob/main/examples/text_to_speech)
+### Example #3: [Chat w/ Vision](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_vision)
+
+This example demonstrates using `OmniAI` with **OpenAI** to prompt a “biologist” for an analysis of photos, identifying the animals within each one. A system and user message are provided, and the response is streamed in real time.
+
+```ruby
+require "omniai/openai"
+
+CLIENT = OmniAI::OpenAI::Client.new
+
+CAT_URL = "https://images.unsplash.com/photo-1472491235688-bdc81a63246e?q=80&w=1024&h=1024&fit=crop&fm=jpg"
+DOG_URL = "https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1024&h=1024&fit=crop&fm=jpg"
+
+CLIENT.chat(stream: $stdout) do |prompt|
+  prompt.system("You are a helpful biologist with expertise in animals who responds with the Latin names.")
+  prompt.user do |message|
+    message.text("What animals are in the attached photos?")
+    message.url(CAT_URL, "image/jpeg")
+    message.url(DOG_URL, "image/jpeg")
+  end
+end
+```
+
+```text
+> [SYSTEM] You are a helpful biologist with expertise in animals who responds with the Latin names.
+> [USER] What animals are in the attached photos?
+The first photo is of a cat, *Felis Catus*.
+The second photo is of a dog, *Canis Familiaris*.
+```
+
+### Example #4: [Chat w/ Tools](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_tools)
+
+This example demonstrates using `OmniAI` with **Google** to ask for the weather. A tool “Weather” is provided. The tool accepts a location and unit (Celsius or Fahrenheit) then calculates the weather. The LLM makes multiple tool-call requests and is automatically provided with a tool-call response prior to streaming in real-time the result.
+
+```ruby
+require 'omniai/google'
+
+CLIENT = OmniAI::Google::Client.new
+
+TOOL = OmniAI::Tool.new(
+  proc { |location:, unit: "Celsius"| "#{rand(20..50)}° #{unit} in #{location}" },
+  name: "Weather",
+  description: "Lookup the weather in a location",
+  parameters: OmniAI::Tool::Parameters.new(
+    properties: {
+      location: OmniAI::Tool::Property.string(description: "e.g. Toronto"),
+      unit: OmniAI::Tool::Property.string(enum: %w[Celsius Fahrenheit]),
+    },
+    required: %i[location]
+  )
+)
+
+puts "> [SYSTEM] You are an expert in weather."
+puts "> [USER] What is the weather in 'London' in Celsius and 'Madrid' in Fahrenheit?"
+
+CLIENT.chat(stream: $stdout, tools: [TOOL]) do |prompt|
+  prompt.system "You are an expert in weather."
+  prompt.user 'What is the weather in "London" in Celsius and "Madrid" in Fahrenheit?'
+end
+```
+
+```
+> [SYSTEM] You are an expert in weather.
+> [USER] What is the weather in 'London' in Celsius and 'Madrid' in Fahrenheit?
+The weather is 24° Celsius in London and 42° Fahrenheit in Madrid.
+```
+
+### Example #5: [Text-to-Speech](https://github.com/ksylvest/omniai/blob/main/examples/text_to_speech)
 
 This example demonstrates using `OmniAI` with **OpenAI** to convert text to speech and save it to a file.
 
@@ -61,7 +143,7 @@ File.open(File.join(__dir__, 'audio.wav'), 'wb') do |file|
 end
 ```
 
-### Example #3: [Speech-to-Text](https://github.com/ksylvest/omniai/blob/main/examples/speech_to_text)
+### Example #6: [Speech-to-Text](https://github.com/ksylvest/omniai/blob/main/examples/speech_to_text)
 
 This example demonstrates using `OmniAI` with **OpenAI** to convert speech to text.
 
@@ -76,64 +158,7 @@ File.open(File.join(__dir__, 'audio.wav'), 'rb') do |file|
 end
 ```
 
-### Example #4: [Tools](https://github.com/ksylvest/omniai/blob/main/examples/tools)
-
-This example demonstrates how to use `OmniAI` with **Google** to call a custom tool that generates a weather report. The tool accepts a list of locations (city and country) and returns a temperature — randomly generated for demonstration purposes — based on the provided parameters.
-
-```ruby
-require 'omniai/google'
-
-CLIENT = OmniAI::Google::Client.new
-
-LOCATION = OmniAI::Tool::Property.object(
-  properties: {
-    city: OmniAI::Tool::Property.string(description: 'e.g. "Toronto"'),
-    country: OmniAI::Tool::Property.string(description: 'e.g. "Canada"'),
-  },
-  required: %i[city country]
-)
-
-LOCATIONS = OmniAI::Tool::Property.array(
-  min_items: 1,
-  max_items: 5,
-  items: LOCATION
-)
-
-UNIT = OmniAI::Tool::Property.string(enum: %w[celcius fahrenheit])
-
-WEATHER = proc do |locations:, unit: 'celsius'|
-  locations.map do |location|
-    "#{rand(20..50)}° #{unit} in #{location[:city]}, #{location[:country]}"
-  end.join("\n")
-end
-
-TOOL = OmniAI::Tool.new(
-  WEATHER,
-  name: 'Weather',
-  description: 'Lookup the weather in a location',
-  parameters: OmniAI::Tool::Parameters.new(
-    properties: {
-      locations: LOCATIONS,
-      unit: UNIT,
-    },
-    required: %i[locations]
-  )
-)
-
-completion = CLIENT.chat(tools: [TOOL]) do |prompt|
-  prompt.user do |message|
-    message.text('What is the weather in "London" in celcius and "Seattle" in fahrenheit?')
-  end
-end
-
-puts(completion.text)
-```
-
-```
-The weather is 24° celcius in London and 42° fahrenheit in Seattle.
-```
-
-### Example #5: [Embeddings](https://github.com/ksylvest/omniai/blob/main/examples/embeddings)
+### Example #7: [Embeddings](https://github.com/ksylvest/omniai/blob/main/examples/embeddings)
 
 This example demonstrates using `OmniAI` with **Mistral** to generate embeddings for a dataset. It defines a set of entries (e.g. "George is a teacher." or "Ringo is a doctor.") and then compares the embeddings generated from a query (e.g. "What does George do?" or "Who is a doctor?") to rank the entries by relevance.
 
@@ -282,7 +307,7 @@ logger = Logger.new(STDOUT)
 client = OmniAI::OpenAI::Client.new(timeout: 8) # i.e. 8 seconds
 ```
 
-Timeouts are also be configurable by passing a `timeout` hash with `timeout` / `read` / `write` / `keys using:
+Timeouts are also configurable by passing a `timeout` hash with `timeout` / `read` / `write` / keys using:
 
 ```ruby
 require 'omniai/openai'
@@ -351,18 +376,18 @@ A chat can also be initialized with tools:
 
 ```ruby
 tool = OmniAI::Tool.new(
-  proc { |location:, unit: 'celsius'| "#{rand(20..50)}° #{unit} in #{location}" },
+  proc { |location:, unit: 'Celsius'| "#{rand(20..50)}° #{unit} in #{location}" },
   name: 'Weather',
   description: 'Lookup the weather in a location',
   parameters: OmniAI::Tool::Parameters.new(
     properties: {
       location: OmniAI::Tool::Property.string(description: 'e.g. Toronto'),
-      unit: OmniAI::Tool::Property.string(enum: %w[celcius fahrenheit]),
+      unit: OmniAI::Tool::Property.string(enum: %w[Celsius Fahrenheit]),
     },
     required: %i[location]
   )
 )
-client.chat('What is the weather in "London" in celcius and "Paris" in fahrenheit?', tools: [tool])
+client.chat('What is the weather in "London" in Celsius and "Paris" in Fahrenheit?', tools: [tool])
 ```
 
 ### Transcribe

@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "omniai/mistral"
+
+CLIENT = OmniAI::Mistral::Client.new
+
+puts "> [SYSTEM] Respond in both English and French."
+puts "> [USER] What is the fastest animal?"
+
+CLIENT.chat(stream: $stdout) do |prompt|
+  prompt.system "Respond in both English and French."
+  prompt.user "What is the fastest animal?"
+end
