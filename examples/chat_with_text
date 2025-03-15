@@ -3,10 +3,6 @@
 
 require "omniai/anthropic"
 
-CLIENT = OmniAI::Anthropic::Client.new
+client = OmniAI::Anthropic::Client.new
 
-puts "> [USER] Tell me a joke"
-
-response = CLIENT.chat("Tell me a joke")
-
-puts response.text
+puts client.chat("Tell me a joke").text

@@ -3,10 +3,10 @@
 
 require "omniai/openai"
 
-CLIENT = OmniAI::OpenAI::Client.new
+client = OmniAI::OpenAI::Client.new
 
 File.open(File.join(__dir__, "audio.wav"), "wb") do |file|
-  CLIENT.speak("Sally sells seashells by the seashore.", format: OmniAI::Speak::Format::WAV) do |chunk|
+  client.speak("Sally sells seashells by the seashore.", format: OmniAI::Speak::Format::WAV) do |chunk|
     file << chunk
   end
 end

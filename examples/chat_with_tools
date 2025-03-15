@@ -3,9 +3,9 @@
 
 require "omniai/google"
 
-CLIENT = OmniAI::Google::Client.new
+client = OmniAI::Google::Client.new
 
-TOOL = OmniAI::Tool.new(
+tool = OmniAI::Tool.new(
   proc { |location:, unit: "Celsius"| "#{rand(20..50)}° #{unit} in #{location}" },
   name: "Weather",
   description: "Lookup the weather in a location",
@@ -18,10 +18,7 @@ TOOL = OmniAI::Tool.new(
   )
 )
 
-puts "> [SYSTEM] You are an expert in weather."
-puts "> [USER] What is the weather in 'London' in Celsius and 'Madrid' in Fahrenheit?"
-
-CLIENT.chat(stream: $stdout, tools: [TOOL]) do |prompt|
+client.chat(stream: $stdout, tools: [tool]) do |prompt|
   prompt.system "You are an expert in weather."
   prompt.user 'What is the weather in "London" in Celsius and "Madrid" in Fahrenheit?'
 end
