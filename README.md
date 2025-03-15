@@ -111,7 +111,27 @@ end
 The weather is 24° Celsius in London and 42° Fahrenheit in Madrid.
 ```
 
-### Example #5: [Text-to-Speech](https://github.com/ksylvest/omniai/blob/main/examples/text_to_speech)
+### Example #5: Chat w/ CLI
+
+The `OmniAI` gem also ships with a CLI to simplify quick tests.
+
+```bash
+omniai chat "Who designed the Ruby programming language?"
+```
+
+```
+The Ruby programming language was created by Yukihiro Matsumoto, often known as "Matz."
+```
+
+```bash
+omniai chat --provider="google" --model="gemini-2.0-flash" "Who are you?"
+```
+
+```
+I am a large language model, trained by Google.
+```
+
+### Example #6: [Text-to-Speech](https://github.com/ksylvest/omniai/blob/main/examples/text_to_speech)
 
 This example demonstrates using `OmniAI` with **OpenAI** to convert text to speech and save it to a file.
 
@@ -127,7 +147,7 @@ File.open(File.join(__dir__, 'audio.wav'), 'wb') do |file|
 end
 ```
 
-### Example #6: [Speech-to-Text](https://github.com/ksylvest/omniai/blob/main/examples/speech_to_text)
+### Example #7: [Speech-to-Text](https://github.com/ksylvest/omniai/blob/main/examples/speech_to_text)
 
 This example demonstrates using `OmniAI` with **OpenAI** to convert speech to text.
 
@@ -142,7 +162,7 @@ File.open(File.join(__dir__, 'audio.wav'), 'rb') do |file|
 end
 ```
 
-### Example #7: [Embeddings](https://github.com/ksylvest/omniai/blob/main/examples/embeddings)
+### Example #8: [Embeddings](https://github.com/ksylvest/omniai/blob/main/examples/embeddings)
 
 This example demonstrates using `OmniAI` with **Mistral** to generate embeddings for a dataset. It defines a set of entries (e.g. "George is a teacher." or "Ringo is a doctor.") and then compares the embeddings generated from a query (e.g. "What does George do?" or "Who is a doctor?") to rank the entries by relevance.
 
