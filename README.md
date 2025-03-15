@@ -23,16 +23,12 @@ This example demonstrates using `OmniAI` with **Anthropic** to ask for a joke. T
 ```ruby
 require 'omniai/anthropic'
 
-CLIENT = OmniAI::Anthropic::Client.new
+client = OmniAI::Anthropic::Client.new
 
-puts "> [USER] Tell me a joke"
-
-response = CLIENT.chat("Tell me a joke")
-puts response.text
+puts client.chat("Tell me a joke").text
 ```
 
 ```
-> [USER] Tell me a joke
 Why don't scientists trust atoms? Because they make up everything!
 ```
 
@@ -43,20 +39,15 @@ This example demonstrates using `OmniAI` with **Mistral** to ask for the fastest
 ```ruby
 require "omniai/mistral"
 
-CLIENT = OmniAI::Mistral::Client.new
+client = OmniAI::Mistral::Client.new
 
-puts "> [SYSTEM] Respond in both English and French."
-puts "> [USER] What is the fastest animal?"
-
-CLIENT.chat(stream: $stdout) do |prompt|
+client.chat(stream: $stdout) do |prompt|
   prompt.system "Respond in both English and French."
   prompt.user "What is the fastest animal?"
 end
 ```
 
 ```
-> [SYSTEM] Respond in both English and French.
-> [USER] What is the fastest animal?
 **English**: The peregrine falcon is generally considered the fastest animal, reaching speeds of over 390 km/h.
 **French**: Le faucon pèlerin est généralement considéré comme l'animal le plus rapide, atteignant des vitesses de plus de 390 km/h.
 ```
@@ -68,12 +59,12 @@ This example demonstrates using `OmniAI` with **OpenAI** to prompt a “biologis
 ```ruby
 require "omniai/openai"
 
-CLIENT = OmniAI::OpenAI::Client.new
+client = OmniAI::OpenAI::Client.new
 
 CAT_URL = "https://images.unsplash.com/photo-1472491235688-bdc81a63246e?q=80&w=1024&h=1024&fit=crop&fm=jpg"
 DOG_URL = "https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1024&h=1024&fit=crop&fm=jpg"
 
-CLIENT.chat(stream: $stdout) do |prompt|
+client.chat(stream: $stdout) do |prompt|
   prompt.system("You are a helpful biologist with expertise in animals who responds with the Latin names.")
   prompt.user do |message|
     message.text("What animals are in the attached photos?")
@@ -83,9 +74,7 @@ CLIENT.chat(stream: $stdout) do |prompt|
 end
 ```
 
-```text
-> [SYSTEM] You are a helpful biologist with expertise in animals who responds with the Latin names.
-> [USER] What animals are in the attached photos?
+```
 The first photo is of a cat, *Felis Catus*.
 The second photo is of a dog, *Canis Familiaris*.
 ```
@@ -97,9 +86,9 @@ This example demonstrates using `OmniAI` with **Google** to ask for the weather.
 ```ruby
 require 'omniai/google'
 
-CLIENT = OmniAI::Google::Client.new
+client = OmniAI::Google::Client.new
 
-TOOL = OmniAI::Tool.new(
+tool = OmniAI::Tool.new(
   proc { |location:, unit: "Celsius"| "#{rand(20..50)}° #{unit} in #{location}" },
   name: "Weather",
   description: "Lookup the weather in a location",
@@ -112,18 +101,13 @@ TOOL = OmniAI::Tool.new(
   )
 )
 
-puts "> [SYSTEM] You are an expert in weather."
-puts "> [USER] What is the weather in 'London' in Celsius and 'Madrid' in Fahrenheit?"
-
-CLIENT.chat(stream: $stdout, tools: [TOOL]) do |prompt|
+client.chat(stream: $stdout, tools: [tool]) do |prompt|
   prompt.system "You are an expert in weather."
   prompt.user 'What is the weather in "London" in Celsius and "Madrid" in Fahrenheit?'
 end
 ```
 
 ```
-> [SYSTEM] You are an expert in weather.
-> [USER] What is the weather in 'London' in Celsius and 'Madrid' in Fahrenheit?
 The weather is 24° Celsius in London and 42° Fahrenheit in Madrid.
 ```
 
@@ -134,10 +118,10 @@ This example demonstrates using `OmniAI` with **OpenAI** to convert text to spee
 ```ruby
 require 'omniai/openai'
 
-CLIENT = OmniAI::OpenAI::Client.new
+client = OmniAI::OpenAI::Client.new
 
 File.open(File.join(__dir__, 'audio.wav'), 'wb') do |file|
-  CLIENT.speak('Sally sells seashells by the seashore.', format: OmniAI::Speak::Format::WAV) do |chunk|
+  client.speak('Sally sells seashells by the seashore.', format: OmniAI::Speak::Format::WAV) do |chunk|
     file << chunk
   end
 end
@@ -150,10 +134,10 @@ This example demonstrates using `OmniAI` with **OpenAI** to convert speech to te
 ```ruby
 require 'omniai/openai'
 
-CLIENT = OmniAI::OpenAI::Client.new
+client = OmniAI::OpenAI::Client.new
 
 File.open(File.join(__dir__, 'audio.wav'), 'rb') do |file|
-  transcription = CLIENT.transcribe(file)
+  transcription = client.transcribe(file)
   puts(transcription.text)
 end
 ```
