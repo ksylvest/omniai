@@ -119,7 +119,7 @@ end
 The weather is 24° Celsius in London and 42° Fahrenheit in Madrid.
 ```
 
-### Example #5: Chat w/ CLI
+### Example #5: [Chat w/ CLI](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_cli)
 
 The `OmniAI` gem also ships with a CLI to simplify quick tests.
 
