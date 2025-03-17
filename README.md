@@ -88,23 +88,31 @@ require 'omniai/google'
 
 client = OmniAI::Google::Client.new
 
-tool = OmniAI::Tool.new(
-  proc { |location:, unit: "Celsius"| "#{rand(20..50)}° #{unit} in #{location}" },
-  name: "Weather",
-  description: "Lookup the weather in a location",
-  parameters: OmniAI::Tool::Parameters.new(
-    properties: {
-      location: OmniAI::Tool::Property.string(description: "e.g. Toronto"),
-      unit: OmniAI::Tool::Property.string(enum: %w[Celsius Fahrenheit]),
-    },
-    required: %i[location]
-  )
-)
+class Weather < OmniAI::Tool
+  description "Lookup the weather for a location"
 
-client.chat(stream: $stdout, tools: [tool]) do |prompt|
+  parameter :location, :string, description: "A location (e.g. 'Toronto, Canada')."
+  parameter :unit, :string, enum: %w[Celsius Fahrenheit], description: "The unit of measurement."
+  required %i[location]
+
+  # @param location [String] required
+  # @param unit [String] optional - "Celcius" or "Fahrenheit"
+  # @return [String]
+  def execute(location:, unit: "Celsius")
+    puts "[weather] location=#{location} unit=#{unit}"
+    "#{rand(20..50)}° #{unit} at #{location}"
+  end
+end
+
+client.chat(stream: $stdout, tools: [Weather.new]) do |prompt|
   prompt.system "You are an expert in weather."
   prompt.user 'What is the weather in "London" in Celsius and "Madrid" in Fahrenheit?'
 end
+```
+
+```
+[weather] location=London unit=Celsius
+[weather] location=Madrid unit=Fahrenheit
 ```
 
 ```

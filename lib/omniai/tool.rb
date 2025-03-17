@@ -3,40 +3,82 @@
 module OmniAI
   # Usage:
   #
-  #   fibonacci = proc do |n:|
-  #     next(0) if n == 0
-  #     next(1) if n == 1
-  #     fibonacci.call(n: n - 1) + fibonacci.call(n: n - 2)
-  #   end
+  #   class Weather < OmniAI::Tool
+  #     description 'Find the weather for a location'
   #
-  #   tool = OmniAI::Tool.new(fibonacci,
-  #     name: 'Fibonacci',
-  #     description: 'Cacluate the nth Fibonacci',
-  #     parameters: OmniAI::Tool::Parameters.new(
-  #       properties: {
-  #         n: OmniAI::Tool::Property.integer(description: 'The nth Fibonacci number to calculate')
-  #       },
-  #       required: %i[n],
-  #      )
-  #   )
+  #     parameter :location, :string, description: 'The location to find the weather for (e.g. "Toronto, Canada").'
+  #     parameter :unit, :string, description: 'The unit of measurement (e.g. "Celcius" or "Fahrenheit").'
+  #     required %i[location]
+  #
+  #     def execute!(location:)
+  #       # ...
+  #     end
+  #   end
   class Tool
-    # @return [Proc]
+    class << self
+      # @param description [String]
+      def description(description = nil)
+        return @description if description.nil?
+
+        @description = description
+      end
+
+      # @return [OmniAI::Tool::Parameters]
+      def parameters
+        @parameters ||= Parameters.new
+      end
+
+      # @param name [Symbol]
+      # @param kind [Symbol]
+      def parameter(name, kind, **)
+        parameters.properties[name] = Property.build(kind, **)
+      end
+
+      # @param names [Array<Symbol>]
+      def required(names)
+        parameters.required = names
+      end
+
+      # Converts a class name to a tool:
+      #  - e.g. "IBM::Watson::SearchTool" => "ibm_watson_search"
+      #
+      # @return [String]
+      def namify
+        name
+          .gsub("::", "_")
+          .gsub(/(?<prefix>[A-Z+])(?<suffix>[A-Z][a-z])/, '\k<prefix>_\k<suffix>')
+          .gsub(/(?<prefix>[a-z])(?<suffix>[A-Z])/, '\k<prefix>_\k<suffix>')
+          .gsub(/_tool$/i, "")
+          .downcase
+      end
+    end
+
+    # @!attribute [rw] function
+    #   @return [Proc]
     attr_accessor :function
 
-    # @return [String]
+    # @!attribute [rw] name
+    #   @return [String]
     attr_accessor :name
 
-    # @return [String, nil]
+    # @!attribute [description]
+    #   @return [String, nil]
     attr_accessor :description
 
-    # @return [Hash, nil]
+    # @!attribute[parameters]
+    #   @return [Hash, nil]
     attr_accessor :parameters
 
     # @param function [Proc]
     # @param name [String]
     # @param description [String]
     # @param parameters [Hash]
-    def initialize(function, name:, description: nil, parameters: nil)
+    def initialize(
+      function = method(:execute),
+      name: self.class.namify,
+      description: self.class.description,
+      parameters: self.class.parameters
+    )
       @function = function
       @name = name
       @description = description
@@ -77,6 +119,10 @@ module OmniAI
           parameters: @parameters.is_a?(Tool::Parameters) ? @parameters.serialize : @parameters,
         }.compact,
       }
+    end
+
+    def execute(...)
+      raise NotImplementedError, "#{self.class}#execute undefined"
     end
 
     # @example

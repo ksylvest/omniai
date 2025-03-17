@@ -3,6 +3,56 @@
 RSpec.describe OmniAI::Tool::Property do
   subject(:property) { build(:tool_property) }
 
+  describe ".build" do
+    subject(:property) { described_class.build(kind, **options) }
+
+    context "when kind is ':array'" do
+      let(:kind) { :array }
+      let(:options) { { items: build(:tool_property, :string) } }
+
+      it { expect(property).to be_a(OmniAI::Tool::Array) }
+    end
+
+    context "when kind is ':object'" do
+      let(:kind) { :object }
+      let(:options) { { properties: { name: build(:tool_property, :string) }, required: %i[name] } }
+
+      it { expect(property).to be_a(OmniAI::Tool::Object) }
+    end
+
+    context "when kind is ':boolean'" do
+      let(:kind) { :boolean }
+      let(:options) { { description: "Either true or false" } }
+
+      it { expect(property).to be_a(described_class) }
+      it { expect(property.type).to eql("boolean") }
+    end
+
+    context "when kind is ':integer'" do
+      let(:kind) { :integer }
+      let(:options) { { description: "e.g. 1, 2, 3, ..." } }
+
+      it { expect(property).to be_a(described_class) }
+      it { expect(property.type).to eql("integer") }
+    end
+
+    context "when kind is ':string'" do
+      let(:kind) { :string }
+      let(:options) { { description: "e.g. 'the quick brown fox...'" } }
+
+      it { expect(property).to be_a(described_class) }
+      it { expect(property.type).to eql("string") }
+    end
+
+    context "when kind is ':number'" do
+      let(:kind) { :number }
+      let(:options) { { description: "e.g. 3.1415..." } }
+
+      it { expect(property).to be_a(described_class) }
+      it { expect(property.type).to eql("number") }
+    end
+  end
+
   describe ".array" do
     subject(:array) do
       described_class.array(items:, min_items:, max_items:)
