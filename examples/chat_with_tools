@@ -5,20 +5,44 @@ require "omniai/google"
 
 client = OmniAI::Google::Client.new
 
-tool = OmniAI::Tool.new(
-  proc { |location:, unit: "Celsius"| "#{rand(20..50)}° #{unit} in #{location}" },
-  name: "Weather",
-  description: "Lookup the weather in a location",
+# A tool that randomly generates a temperature for a lat / lng in either Celsius or Fahrenheit.
+class Weather < OmniAI::Tool
+  description "Lookup the weather for a lat / lng"
+
+  parameter :lat, :number, description: "The latitude of the location."
+  parameter :lng, :number, description: "The longitude of the location."
+  parameter :unit, :string, enum: %w[Celsius Fahrenheit], description: "The unit of measurement."
+  required %i[lat lng]
+
+  # @param lat [Float]
+  # @param lng [Float]
+  # @param unit [String] "Celcius" or "Fahrenheit"
+  # @return [String]
+  def execute(lat:, lng:, unit: "Celsius")
+    puts "[weather] lat=#{lat} lng=#{lng} unit=#{unit}"
+    "#{rand(20..50)}° #{unit} at lat=#{lat} lng=#{lng}"
+  end
+end
+
+weather = Weather.new
+
+# A tool that randomly generates a lat / lng for a location.
+geocode = OmniAI::Tool.new(
+  proc do |location:|
+    puts "[geocode] location=#{location}"
+    "lat=#{rand(-90.0..+90.0)} lng=#{rand(-180.0..+180.0)} at location=#{location}"
+  end,
+  name: "geocode",
+  description: "Lookup the latitude and longitude of a location",
   parameters: OmniAI::Tool::Parameters.new(
     properties: {
       location: OmniAI::Tool::Property.string(description: "e.g. Toronto"),
-      unit: OmniAI::Tool::Property.string(enum: %w[Celsius Fahrenheit]),
     },
     required: %i[location]
   )
 )
 
-client.chat(stream: $stdout, tools: [tool]) do |prompt|
+client.chat(stream: $stdout, tools: [geocode, weather]) do |prompt|
   prompt.system "You are an expert in weather."
   prompt.user 'What is the weather in "London" in Celsius and "Madrid" in Fahrenheit?'
 end

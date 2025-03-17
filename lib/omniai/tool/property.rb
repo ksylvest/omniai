@@ -28,6 +28,19 @@ module OmniAI
       # @return [Array<String>, nil]
       attr_reader :enum
 
+      # @param kind [Symbol]
+      # @return [OmniAI::Tool::Property]
+      def self.build(kind, **args)
+        case kind
+        when :array then array(**args)
+        when :object then object(**args)
+        when :boolean then boolean(**args)
+        when :integer then integer(**args)
+        when :string then string(**args)
+        when :number then number(**args)
+        end
+      end
+
       # @example
       #   property = OmniAI::Tool::Property.array(
       #     items: OmniAI::Tool::Property.string(description: 'The name of the person.'),
