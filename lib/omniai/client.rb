@@ -53,17 +53,6 @@ module OmniAI
       require "omniai/deepseek" unless defined?(OmniAI::DeepSeek::Client)
       OmniAI::DeepSeek::Client
     rescue ::LoadError
-      raise Error, "requires 'omniai-deepseek': `gem install omniai-deepseek`"
-    end
-
-    # Initialize a client for DeepSeek. This method requires the provider if it is undefined.
-    #
-    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
-    # @return [Class<OmniAI::Client>]
-    def self.deepseek
-      require "omniai/deepseek" unless defined?(OmniAI::DeepSeek::Client)
-      OmniAI::DeepSeek::Client
-    rescue ::LoadError
       raise LoadError, "requires 'omniai-anthropic': `gem install omniai-anthropic`"
     end
 
@@ -100,7 +89,7 @@ module OmniAI
       require "omniai/openai" unless defined?(OmniAI::OpenAI::Client)
       OmniAI::OpenAI::Client
     rescue ::LoadError
-      raise Error, "requires 'omniai-openai': `gem install omniai-openai`"
+      raise LoadError, "requires 'omniai-openai': `gem install omniai-openai`"
     end
 
     # Initialize a client by provider (e.g. 'openai'). This method attempts to require the provider.
