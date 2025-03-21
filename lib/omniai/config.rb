@@ -15,28 +15,35 @@ module OmniAI
   #     config.speak_options = { ... }
   #   end
   class Config
-    # @return [String, nil]
+    # @!attribute [rw] api_key
+    #   @return [String, nil]
     attr_accessor :api_key
 
-    # @return [String, nil]
+    # @!attribute [rw] host
+    #   @return [String, nil]
     attr_accessor :host
 
-    # @return [Logger, nil]
+    # @!attribute [rw] logger
+    #   @return [Logger, nil]
     attr_accessor :logger
 
-    # @return [Integer, Hash{Symbol => Integer}, nil]
-    # @option timeout [Integer] :read
-    # @option timeout [Integer] :write
-    # @option timeout [Integer] :connect
+    # @!attribute [rw] timeout
+    #   @return [Integer, Hash{Symbol => Integer}, nil]
+    #   @option timeout [Integer] :read
+    #   @option timeout [Integer] :write
+    #   @option timeout [Integer] :connect
     attr_accessor :timeout
 
-    # @return [Hash]
+    # @!attribute [rw] chat_options
+    #   @return [Hash]
     attr_accessor :chat_options
 
-    # @return [Hash]
+    # @!attribute [rw] transcribe_options
+    #   @return [Hash]
     attr_accessor :transcribe_options
 
-    # @return [Hash]
+    # @!attribute [rw] speak_options
+    #   @return [Hash]
     attr_accessor :speak_options
 
     # @param api_key [String] optional
