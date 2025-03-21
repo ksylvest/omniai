@@ -85,8 +85,8 @@ module OmniAI
     def self.openai
       require "omniai/openai" unless defined?(OmniAI::OpenAI::Client)
       OmniAI::OpenAI::Client
-    rescue LoadError
-      raise Error, "requires 'omniai-openai': `gem install omniai-openai`"
+    rescue ::LoadError
+      raise LoadError, "requires 'omniai-openai': `gem install omniai-openai`"
     end
 
     # Initialize a client by provider (e.g. 'openai'). This method attempts to require the provider.
