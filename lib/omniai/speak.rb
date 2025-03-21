@@ -5,7 +5,7 @@ module OmniAI
   #
   # Usage:
   #
-  #   class OmniAI::OpenAI::Speak < OmniAI::Speakw
+  #   class OmniAI::OpenAI::Speak < OmniAI::Speak
   #     module Model
   #       WHISPER_1 = "whisper-1"
   #     end
