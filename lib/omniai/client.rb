@@ -45,6 +45,17 @@ module OmniAI
       raise LoadError, "requires 'omniai-anthropic': `gem install omniai-anthropic`"
     end
 
+    # Initialize a client for DeepSeek. This method requires the provider if it is undefined.
+    #
+    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
+    # @return [Class<OmniAI::Client>]
+    def self.deepseek
+      require "omniai/deepseek" unless defined?(OmniAI::DeepSeek::Client)
+      OmniAI::DeepSeek::Client
+    rescue ::LoadError
+      raise LoadError, "requires 'omniai-anthropic': `gem install omniai-anthropic`"
+    end
+
     # Lookup the `OmniAI::Google::Client``. This method requires the provider if it is undefined.
     #
     # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
@@ -87,6 +98,7 @@ module OmniAI
       klass =
         case provider
         when :anthropic, "anthropic" then anthropic
+        when :deepseek, "deepseek" then deepseek
         when :google, "google" then google
         when :mistral, "mistral" then mistral
         when :openai, "openai" then openai
