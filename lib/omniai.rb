@@ -12,6 +12,12 @@ loader.inflector.inflect "url" => "URL"
 loader.inflector.inflect "cli" => "CLI"
 loader.setup
 
+# @example
+#
+#   OmniAI.chat(...)
+#   OmniAI.transcribe(...)
+#   OmniAI.speak(...)
+#   OmniAI.embed(...)
 module OmniAI
   class Error < StandardError; end
 
@@ -31,5 +37,25 @@ module OmniAI
     def inspect
       "#<#{self.class} status=#{@response.status} body=#{@response.body}>"
     end
+  end
+
+  # @see OmniAI::Client#chat
+  def self.chat(...)
+    OmniAI::Client.discover.chat(...)
+  end
+
+  # @see OmniAI::Client#transcribe
+  def self.transcribe(...)
+    OmniAI::Client.discover.transcribe(...)
+  end
+
+  # @see OmniAI::Client#speak
+  def self.speak(...)
+    OmniAI::Client.discover.speak(...)
+  end
+
+  # @see OmniAI::Client#embed
+  def self.embed(...)
+    OmniAI::Client.discover.embed(...)
   end
 end
