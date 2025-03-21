@@ -192,7 +192,7 @@ module OmniAI
     #
     # @yield [output] optional
     #
-    # @return [Tempfile``]
+    # @return [Tempfile]
     def speak(input, model:, voice:, speed: nil, format: nil, &stream)
       raise NotImplementedError, "#{self.class.name}#speak undefined"
     end
