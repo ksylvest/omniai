@@ -16,6 +16,8 @@ module OmniAI
   #     end
   #   end
   class Client
+    class LoadError < Error; end
+
     # @!attribute [rw] api_key
     #   @return [String, nil]
     attr_accessor :api_key
@@ -99,7 +101,7 @@ module OmniAI
     # @return [OmniAI::Client]
     def self.discover(**)
       %i[openai anthropic google mistral deepseek].each do |provider|
-        return find(provider: provider, **)
+        return find(provider:, **)
       rescue LoadError
         next
       end
