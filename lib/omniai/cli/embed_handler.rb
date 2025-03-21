@@ -2,7 +2,9 @@
 
 module OmniAI
   class CLI
-    # Used for CLI usage of 'omnia embed'.
+    # Used by CLI to process commands like:
+    #
+    #    omniai embed "All cats are felidae."
     class EmbedHandler < BaseHandler
       # @param argv [Array<String>]
       def handle!(argv:)

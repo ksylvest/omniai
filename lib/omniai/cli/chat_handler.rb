@@ -2,7 +2,11 @@
 
 module OmniAI
   class CLI
-    # Used for CLI usage of 'omnia chat'.
+    # Used by CLI to process commands like:
+    #
+    #    omniai chat
+    #    omniai chat "What is the capital of France?"
+    #    omniai chat --provider="google" --model="gemini-2.0-flash" "Who are you?"
     class ChatHandler < BaseHandler
       # @param argv [Array<String>]
       def handle!(argv:)
@@ -52,12 +56,21 @@ module OmniAI
             exit
           end
 
-          options.on("-p", "--provider=PROVIDER", "provider") { |provider| @provider = provider }
-          options.on("-m", "--model=MODEL", "model") { |model| @args[:model] = model }
+          options.on("-p", "--provider=PROVIDER", "provider") do |provider|
+            @provider = provider
+          end
+
+          options.on("-m", "--model=MODEL", "model") do |model|
+            @args[:model] = model
+          end
+
           options.on("-t", "--temperature=TEMPERATURE", Float, "temperature") do |temperature|
             @args[:temperature] = temperature
           end
-          options.on("-f", "--format=FORMAT", "format") { |format| @args[:format] = format.intern }
+
+          options.on("-f", "--format=FORMAT", "format") do |format|
+            @args[:format] = format.intern
+          end
         end
       end
     end
