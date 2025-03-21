@@ -92,6 +92,29 @@ module OmniAI
       raise Error, "requires 'omniai-openai': `gem install omniai-openai`"
     end
 
+    # Discover a client by provider ('openai' then 'anthropic' then 'google' then 'mistral' then 'deepseek').
+    #
+    # @raise [LoadError] if no providers are installed
+    #
+    # @return [OmniAI::Client]
+    def self.discover(**)
+      %i[openai anthropic google mistral deepseek].each do |provider|
+        return find(provider: provider, **)
+      rescue LoadError
+        next
+      end
+
+      raise LoadError, <<~TEXT
+        requires 'omniai-openai' or 'omniai-anthropic' or 'openai-deepseek' or 'omniai-google' or 'omniai-mistral':
+
+          `gem install omniai-openai`
+          `gem install omniai-anthropic`
+          `gem install omniai-deepseek`
+          `gem install omniai-google`
+          `gem install omniai-mistral`
+      TEXT
+    end
+
     # Initialize a client by provider (e.g. 'openai'). This method attempts to require the provider.
     #
     # @param provider [String, Symbol] required (e.g. 'anthropic', 'deepsek', 'google', 'mistral', 'openai', etc)
