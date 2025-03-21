@@ -17,6 +17,7 @@ module OmniAI
   class Tool
     class << self
       # @param description [String]
+      # @return [String]
       def description(description = nil)
         return @description if description.nil?
 
@@ -61,11 +62,11 @@ module OmniAI
     #   @return [String]
     attr_accessor :name
 
-    # @!attribute [description]
+    # @!attribute [rw] description
     #   @return [String, nil]
     attr_accessor :description
 
-    # @!attribute[parameters]
+    # @!attribute [rw] parameters
     #   @return [Hash, nil]
     attr_accessor :parameters
 

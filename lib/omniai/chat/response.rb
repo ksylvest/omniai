@@ -75,7 +75,7 @@ module OmniAI
       # @param index [Integer]
       #
       # @return [Boolean]
-      def message?
+      def message?(index: 0)
         !message(index:).nil?
       end
 
