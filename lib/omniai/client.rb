@@ -34,7 +34,7 @@ module OmniAI
 
     # Initialize a client for Anthropic. This method requires the provider if it is undefined.
     #
-    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
+    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
     #
     # @return [Class<OmniAI::Client>]
     def self.anthropic
@@ -46,7 +46,7 @@ module OmniAI
 
     # Initialize a client for DeepSeek. This method requires the provider if it is undefined.
     #
-    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
+    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
     #
     # @return [Class<OmniAI::Client>]
     def self.deepseek
@@ -58,7 +58,7 @@ module OmniAI
 
     # Lookup the `OmniAI::Google::Client``. This method requires the provider if it is undefined.
     #
-    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
+    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
     #
     # @return [Class<OmniAI::Client>]
     def self.google
@@ -70,7 +70,7 @@ module OmniAI
 
     # Initialize a client for Mistral. This method requires the provider if it is undefined.
     #
-    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
+    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
     #
     # @return [Class<OmniAI::Client>]
     def self.mistral
@@ -94,9 +94,9 @@ module OmniAI
 
     # Initialize a client by provider (e.g. 'openai'). This method attempts to require the provider.
     #
-    # @param provider [String, Symbol] required (e.g. 'anthropic', 'deepsek', 'google', 'mistral', 'openai', etc)
+    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
     #
-    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
+    # @param provider [String, Symbol] required (e.g. 'anthropic', 'google', 'mistral', 'openai', etc)
     #
     # @return [OmniAI::Client]
     def self.find(provider:, **)
