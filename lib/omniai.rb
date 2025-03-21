@@ -19,7 +19,8 @@ module OmniAI
 
   # An error that wraps an HTTP::Response for non-OK requests.
   class HTTPError < Error
-    # @return [HTTP::Response]
+    # @!attribute [rw] response
+    #   @return [HTTP::Response]
     attr_accessor :response
 
     # @param response [HTTP::Response]
