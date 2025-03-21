@@ -24,6 +24,22 @@ RSpec.describe OmniAI::Client do
     end
   end
 
+  describe ".deepseek" do
+    subject(:deepseek) { described_class.deepseek }
+
+    context "when the client is defined" do
+      let(:klass) { Class.new }
+
+      before { stub_const("OmniAI::DeepSeek::Client", klass) }
+
+      it { expect(deepseek).to eql(klass) }
+    end
+
+    context "when the client is not defined" do
+      it { expect { deepseek }.to raise_error(OmniAI::Error) }
+    end
+  end
+
   describe ".google" do
     subject(:google) { described_class.google }
 
@@ -82,6 +98,16 @@ RSpec.describe OmniAI::Client do
         allow(described_class).to receive(:anthropic) { Class.new }
         find
         expect(described_class).to have_received(:anthropic)
+      end
+    end
+
+    context 'when the provider is "deepseek"' do
+      let(:provider) { "deepseek" }
+
+      it "calls .deepseek" do
+        allow(described_class).to receive(:deepseek) { Class.new }
+        find
+        expect(described_class).to have_received(:deepseek)
       end
     end
 
