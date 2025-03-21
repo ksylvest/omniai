@@ -16,16 +16,20 @@ module OmniAI
   #     end
   #   end
   class Client
-    # @return [String, nil]
+    # @!attribute :api_key
+    #   @return [String, nil]
     attr_accessor :api_key
 
-    # @return [Logger, nil]
+    # @!attribute :logger
+    #   @return [Logger, nil]
     attr_accessor :logger
 
-    # @return [String, nil]
+    # @!attribute :host
+    #   @return [String, nil]
     attr_accessor :host
 
-    # @return [Integer, nil]
+    # @!attribute :timeout
+    #  @return [Integer, nil]
     attr_accessor :timeout
 
     # Initialize a client for Anthropic. This method requires the provider if it is undefined.
