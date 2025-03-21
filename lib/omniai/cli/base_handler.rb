@@ -2,7 +2,7 @@
 
 module OmniAI
   class CLI
-    # A generic handler for CLI commands (e.g. 'omnia chat').
+    # A generic handler for CLI commands (e.g. 'omniai chat').
     class BaseHandler
       # @param stdin [IO] an optional stream for stdin
       # @param stdout [IO] an optional stream for stdout
