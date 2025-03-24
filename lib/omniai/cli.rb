@@ -30,6 +30,7 @@ module OmniAI
         case command
         when "chat" then ChatHandler
         when "embed" then EmbedHandler
+        when "speak" then SpeakHandler
         else raise Error, "unsupported command=#{command.inspect}"
         end
 
@@ -60,6 +61,8 @@ module OmniAI
         options.separator <<~COMMANDS
           commands:
             chat
+            embed
+            speak
         COMMANDS
       end
     end

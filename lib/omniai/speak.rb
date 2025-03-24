@@ -38,6 +38,8 @@ module OmniAI
       WAV = "wav"
     end
 
+    DEFAULT_FORMAT = Format::AAC
+
     # @raise [HTTPError]
     #
     # @param client [OmniAI::Client] required
@@ -56,7 +58,7 @@ module OmniAI
     # @yield [chunk]
     #
     # @return [Tempfile]
-    def self.process!(input, client:, model:, voice:, speed: nil, format: nil, &)
+    def self.process!(input, client:, model:, voice:, speed: nil, format: DEFAULT_FORMAT, &)
       new(input, client:, model:, voice:, speed:, format:).process!(&)
     end
 
@@ -72,7 +74,7 @@ module OmniAI
     #   - "opus"
     #   - "pcm"
     #   - "wav"
-    def initialize(input, client:, model:, voice:, speed: nil, format: nil)
+    def initialize(input, client:, model:, voice:, speed: nil, format: DEFAULT_FORMAT)
       @input = input
       @client = client
       @model = model
