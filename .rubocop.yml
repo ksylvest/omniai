@@ -1,7 +1,7 @@
 inherit_gem:
   rubocop-basic: rubocop.yml
 
-require:
+plugins:
   - rubocop-factory_bot
   - rubocop-rake
   - rubocop-rspec

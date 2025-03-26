@@ -25,7 +25,7 @@ module OmniAI
       # @return [Content]
       def self.deserialize(data, context: nil)
         return data if data.nil?
-        return data.map { |data| deserialize(data, context:) } if data.is_a?(Array)
+        return data.map { |entry| deserialize(entry, context:) } if data.is_a?(Array)
 
         deserialize = context&.deserializer(:content)
         return deserialize.call(data, context:) if deserialize
