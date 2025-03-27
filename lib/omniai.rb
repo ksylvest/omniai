@@ -8,8 +8,10 @@ require "zeitwerk"
 
 loader = Zeitwerk::Loader.for_gem
 loader.inflector.inflect "omniai" => "OmniAI"
-loader.inflector.inflect "url" => "URL"
 loader.inflector.inflect "cli" => "CLI"
+loader.inflector.inflect "jrpc" => "JRPC"
+loader.inflector.inflect "mcp" => "MCP"
+loader.inflector.inflect "url" => "URL"
 loader.setup
 
 module OmniAI

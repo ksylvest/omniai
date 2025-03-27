@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "omniai"
+
+# A tool that randomly generates a temperature for a lat / lng in either Celsius or Fahrenheit.
+class Weather < OmniAI::Tool
+  description "Lookup the weather for a lat / lng"
+
+  parameter :lat, :number, description: "The latitude of the location."
+  parameter :lng, :number, description: "The longitude of the location."
+  parameter :unit, :string, enum: %w[Celsius Fahrenheit], description: "The unit of measurement."
+  required %i[lat lng]
+
+  # @param lat [Float]
+  # @param lng [Float]
+  # @param unit [String] "Celcius" or "Fahrenheit"
+  # @return [String]
+  def execute(lat:, lng:, unit: "Celsius")
+    "#{rand(20..50)}° #{unit} at lat=#{lat} lng=#{lng}"
+  end
+end
+
+mcp = OmniAI::MCP::Server.new(tools: [Weather.new])
+mcp.run
