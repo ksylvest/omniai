@@ -530,3 +530,44 @@ Type 'exit' or 'quit' to abort.
 0.0
 ...
 ```
+
+### MCP
+
+[MCP](https://modelcontextprotocol.io/introduction) is an open protocol designed to standardize giving context to LLMs. The OmniAI implementation supports building an MCP server that operates via the [stdio](https://modelcontextprotocol.io/docs/concepts/transports) transport.
+
+**main.rb**
+
+```ruby
+class Weather < OmniAI::Tool
+  description "Lookup the weather for a location"
+
+  parameter :location, :string, description: "A location (e.g. 'London' or 'Madrid')."
+  required %i[location]
+
+  # @param location [String] required
+  # @return [String]
+  def execute(location:)
+    case location
+    when 'London' then 'Rainy'
+    when 'Madrid' then 'Sunny'
+    end
+  end
+end
+
+transport = OmniAI::MCP::Transport::Stdio.new
+mcp = OmniAI::MCP::Server.new(tools: [Weather.new])
+mcp.run(transport:)
+```
+
+```bash
+ruby main.rb
+```
+
+```bash
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": { "name": "echo", "arguments": { "message": "Hello, world!" } }
+}
+```

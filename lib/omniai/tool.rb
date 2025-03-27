@@ -72,7 +72,7 @@ module OmniAI
     # @param function [Proc]
     # @param name [String]
     # @param description [String]
-    # @param parameters [Hash]
+    # @param parameters [OmniAI::Tool::Parameters]
     def initialize(
       function = method(:execute),
       name: self.class.namify,
