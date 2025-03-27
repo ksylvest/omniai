@@ -109,6 +109,11 @@ module OmniAI
 
   protected
 
+    # @return [Boolean]
+    def stream?
+      !@stream.nil?
+    end
+
     # Override  to provide an context for serializers / deserializes for a provider.
     #
     # @return [Context, nil]
@@ -151,7 +156,7 @@ module OmniAI
     #
     # @return [OmniAI::Chat::Response]
     def parse!(response:)
-      if @stream
+      if stream?
         stream!(response:)
       else
         complete!(response:)
