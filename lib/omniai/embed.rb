@@ -64,7 +64,12 @@ module OmniAI
       @client
         .connection
         .accept(:json)
-        .post(path, json: payload)
+        .post(path, params:, json: payload)
+    end
+
+    # @return [Hash]
+    def params
+      {}
     end
 
     # @return [Hash]

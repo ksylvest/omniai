@@ -15,6 +15,10 @@ class FakeEmbed < OmniAI::Embed
     "/embed"
   end
 
+  def params
+    { api_key: "fake-api-key" }
+  end
+
   def payload
     { input: @input, model: @model }
   end
@@ -43,7 +47,7 @@ RSpec.describe OmniAI::Embed do
 
     context "when OK" do
       before do
-        stub_request(:post, "http://localhost:8080/embed")
+        stub_request(:post, "http://localhost:8080/embed?api_key=fake-api-key")
           .with(body: {
             input:,
             model:,
@@ -61,7 +65,7 @@ RSpec.describe OmniAI::Embed do
 
     context "when UNPROCESSABLE" do
       before do
-        stub_request(:post, "http://localhost:8080/embed")
+        stub_request(:post, "http://localhost:8080/embed?api_key=fake-api-key")
           .with(body: {
             input:,
             model:,
