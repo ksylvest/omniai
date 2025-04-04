@@ -53,10 +53,17 @@ module OmniAI
 
   protected
 
+    # Override  to provide a context (serializers / deserializes) for a provider.
+    #
+    # @return [Context, nil]
+    def context
+      nil
+    end
+
     # @param response [HTTP::Response]
     # @return [Response]
     def parse!(response:)
-      Response.new(data: response.parse)
+      Response.new(data: response.parse, context:)
     end
 
     # @return [HTTP::Response]
