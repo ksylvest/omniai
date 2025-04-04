@@ -114,7 +114,7 @@ module OmniAI
       !@stream.nil?
     end
 
-    # Override  to provide an context for serializers / deserializes for a provider.
+    # Override  to provide a context (serializers / deserializes) for a provider.
     #
     # @return [Context, nil]
     def context
