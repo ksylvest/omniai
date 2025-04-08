@@ -9,7 +9,7 @@ module OmniAI
       # @return [Symbol, String]
       attr_accessor :type
 
-      # @param type [String] "audio/flac", "image/jpeg", "video/mpeg", etc.
+      # @param type [String] "audio/flac", "image/jpeg", "video/mpeg", "application/pdf", etc.
       def initialize(type)
         super()
         @type = type
@@ -40,12 +40,18 @@ module OmniAI
         @type.match?(%r{^video/})
       end
 
-      # @return [:video, :audio, :image, :text]
+      # @return [Boolean]
+      def document?
+        @type.match?(%r{^application/pdf$})
+      end
+
+      # @return [:text, :audio, :image, :video :document]
       def kind
         if text? then :text
         elsif audio? then :audio
         elsif image? then :image
         elsif video? then :video
+        elsif document? then :document
         else
           raise(TypeError, "unsupported type=#{@type}")
         end
