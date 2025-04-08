@@ -10,7 +10,7 @@ module OmniAI
       class FetchError < HTTPError; end
 
       # @param uri [URI, String] "https://example.com/cat.jpg"
-      # @param type [Symbol, String] "audio/flac", "image/jpeg", "video/mpeg", :audi, :image, :video, etc.
+      # @param type [Symbol, String] "audio/flac", "image/jpeg", "video/mpeg", :audio, :image, :video, :document, etc.
       def initialize(uri, type = nil)
         super(type)
         @uri = uri

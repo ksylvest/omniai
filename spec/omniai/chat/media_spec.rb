@@ -69,6 +69,20 @@ RSpec.describe OmniAI::Chat::Media do
     end
   end
 
+  describe "#document?" do
+    context "when type is application/pdf" do
+      let(:type) { "application/pdf" }
+
+      it { expect(media).to be_document }
+    end
+
+    context "when type is text/plain" do
+      let(:type) { "text/plain" }
+
+      it { expect(media).not_to be_document }
+    end
+  end
+
   describe "#kind" do
     subject(:kind) { media.kind }
 
@@ -96,10 +110,10 @@ RSpec.describe OmniAI::Chat::Media do
       it { expect(kind).to eq(:text) }
     end
 
-    context "when type is application/pdf" do
-      let(:type) { "application/pdf" }
+    context "when type is application/zip" do
+      let(:type) { "application/zip" }
 
-      it { expect { kind }.to raise_error(described_class::TypeError, "unsupported type=application/pdf") }
+      it { expect { kind }.to raise_error(described_class::TypeError, "unsupported type=application/zip") }
     end
   end
 end

@@ -9,7 +9,7 @@ module OmniAI
       attr_accessor :io
 
       # @param io [IO, Pathname, String]
-      # @param type [Symbol, String] :image, :video, :audio, "audio/flac", "image/jpeg", "video/mpeg", etc.
+      # @param type [Symbol, String] "audio/flac", "image/jpeg", "video/mpeg", :audio, :image, :video, :document, etc.
       def initialize(io, type)
         super(type)
         @io = io
