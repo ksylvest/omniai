@@ -61,11 +61,11 @@ module OmniAI
     #   @return [String]
     attr_accessor :name
 
-    # @!attribute [description]
+    # @!attribute [rw] description
     #   @return [String, nil]
     attr_accessor :description
 
-    # @!attribute[parameters]
+    # @!attribute [rw] parameters
     #   @return [Hash, nil]
     attr_accessor :parameters
 
