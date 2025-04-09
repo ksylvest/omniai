@@ -16,19 +16,19 @@ module OmniAI
   #     end
   #   end
   class Client
-    # @!attribute :api_key
+    # @!attribute [rw] api_key
     #   @return [String, nil]
     attr_accessor :api_key
 
-    # @!attribute :logger
+    # @!attribute [rw] logger
     #   @return [Logger, nil]
     attr_accessor :logger
 
-    # @!attribute :host
+    # @!attribute [rw] host
     #   @return [String, nil]
     attr_accessor :host
 
-    # @!attribute :timeout
+    # @!attribute [rw] timeout
     #  @return [Integer, nil]
     attr_accessor :timeout
 
