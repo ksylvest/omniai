@@ -99,12 +99,12 @@ module OmniAI
     # @return [OmniAI::Client]
     def self.discover(**)
       %i[openai anthropic google mistral deepseek].each do |provider|
-        return find(provider: provider, **)
-      rescue LoadError
+        return find(provider:, **)
+      rescue Error
         next
       end
 
-      raise LoadError, <<~TEXT
+      raise Error, <<~TEXT
         requires 'omniai-openai' or 'omniai-anthropic' or 'openai-deepseek' or 'omniai-google' or 'omniai-mistral':
 
           `gem install omniai-openai`
