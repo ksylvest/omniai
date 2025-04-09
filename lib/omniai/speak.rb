@@ -23,7 +23,11 @@ module OmniAI
   #     end
   #   end
   #
-  #   client.transcribe(File.open("..."), model: "...", format: :json)
+  #   File.open(File.join(__dir__, 'audio.wav'), 'wb') do |file|
+  #     client.speak('Sally sells seashells by the seashore.', format: OmniAI::Speak::Format::WAV) do |chunk|
+  #       file << chunk
+  #     end
+  #   end
   class Speak
     module Format
       AAC = "aac"
@@ -33,6 +37,8 @@ module OmniAI
       PCM = "pcm"
       WAV = "wav"
     end
+
+    DEFAULT_FORMAT = Format::AAC
 
     # @raise [HTTPError]
     #
@@ -52,7 +58,7 @@ module OmniAI
     # @yield [chunk]
     #
     # @return [Tempfile]
-    def self.process!(input, client:, model:, voice:, speed: nil, format: nil, &)
+    def self.process!(input, client:, model:, voice:, speed: nil, format: DEFAULT_FORMAT, &)
       new(input, client:, model:, voice:, speed:, format:).process!(&)
     end
 
@@ -68,7 +74,7 @@ module OmniAI
     #   - "opus"
     #   - "pcm"
     #   - "wav"
-    def initialize(input, client:, model:, voice:, speed: nil, format: nil)
+    def initialize(input, client:, model:, voice:, speed: nil, format: DEFAULT_FORMAT)
       @input = input
       @client = client
       @model = model

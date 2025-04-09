@@ -16,6 +16,8 @@ module OmniAI
   #     end
   #   end
   class Client
+    class LoadError < Error; end
+
     # @!attribute [rw] api_key
     #   @return [String, nil]
     attr_accessor :api_key
@@ -34,7 +36,7 @@ module OmniAI
 
     # Initialize a client for Anthropic. This method requires the provider if it is undefined.
     #
-    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
+    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
     #
     # @return [Class<OmniAI::Client>]
     def self.anthropic
@@ -46,19 +48,19 @@ module OmniAI
 
     # Initialize a client for DeepSeek. This method requires the provider if it is undefined.
     #
-    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
+    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
     #
     # @return [Class<OmniAI::Client>]
     def self.deepseek
       require "omniai/deepseek" unless defined?(OmniAI::DeepSeek::Client)
       OmniAI::DeepSeek::Client
     rescue ::LoadError
-      raise Error, "requires 'omniai-deepseek': `gem install omniai-deepseek`"
+      raise LoadError, "requires 'omniai-anthropic': `gem install omniai-anthropic`"
     end
 
     # Lookup the `OmniAI::Google::Client``. This method requires the provider if it is undefined.
     #
-    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
+    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
     #
     # @return [Class<OmniAI::Client>]
     def self.google
@@ -70,7 +72,7 @@ module OmniAI
 
     # Initialize a client for Mistral. This method requires the provider if it is undefined.
     #
-    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
+    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
     #
     # @return [Class<OmniAI::Client>]
     def self.mistral
@@ -89,14 +91,37 @@ module OmniAI
       require "omniai/openai" unless defined?(OmniAI::OpenAI::Client)
       OmniAI::OpenAI::Client
     rescue ::LoadError
-      raise Error, "requires 'omniai-openai': `gem install omniai-openai`"
+      raise LoadError, "requires 'omniai-openai': `gem install omniai-openai`"
+    end
+
+    # Discover a client by provider ('openai' then 'anthropic' then 'google' then 'mistral' then 'deepseek').
+    #
+    # @raise [LoadError] if no providers are installed
+    #
+    # @return [OmniAI::Client]
+    def self.discover(**)
+      %i[openai anthropic google mistral deepseek].each do |provider|
+        return find(provider:, **)
+      rescue LoadError
+        next
+      end
+
+      raise LoadError, <<~TEXT
+        requires 'omniai-openai' or 'omniai-anthropic' or 'openai-deepseek' or 'omniai-google' or 'omniai-mistral':
+
+          `gem install omniai-openai`
+          `gem install omniai-anthropic`
+          `gem install omniai-deepseek`
+          `gem install omniai-google`
+          `gem install omniai-mistral`
+      TEXT
     end
 
     # Initialize a client by provider (e.g. 'openai'). This method attempts to require the provider.
     #
-    # @param provider [String, Symbol] required (e.g. 'anthropic', 'deepsek', 'google', 'mistral', 'openai', etc)
+    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
     #
-    # @raise [OmniAI::Error] if the provider is not defined and the gem is not installed
+    # @param provider [String, Symbol] required (e.g. 'anthropic', 'google', 'mistral', 'openai', etc)
     #
     # @return [OmniAI::Client]
     def self.find(provider:, **)

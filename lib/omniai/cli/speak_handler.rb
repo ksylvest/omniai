@@ -4,10 +4,9 @@ module OmniAI
   class CLI
     # Used by CLI to process commands like:
     #
-    #    omniai chat
-    #    omniai chat "What is the capital of France?"
-    #    omniai chat --provider="google" --model="gemini-2.0-flash" "Who are you?"
-    class ChatHandler < BaseHandler
+    #    omniai speak
+    #    omniai speak "Sally sells seashells by the seashore."
+    class SpeakHandler < BaseHandler
       # @param argv [Array<String>]
       def handle!(argv:)
         parser.parse!(argv)
@@ -21,25 +20,37 @@ module OmniAI
 
     private
 
+      # @param file [File]
+      def play(file)
+        system("afplay #{file.path}")
+      end
+
       def listen!
         @stdout.puts('Type "exit" or "quit" to leave.')
 
         loop do
           @stdout.print("# ")
           @stdout.flush
-          prompt = @stdin.gets&.chomp
+          input = @stdin.gets&.chomp
 
-          break if prompt.nil? || prompt.match?(/\A(exit|quit)\z/i)
+          break if input.nil? || input.match?(/\A(exit|quit)\z/i)
 
-          chat(prompt:)
+          speak(input)
         rescue Interrupt
           break
         end
       end
 
-      # @param prompt [String]
-      def chat(prompt:)
-        client.chat(prompt, **@args, stream: @stdout)
+      # @param input [String]
+      def speak(input)
+        tempfile = Tempfile.new
+        client.speak(input, **@args, stream: @stdout) do |chunk|
+          tempfile << chunk
+        end
+        play(file: tempfile)
+      ensure
+        tempfile.unlink
+        tempfile.close
       end
 
       # @return [OptionParser]
@@ -60,13 +71,15 @@ module OmniAI
             @args[:model] = model
           end
 
+          options.on("-m", "--format=FORMAT", "format") do |format|
+            @args[:format] = format
+          end
+
           options.on("-t", "--temperature=TEMPERATURE", Float, "temperature") do |temperature|
             @args[:temperature] = temperature
           end
 
-          options.on("-f", "--format=FORMAT", "format") do |format|
-            @args[:format] = format.intern
-          end
+          options.on("-f", "--format=FORMAT", "format") { |format| @args[:format] = format.intern }
         end
       end
     end
