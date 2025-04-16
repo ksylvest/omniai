@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "omniai/openai"
+
+puts("Type 'exit' or 'quit' to leave.")
+
+client = OmniAI::OpenAI::Client.new
+
+conversation = OmniAI::Chat::Prompt.build do |prompt|
+  prompt.system "You are a helpful assistant. Respond in both English and French."
+end
+
+loop do
+  print "> "
+  text = gets.chomp.strip
+  next if text.empty?
+  break if text.eql?("exit") || text.eql?("quit")
+
+  conversation.user(text)
+  response = client.chat(conversation, stream: $stdout)
+  conversation.assistant(response.text)
+end

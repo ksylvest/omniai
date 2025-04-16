@@ -119,7 +119,46 @@ end
 The weather is 24° Celsius in London and 42° Fahrenheit in Madrid.
 ```
 
-### Example #5: [Chat w/ CLI](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_cli)
+### Example #5: [Chat w/ History](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_history)
+
+Building a conversation history (e.g. multiple user and assistant messages) is especially helpful when building an agent like conversation experience. A prompt can be used to track this back and forth conversation:
+
+```ruby
+require "omniai/openai"
+
+puts("Type 'exit' or 'quit' to leave.")
+
+client = OmniAI::OpenAI::Client.new
+
+conversation = OmniAI::Chat::Prompt.build do |prompt|
+  prompt.system "You are a helpful assistant. Respond in both English and French."
+end
+
+loop do
+  print "> "
+  text = gets.chomp.strip
+  next if text.empty?
+  break if text.eql?("exit") || text.eql?("quit")
+
+  conversation.user(text)
+  response = client.chat(conversation, stream: $stdout)
+  conversation.assistant(response.text)
+end
+```
+
+```
+Type 'exit' or 'quit' to leave.
+
+> What is the capital of France?
+The capital of France is Paris.
+La capitale de la France est Paris.
+
+> How many people live there?
+The population of Paris is approximately 2.1 million.
+La population de Paris est d’environ 2,1 million.
+```
+
+### Example #6: [Chat w/ CLI](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_cli)
 
 The `OmniAI` gem also ships with a CLI to simplify quick tests.
 
@@ -139,7 +178,7 @@ omniai chat --provider="google" --model="gemini-2.0-flash" "Who are you?"
 I am a large language model, trained by Google.
 ```
 
-### Example #6: [Text-to-Speech](https://github.com/ksylvest/omniai/blob/main/examples/text_to_speech)
+### Example #7: [Text-to-Speech](https://github.com/ksylvest/omniai/blob/main/examples/text_to_speech)
 
 This example demonstrates using `OmniAI` with **OpenAI** to convert text to speech and save it to a file.
 
@@ -155,7 +194,7 @@ File.open(File.join(__dir__, 'audio.wav'), 'wb') do |file|
 end
 ```
 
-### Example #7: [Speech-to-Text](https://github.com/ksylvest/omniai/blob/main/examples/speech_to_text)
+### Example #8: [Speech-to-Text](https://github.com/ksylvest/omniai/blob/main/examples/speech_to_text)
 
 This example demonstrates using `OmniAI` with **OpenAI** to convert speech to text.
 
@@ -170,7 +209,7 @@ File.open(File.join(__dir__, 'audio.wav'), 'rb') do |file|
 end
 ```
 
-### Example #8: [Embeddings](https://github.com/ksylvest/omniai/blob/main/examples/embeddings)
+### Example #9: [Embeddings](https://github.com/ksylvest/omniai/blob/main/examples/embeddings)
 
 This example demonstrates using `OmniAI` with **Mistral** to generate embeddings for a dataset. It defines a set of entries (e.g. "George is a teacher." or "Ringo is a doctor.") and then compares the embeddings generated from a query (e.g. "What does George do?" or "Who is a doctor?") to rank the entries by relevance.
 
