@@ -11,7 +11,7 @@ module OmniAI
     #          properties: {
     #            name: OmniAI::Tool::Parameters.string(description: 'The name of the person.'),
     #            age: OmniAI::Tool::Parameters.integer(description: 'The age of the person.'),
-    #            employeed: OmniAI::Tool::Parameters.boolean(description: 'Is the person employeed?'),
+    #            employed: OmniAI::Tool::Parameters.boolean(description: 'Is the person employed?'),
     #          }
     #      n: OmniAI::Tool::Parameters.integer(description: 'The nth number to calculate.')
     #      required: %i[n]

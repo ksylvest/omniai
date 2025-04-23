@@ -2,7 +2,7 @@
 
 module OmniAI
   class Chat
-    # Used to standardizes the process of building complex prompts.
+    # Used to standardize the process of building complex prompts.
     #
     # Usage:
     #

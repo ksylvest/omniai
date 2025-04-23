@@ -10,7 +10,7 @@ module OmniAI
       class Base
         # @param text [String]
         def puts(text)
-          raise NotImplementedError, "#{self.class}#gets undefined"
+          raise NotImplementedError, "#{self.class}#puts undefined"
         end
 
         # @return [String]
