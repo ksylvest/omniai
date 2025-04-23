@@ -29,7 +29,7 @@ RSpec.describe OmniAI::Chat do
   let(:prompt) do
     OmniAI::Chat::Prompt.new.tap do |prompt|
       prompt.system("You are a helpful assistant.")
-      prompt.user("What is the name of the dummer for the Beatles?")
+      prompt.user("What is the name of the drummer for the Beatles?")
     end
   end
 
@@ -77,7 +77,7 @@ RSpec.describe OmniAI::Chat do
           .with(body: {
             messages: [
               { role: "system", content: [{ type: "text", text: "You are a helpful assistant." }] },
-              { role: "user", content: [{ type: "text", text: "What is the name of the dummer for the Beatles?" }] },
+              { role: "user", content: [{ type: "text", text: "What is the name of the drummer for the Beatles?" }] },
             ],
             model:,
           })
@@ -102,7 +102,7 @@ RSpec.describe OmniAI::Chat do
           .with(body: {
             messages: [
               { role: "system", content: [{ type: "text", text: "You are a helpful assistant." }] },
-              { role: "user", content: [{ type: "text", text: "What is the name of the dummer for the Beatles?" }] },
+              { role: "user", content: [{ type: "text", text: "What is the name of the drummer for the Beatles?" }] },
             ],
             model:,
           })
@@ -121,7 +121,7 @@ RSpec.describe OmniAI::Chat do
           .with(body: {
             messages: [
               { role: "system", content: [{ type: "text", text: "You are a helpful assistant." }] },
-              { role: "user", content: [{ type: "text", text: "What is the name of the dummer for the Beatles?" }] },
+              { role: "user", content: [{ type: "text", text: "What is the name of the drummer for the Beatles?" }] },
             ],
             model:,
           })
@@ -155,7 +155,7 @@ RSpec.describe OmniAI::Chat do
           .with(body: {
             messages: [
               { role: "system", content: [{ type: "text", text: "You are a helpful assistant." }] },
-              { role: "user", content: [{ type: "text", text: "What is the name of the dummer for the Beatles?" }] },
+              { role: "user", content: [{ type: "text", text: "What is the name of the drummer for the Beatles?" }] },
             ],
             model:,
           })
@@ -182,7 +182,7 @@ RSpec.describe OmniAI::Chat do
           .with(body: {
             messages: [
               { role: "system", content: [{ type: "text", text: "You are a helpful assistant." }] },
-              { role: "user", content: [{ type: "text", text: "What is the name of the dummer for the Beatles?" }] },
+              { role: "user", content: [{ type: "text", text: "What is the name of the drummer for the Beatles?" }] },
             ],
             model:,
           })
