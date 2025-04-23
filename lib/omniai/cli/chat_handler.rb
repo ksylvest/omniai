@@ -20,14 +20,18 @@ module OmniAI
       def listen!
         @stdout.puts('Type "exit" or "quit" to leave.')
 
+        prompt = OmniAI::Chat::Prompt.new
+
         loop do
           @stdout.print("# ")
           @stdout.flush
-          prompt = @stdin.gets&.chomp
+          text = @stdin.gets&.strip
 
-          break if prompt.nil? || prompt.match?(/\A(exit|quit)\z/i)
+          break if text.nil? || text.match?(/\A(exit|quit)\z/i)
 
-          chat(prompt:)
+          prompt.user(text)
+          response = chat(prompt:)
+          prompt.assistant(response.text)
         rescue Interrupt
           break
         end
