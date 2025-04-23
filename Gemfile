@@ -7,6 +7,7 @@ gemspec
 gem "factory_bot"
 gem "irb"
 gem "rake"
+gem "redcarpet"
 gem "rspec"
 gem "rspec_junit_formatter"
 gem "rubocop"

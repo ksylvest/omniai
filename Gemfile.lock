@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    omniai (2.4.0)
+    omniai (2.4.1)
       event_stream_parser
       http
       logger
@@ -98,6 +98,7 @@ GEM
     rake (13.2.1)
     rdoc (6.13.1)
       psych (>= 4.0.0)
+    redcarpet (3.6.1)
     regexp_parser (2.10.0)
     reline (0.6.0)
       io-console (~> 0.5)
@@ -181,6 +182,7 @@ DEPENDENCIES
   irb
   omniai!
   rake
+  redcarpet
   rspec
   rspec_junit_formatter
   rubocop
