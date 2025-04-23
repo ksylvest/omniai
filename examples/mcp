@@ -15,7 +15,7 @@ class Weather < OmniAI::Tool
 
   # @param lat [Float]
   # @param lng [Float]
-  # @param unit [String] "Celcius" or "Fahrenheit"
+  # @param unit [String] "Celsius" or "Fahrenheit"
   # @return [String]
   def execute(lat:, lng:, unit: "Celsius")
     "#{rand(20..50)}° #{unit} at lat=#{lat} lng=#{lng}"

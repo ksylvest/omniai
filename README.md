@@ -96,7 +96,7 @@ class Weather < OmniAI::Tool
   required %i[location]
 
   # @param location [String] required
-  # @param unit [String] optional - "Celcius" or "Fahrenheit"
+  # @param unit [String] optional - "Celsius" or "Fahrenheit"
   # @return [String]
   def execute(location:, unit: "Celsius")
     puts "[weather] location=#{location} unit=#{unit}"
