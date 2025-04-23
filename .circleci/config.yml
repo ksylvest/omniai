@@ -30,6 +30,10 @@ jobs:
       - checkout
       - ruby/install-deps
       - run: bundle exec yard doc
+      - store_artifacts:
+          path: doc
+          destination: doc
+
   rspec:
     parameters:
       ruby-version:
@@ -43,12 +47,14 @@ jobs:
       - ruby/install-deps
       - ruby/rspec-test
       - codeclimate
+
   rubocop:
     executor: default
     steps:
       - checkout
       - ruby/install-deps
       - ruby/rubocop-check
+
   release:
     executor: default
     steps:
