@@ -17,6 +17,8 @@ module OmniAI
   class Tool
     class << self
       # @param description [String]
+      #
+      # @return [String]
       def description(description = nil)
         return @description if description.nil?
 
