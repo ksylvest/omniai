@@ -26,7 +26,11 @@ RSpec.describe OmniAI::CLI::ChatHandler do
 
       before do
         allow(OmniAI::Client).to receive(:find).with(provider:) { client }
-        allow(client).to receive(:chat) { stdout << "Ottawa" }
+        allow(client).to receive(:chat) do
+          text = "Ottawa"
+          stdout << text
+          instance_double(OmniAI::Chat::Response, text:)
+        end
       end
 
       context "with a prompt" do
