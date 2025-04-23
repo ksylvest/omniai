@@ -64,7 +64,7 @@ module OmniAI
       #     properties: {
       #       name: OmniAI::Tool::Property.string(description: 'The name of the person.'),
       #       age: OmniAI::Tool::Property.integer(description: 'The age of the person.'),
-      #       employeed: OmniAI::Tool::Property.boolean(description: 'Is the person employeed?'),
+      #       employed: OmniAI::Tool::Property.boolean(description: 'Is the person employed?'),
       #     },
       #     description: 'A person.'
       #     required: %i[name]

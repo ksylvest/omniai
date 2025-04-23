@@ -9,7 +9,7 @@ FactoryBot.define do
       {
         name: build(:tool_property, :string, description: "The name of the person."),
         age: build(:tool_property, :integer, description: "The age of the person."),
-        employeed: build(:tool_property, :boolean, description: "Is the person employeed?"),
+        employed: build(:tool_property, :boolean, description: "Is the person employed?"),
       }
     end
     required { %i[name] }

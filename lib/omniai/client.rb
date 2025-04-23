@@ -173,7 +173,7 @@ module OmniAI
     #
     # @return [OmniAI::Transcribe::Transcription]
     def transcribe(io, model:, language: nil, prompt: nil, temperature: nil, format: nil)
-      raise NotImplementedError, "#{self.class.name}#speak undefined"
+      raise NotImplementedError, "#{self.class.name}#transcribe undefined"
     end
 
     # @raise [OmniAI::Error]

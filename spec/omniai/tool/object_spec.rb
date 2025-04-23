@@ -17,7 +17,7 @@ RSpec.describe OmniAI::Tool::Object do
         properties: {
           name: { type: "string", description: "The name of the person." },
           age: { type: "integer", description: "The age of the person." },
-          employeed: { type: "boolean", description: "Is the person employeed?" },
+          employed: { type: "boolean", description: "Is the person employed?" },
         },
         required: %i[name],
       })
@@ -29,7 +29,7 @@ RSpec.describe OmniAI::Tool::Object do
       object.parse({
         "name" => "Ringo",
         "age" => "50",
-        "employeed" => true,
+        "employed" => true,
       })
     end
 
@@ -37,7 +37,7 @@ RSpec.describe OmniAI::Tool::Object do
       expect(parse).to eql({
         name: "Ringo",
         age: 50,
-        employeed: true,
+        employed: true,
       })
     end
   end

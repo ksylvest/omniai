@@ -19,7 +19,7 @@ RSpec.describe OmniAI::Tool::Array do
           properties: {
             name: { type: "string", description: "The name of the person." },
             age: { type: "integer", description: "The age of the person." },
-            employeed: { type: "boolean", description: "Is the person employeed?" },
+            employed: { type: "boolean", description: "Is the person employed?" },
           },
           required: %i[name],
         },
@@ -32,15 +32,15 @@ RSpec.describe OmniAI::Tool::Array do
   describe "#parse" do
     subject(:parse) do
       array.parse([
-        { "name" => "Ringo", "age" => "50", "employeed" => true },
-        { "name" => "George", "age" => "25", "employeed" => false },
+        { "name" => "Ringo", "age" => "50", "employed" => true },
+        { "name" => "George", "age" => "25", "employed" => false },
       ])
     end
 
     it "parses a hash" do
       expect(parse).to eql([
-        { name: "Ringo", age: 50, employeed: true },
-        { name: "George", age: 25, employeed: false },
+        { name: "Ringo", age: 50, employed: true },
+        { name: "George", age: 25, employed: false },
       ])
     end
   end
