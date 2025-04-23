@@ -7,7 +7,7 @@ module OmniAI
   #     description 'Find the weather for a location'
   #
   #     parameter :location, :string, description: 'The location to find the weather for (e.g. "Toronto, Canada").'
-  #     parameter :unit, :string, description: 'The unit of measurement (e.g. "Celcius" or "Fahrenheit").'
+  #     parameter :unit, :string, description: 'The unit of measurement (e.g. "Celsius" or "Fahrenheit").'
   #     required %i[location]
   #
   #     def execute!(location:)
