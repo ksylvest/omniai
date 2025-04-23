@@ -121,7 +121,7 @@ The weather is 24° Celsius in London and 42° Fahrenheit in Madrid.
 
 ### Example #5: [Chat w/ History](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_history)
 
-Building a conversation history (e.g. multiple user and assistant messages) is especially helpful when building an agent like conversation experience. A prompt can be used to track this back and forth conversation:
+Tracking a prompt history over multiple user and assistant messages is especially helpful when building an agent like conversation experience. A prompt can be used to track this back and forth conversation:
 
 ```ruby
 require "omniai/openai"
@@ -534,7 +534,7 @@ omniai chat --provider="openai" --model="gpt-4" --temperature="0.5"
 
 ```
 Type 'exit' or 'quit' to abort.
-# What is the warmet place on earth?
+# What is the warmest place on earth?
 ```
 
 ```
@@ -562,7 +562,8 @@ omniai embed --provider="openai" --model="text-embedding-ada-002"
 
 ```
 Type 'exit' or 'quit' to abort.
-# Whe quick brown fox jumps over a lazy dog.
+# What is the capital of Spain?
+The capital of Spain is **Madrid**.
 ```
 
 ```
