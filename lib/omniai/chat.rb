@@ -86,14 +86,19 @@ module OmniAI
     end
 
     # @raise [HTTPError]
+    # @raise [SSLError]
     #
     # @return [OmniAI::Chat::Response]
     def process!
-      response = request!
+      begin
+        response = request!
 
-      raise HTTPError, response.flush unless response.status.ok?
+        raise HTTPError, response.flush unless response.status.ok?
 
-      completion = parse!(response:)
+        completion = parse!(response:)
+      rescue OpenSSL::SSL::SSLError => e
+        raise SSLError, e.message, cause: e
+      end
 
       if @tools && completion.tool_call_list?
         spawn!(
@@ -153,6 +158,8 @@ module OmniAI
     end
 
     # @param response [HTTP::Response]
+    #
+    # @raise [OmniAI::Chat::Error]
     #
     # @return [OmniAI::Chat::Response]
     def parse!(response:)
