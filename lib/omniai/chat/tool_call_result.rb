@@ -4,13 +4,15 @@ module OmniAI
   class Chat
     # The result of a tool call.
     class ToolCallResult
-      # @return [Object]
+      # @!attribute [rw] content
+      #   @return [Object]
       attr_accessor :content
 
-      # @return [ToolCall]
+      # @!attribute [rw] tool_call_id
+      #   @return [ToolCall]
       attr_accessor :tool_call_id
 
-      # @param content [Object]
+      # @param content [Object] e.g. a string, hash, array, boolean, numeric, etc.
       # @param tool_call_id [String]
       def initialize(content:, tool_call_id:)
         @content = content
@@ -22,13 +24,23 @@ module OmniAI
         "#<#{self.class.name} content=#{content.inspect} tool_call_id=#{tool_call_id.inspect}>"
       end
 
+      # Converts the content of a tool call result to JSON unless the result is a string.
+      #
+      # @return [String, nil]
+      def text
+        return content if content.nil? || content.is_a?(String)
+
+        JSON.generate(@content)
+      end
+
       # @param context [Context] optional
+      #
       # @return [Hash]
       def serialize(context: nil)
         serializer = context&.serializer(:tool_call_result)
         return serializer.call(self, context:) if serializer
 
-        content = JSON.generate(@content)
+        content = text
         tool_call_id = @tool_call_id
 
         { content:, tool_call_id: }
@@ -36,12 +48,13 @@ module OmniAI
 
       # @param data [Hash]
       # @param context [Context] optional
+      #
       # @return [ToolCallResult]
       def self.deserialize(data, context: nil)
         deserialize = context&.deserializer(:tool_call_result)
         return deserialize.call(data, context:) if deserialize
 
-        content = JSON.parse(data["content"])
+        content = data["content"]
         tool_call_id = data["tool_call_id"]
 
         new(content:, tool_call_id:)
