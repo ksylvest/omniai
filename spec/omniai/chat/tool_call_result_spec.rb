@@ -15,13 +15,13 @@ RSpec.describe OmniAI::Chat::ToolCallResult do
   describe ".deserialize" do
     subject(:deserialize) { described_class.deserialize(data, context:) }
 
-    let(:data) { { "content" => '"Hello!"', "tool_call_id" => "fake_id" } }
+    let(:data) { { "content" => "Hello!", "tool_call_id" => "fake_id" } }
 
     context "with a deserializer" do
       let(:context) do
         OmniAI::Context.build do |context|
           context.deserializers[:tool_call_result] = lambda do |data, *|
-            content = JSON.parse(data["content"])
+            content = data["content"]
             tool_call_id = data["tool_call_id"]
             described_class.new(content:, tool_call_id:)
           end
@@ -50,7 +50,7 @@ RSpec.describe OmniAI::Chat::ToolCallResult do
         OmniAI::Context.build do |context|
           context.serializers[:tool_call_result] = lambda do |tool_call_result, *|
             {
-              content: JSON.generate(tool_call_result.content),
+              content: tool_call_result.text,
               tool_call_id: tool_call_result.tool_call_id,
             }
           end
@@ -59,7 +59,7 @@ RSpec.describe OmniAI::Chat::ToolCallResult do
 
       it do
         expect(serialize).to eql({
-          content: '"Hello!"',
+          content: "Hello!",
           tool_call_id: "fake_id",
         })
       end
@@ -70,7 +70,7 @@ RSpec.describe OmniAI::Chat::ToolCallResult do
 
       it do
         expect(serialize).to eql({
-          content: '"Hello!"',
+          content: "Hello!",
           tool_call_id: "fake_id",
         })
       end
