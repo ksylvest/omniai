@@ -191,5 +191,21 @@ RSpec.describe OmniAI::Chat do
 
       it { expect { process! }.to raise_error(OmniAI::HTTPError) }
     end
+
+    context "when an SSL error occures" do
+      before do
+        stub_request(:post, "http://localhost:8080/chat")
+          .with(body: {
+            messages: [
+              { role: "system", content: [{ type: "text", text: "You are a helpful assistant." }] },
+              { role: "user", content: [{ type: "text", text: "What is the name of the drummer for the Beatles?" }] },
+            ],
+            model:,
+          })
+          .to_raise(OpenSSL::SSL::SSLError, "an unknown error occurred")
+      end
+
+      it { expect { process! }.to raise_error(OmniAI::SSLError) }
+    end
   end
 end
