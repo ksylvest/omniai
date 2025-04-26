@@ -88,34 +88,62 @@ require 'omniai/google'
 
 client = OmniAI::Google::Client.new
 
-class Weather < OmniAI::Tool
-  description "Lookup the weather for a location"
+class WeatherTool < OmniAI::Tool
+  description "Lookup the weather for a lat / lng."
 
-  parameter :location, :string, description: "A location (e.g. 'Toronto, Canada')."
+  parameter :lat, :number, description: "The latitude of the location."
+  parameter :lng, :number, description: "The longitude of the location."
   parameter :unit, :string, enum: %w[Celsius Fahrenheit], description: "The unit of measurement."
-  required %i[location]
+  required %i[lat lng]
 
-  # @param location [String] required
-  # @param unit [String] optional - "Celsius" or "Fahrenheit"
-  # @return [String]
-  def execute(location:, unit: "Celsius")
-    puts "[weather] location=#{location} unit=#{unit}"
-    "#{rand(20..50)}° #{unit} at #{location}"
+  # @param lat [Float]
+  # @param lng [Float]
+  # @param unit [String] "Celsius" or "Fahrenheit"
+  #
+  # @return [String] e.g. "20° Celsius at lat=43.7 lng=-79.4"
+  def execute(lat:, lng:, unit: "Celsius")
+    puts "[weather] lat=#{lat} lng=#{lng} unit=#{unit}"
+    "#{rand(20..50)}° #{unit} at lat=#{lat} lng=#{lng}"
   end
 end
 
-client.chat(stream: $stdout, tools: [Weather.new]) do |prompt|
+class GeocodeTool < OmniAI::Tool
+  description "Lookup the latitude and longitude of a location."
+
+  parameter :location, :string, description: "The location to geocode."
+  required %i[location]
+
+  # @param location [String] "Toronto, Canada"
+  #
+  # @return [Hash] { lat: Float, lng: Float, location: String }
+  def execute(location:)
+    puts "[geocode] location=#{location}"
+
+    {
+      lat: rand(-90.0..+90.0),
+      lng: rand(-180.0..+180.0),
+      location:,
+    }
+  end
+end
+
+tools = [
+  WeatherTool.new,
+  GeocodeTool.new,
+]
+
+client.chat(stream: $stdout, tools:) do |prompt|
   prompt.system "You are an expert in weather."
   prompt.user 'What is the weather in "London" in Celsius and "Madrid" in Fahrenheit?'
 end
 ```
 
 ```
-[weather] location=London unit=Celsius
-[weather] location=Madrid unit=Fahrenheit
-```
+[geocode] location=London
+[weather] lat=... lng=... unit=Celsius
+[geocode] location=Madrid
+[weather] lat=... lng=... unit=Fahrenheit
 
-```
 The weather is 24° Celsius in London and 42° Fahrenheit in Madrid.
 ```
 

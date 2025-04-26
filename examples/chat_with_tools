@@ -5,9 +5,11 @@ require "omniai/google"
 
 client = OmniAI::Google::Client.new
 
-# A tool that randomly generates a temperature for a lat / lng in either Celsius or Fahrenheit.
-class Weather < OmniAI::Tool
-  description "Lookup the weather for a lat / lng"
+# @example
+#   weather = WeatherTool.new
+#   weather.execute(lat: 43.7, lng: -79.42, unit: "Celsius") # => "20° Celsius at lat=43.7 lng=-79.4"
+class WeatherTool < OmniAI::Tool
+  description "Lookup the weather for a lat / lng."
 
   parameter :lat, :number, description: "The latitude of the location."
   parameter :lng, :number, description: "The longitude of the location."
@@ -17,32 +19,43 @@ class Weather < OmniAI::Tool
   # @param lat [Float]
   # @param lng [Float]
   # @param unit [String] "Celsius" or "Fahrenheit"
-  # @return [String]
+  #
+  # @return [String] e.g. "20° Celsius at lat=43.7 lng=-79.4"
   def execute(lat:, lng:, unit: "Celsius")
     puts "[weather] lat=#{lat} lng=#{lng} unit=#{unit}"
     "#{rand(20..50)}° #{unit} at lat=#{lat} lng=#{lng}"
   end
 end
 
-weather = Weather.new
+# @example
+#   geocode = GeocodeTool.new
+#   geocode.execute(location: "Toronto, Canada") #
+class GeocodeTool < OmniAI::Tool
+  description "Lookup the latitude and longitude of a location."
 
-# A tool that randomly generates a lat / lng for a location.
-geocode = OmniAI::Tool.new(
-  proc do |location:|
+  parameter :location, :string, description: "The location to geocode."
+  required %i[location]
+
+  # @param location [String] "Toronto, Canada"
+  #
+  # @return [Hash] { lat: Float, lng: Float, location: String }
+  def execute(location:)
     puts "[geocode] location=#{location}"
-    "lat=#{rand(-90.0..+90.0)} lng=#{rand(-180.0..+180.0)} at location=#{location}"
-  end,
-  name: "geocode",
-  description: "Lookup the latitude and longitude of a location",
-  parameters: OmniAI::Tool::Parameters.new(
-    properties: {
-      location: OmniAI::Tool::Property.string(description: "e.g. Toronto"),
-    },
-    required: %i[location]
-  )
-)
 
-client.chat(stream: $stdout, tools: [geocode, weather]) do |prompt|
+    {
+      lat: rand(-90.0..+90.0),
+      lng: rand(-180.0..+180.0),
+      location:,
+    }
+  end
+end
+
+tools = [
+  WeatherTool.new,
+  GeocodeTool.new,
+]
+
+client.chat(stream: $stdout, tools:) do |prompt|
   prompt.system "You are an expert in weather."
   prompt.user 'What is the weather in "London" in Celsius and "Madrid" in Fahrenheit?'
 end
