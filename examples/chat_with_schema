@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "omniai/openai"
+
+client = OmniAI::OpenAI::Client.new
+
+format = OmniAI::Schema.format(name: "Contact", schema: OmniAI::Schema.object(
+  description: "A contact with a name, relationship, and addresses.",
+  properties: {
+    name: OmniAI::Schema.string,
+    relationship: OmniAI::Schema.string(enum: %w[friend family]),
+    addresses: OmniAI::Schema.array(
+      items: OmniAI::Schema.object(
+        title: "Address",
+        description: "An address with street, city, state, and zip code.",
+        properties: {
+          street: OmniAI::Schema.string,
+          city: OmniAI::Schema.string,
+          state: OmniAI::Schema.string,
+          zip: OmniAI::Schema.string,
+        },
+        required: %i[street city state zip]
+      )
+    ),
+  },
+  required: %i[name]
+))
+
+response = client.chat(format:) do |prompt|
+  prompt.user <<~TEXT
+    Parse the following contact:
+
+    NAME: George Harrison
+    RELATIONSHIP: friend
+    HOME: 123 Main St, Springfield, IL, 12345
+    WORK: 456 Elm St, Springfield, IL, 12345
+  TEXT
+end
+
+puts format.parse(response.text) # => { name: "George Harrison", relationship: "friend", addresses: [{ ... }] }

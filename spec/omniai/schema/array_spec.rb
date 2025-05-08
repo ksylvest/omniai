@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe OmniAI::Tool::Array do
-  subject(:array) { build(:tool_array) }
+RSpec.describe OmniAI::Schema::Array do
+  subject(:array) { build(:schema_array) }
 
-  it { expect(array.items).to be_a(OmniAI::Tool::Object) }
+  it { expect(array.items).to be_a(OmniAI::Schema::Object) }
   it { expect(array.min_items).to be(2) }
   it { expect(array.max_items).to be(3) }
 

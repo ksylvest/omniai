@@ -18,7 +18,7 @@ FactoryBot.define do
     description { "Finds the weather for a location." }
 
     parameters do
-      OmniAI::Tool::Parameters.new(properties: { location: OmniAI::Tool::Property.string }, required: ["location"])
+      OmniAI::Schema.object(properties: { location: OmniAI::Schema.string }, required: %i[location])
     end
   end
 end

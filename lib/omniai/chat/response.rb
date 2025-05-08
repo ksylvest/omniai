@@ -29,6 +29,8 @@ module OmniAI
 
       # @param data [Hash]
       # @param context [OmniAI::Context] optional
+      #
+      # @return [OmniAI::Chat::Response]
       def self.deserialize(data, context: nil)
         deserialize = context&.deserializer(:response)
         return deserialize.call(data, context:) if deserialize

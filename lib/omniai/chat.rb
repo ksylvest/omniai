@@ -65,7 +65,7 @@ module OmniAI
     # @param temperature [Float, nil] optional
     # @param stream [Proc, IO, nil] optional
     # @param tools [Array<OmniAI::Tool>] optional
-    # @param format [Symbol, nil] optional - :json
+    # @param format [:json, :text, OmniAI::Schema::Object, nil] optional
     #
     # @yield [prompt] optional
     # @yieldparam prompt [OmniAI::Chat::Prompt]
