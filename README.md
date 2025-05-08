@@ -174,19 +174,57 @@ loop do
 end
 ```
 
+### Example #6 [Chat w/ Schema](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_schema)
+
+```ruby
+format = OmniAI::Schema.format(name: "Contact", schema: OmniAI::Schema.object(
+  description: "A contact with a name, relationship, and addresses.",
+  properties: {
+    name: OmniAI::Schema.string,
+    relationship: OmniAI::Schema.string(enum: %w[friend family]),
+    addresses: OmniAI::Schema.array(
+      items: OmniAI::Schema.object(
+        title: "Address",
+        description: "An address with street, city, state, and zip code.",
+        properties: {
+          street: OmniAI::Schema.string,
+          city: OmniAI::Schema.string,
+          state: OmniAI::Schema.string,
+          zip: OmniAI::Schema.string,
+        },
+        required: %i[street city state zip]
+      )
+    ),
+  },
+  required: %i[name]
+))
+
+response = client.chat(format:) do |prompt|
+  prompt.user <<~TEXT
+    Parse the following contact:
+
+    NAME: George Harrison
+    RELATIONSHIP: friend
+    HOME: 123 Main St, Springfield, IL, 12345
+    WORK: 456 Elm St, Springfield, IL, 12345
+  TEXT
+end
+
+puts format.parse(response.text)
 ```
-Type 'exit' or 'quit' to leave.
 
-> What is the capital of France?
-The capital of France is Paris.
-La capitale de la France est Paris.
-
-> How many people live there?
-The population of Paris is approximately 2.1 million.
-La population de Paris est d’environ 2,1 million.
+```
+{
+  name: "George Harrison",
+  relationship: "friend",
+  addresses: [
+    { street: "123 Main St", city: "Springfield", state: "IL", zip: "12345" },
+    { street: "456 Elm St", city: "Springfield", state: "IL", zip: "12345" },
+  ]
+}
 ```
 
-### Example #6: [Chat w/ CLI](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_cli)
+### Example #7: [Chat w/ CLI](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_cli)
 
 The `OmniAI` gem also ships with a CLI to simplify quick tests.
 
@@ -206,7 +244,7 @@ omniai chat --provider="google" --model="gemini-2.0-flash" "Who are you?"
 I am a large language model, trained by Google.
 ```
 
-### Example #7: [Text-to-Speech](https://github.com/ksylvest/omniai/blob/main/examples/text_to_speech)
+### Example #8: [Text-to-Speech](https://github.com/ksylvest/omniai/blob/main/examples/text_to_speech)
 
 This example demonstrates using `OmniAI` with **OpenAI** to convert text to speech and save it to a file.
 
@@ -222,7 +260,7 @@ File.open(File.join(__dir__, 'audio.wav'), 'wb') do |file|
 end
 ```
 
-### Example #8: [Speech-to-Text](https://github.com/ksylvest/omniai/blob/main/examples/speech_to_text)
+### Example #9: [Speech-to-Text](https://github.com/ksylvest/omniai/blob/main/examples/speech_to_text)
 
 This example demonstrates using `OmniAI` with **OpenAI** to convert speech to text.
 
@@ -237,7 +275,7 @@ File.open(File.join(__dir__, 'audio.wav'), 'rb') do |file|
 end
 ```
 
-### Example #9: [Embeddings](https://github.com/ksylvest/omniai/blob/main/examples/embeddings)
+### Example #10: [Embeddings](https://github.com/ksylvest/omniai/blob/main/examples/embeddings)
 
 This example demonstrates using `OmniAI` with **Mistral** to generate embeddings for a dataset. It defines a set of entries (e.g. "George is a teacher." or "Ringo is a doctor.") and then compares the embeddings generated from a query (e.g. "What does George do?" or "Who is a doctor?") to rank the entries by relevance.
 
@@ -454,19 +492,28 @@ client.chat('Tell me a story', stream: $stdout)
 A chat can also be initialized with tools:
 
 ```ruby
-tool = OmniAI::Tool.new(
-  proc { |location:, unit: 'Celsius'| "#{rand(20..50)}° #{unit} in #{location}" },
-  name: 'Weather',
-  description: 'Lookup the weather in a location',
-  parameters: OmniAI::Tool::Parameters.new(
-    properties: {
-      location: OmniAI::Tool::Property.string(description: 'e.g. Toronto'),
-      unit: OmniAI::Tool::Property.string(enum: %w[Celsius Fahrenheit]),
-    },
-    required: %i[location]
-  )
-)
-client.chat('What is the weather in "London" in Celsius and "Paris" in Fahrenheit?', tools: [tool])
+class WeatherTool
+  description "Lookup the weather at a location in either Celsius for Fahrenheit."
+
+  parameter :location, :string, description: "The location to find the weather."
+  parameter :unit, :string, enum: %w[Celsius Fahrenheit], description: "The unit of measurement."
+  required %i[location]
+
+  # @param location [String]
+  # @param unit [String] "Celsius" or "Fahrenheit"
+  #
+  # @return [Hash]
+  def execute(location:, unit: "Celsius")
+    puts "[weather] location=#{locaiton} unit=#{unit}"
+
+    {
+      temperature: "#{rand(20..50)}°",
+      humidty: rand(0..100),
+    }
+  end
+end
+
+client.chat('What is the weather in "London" in Celsius and "Paris" in Fahrenheit?', tools: [WeatherTool.new])
 ```
 
 ### Transcribe

@@ -1,11 +1,31 @@
 # frozen_string_literal: true
 
-RSpec.describe OmniAI::Tool::Object do
-  subject(:object) { build(:tool_object) }
+RSpec.describe OmniAI::Schema::Object do
+  subject(:object) { build(:schema_object) }
 
   it { expect(object.properties).to be_a(Hash) }
   it { expect(object.required).to be_a(Array) }
   it { expect(object.description).to be_a(String) }
+
+  describe ".deserialize" do
+    subject(:deserialize) { described_class.deserialize(data) }
+
+    let(:data) do
+      {
+        type: "object",
+        properties: {
+          name: { type: "string", description: "The name of the person." },
+          age: { type: "integer", description: "The age of the person." },
+          employed: { type: "boolean", description: "Is the person employed?" },
+        },
+        required: %i[name],
+      }
+    end
+
+    it "returns a OmniAI::Schema::Object" do
+      expect(deserialize).to be_a(described_class)
+    end
+  end
 
   describe "#serialize" do
     subject(:serialize) { object.serialize }

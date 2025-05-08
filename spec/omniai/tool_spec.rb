@@ -3,7 +3,7 @@
 class Calculator < OmniAI::Tool
   description "Either add or subtract a set of values."
 
-  parameter :values, :array, description: "A set of values.", items: OmniAI::Tool::Property.integer
+  parameter :values, :array, description: "A set of values.", items: OmniAI::Schema.integer
   parameter :operation, :string, enum: %w[+ -], description: "The operation to perform."
   required %i[values operation]
 
@@ -73,9 +73,12 @@ RSpec.describe OmniAI::Tool do
     let(:description) { "Calculate the nth Fibonacci" }
 
     let(:parameters) do
-      OmniAI::Tool::Parameters.new(properties: {
-        n: OmniAI::Tool::Property.integer(description: "The nth Fibonacci number to calculate"),
-      }, required: %i[n])
+      OmniAI::Schema.object(
+        properties: {
+          n: OmniAI::Schema.integer(description: "The nth Fibonacci number to calculate"),
+        },
+        required: %i[n]
+      )
     end
 
     describe "#serialize" do

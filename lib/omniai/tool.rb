@@ -25,15 +25,15 @@ module OmniAI
         @description = description
       end
 
-      # @return [OmniAI::Tool::Parameters]
+      # @return [OmniAI::Schema::Object]
       def parameters
-        @parameters ||= Parameters.new
+        @parameters ||= OmniAI::Schema::Object.new
       end
 
       # @param name [Symbol]
       # @param kind [Symbol]
       def parameter(name, kind, **)
-        parameters.properties[name] = Property.build(kind, **)
+        parameters.properties[name] = OmniAI::Schema.build(kind, **)
       end
 
       # @param names [Array<Symbol>]
@@ -118,7 +118,7 @@ module OmniAI
         function: {
           name: @name,
           description: @description,
-          parameters: @parameters.is_a?(Tool::Parameters) ? @parameters.serialize : @parameters,
+          parameters: @parameters.is_a?(Schema::Object) ? @parameters.serialize : @parameters,
         }.compact,
       }
     end
@@ -134,7 +134,7 @@ module OmniAI
     # @param args [Hash]
     # @return [String]
     def call(args = {})
-      @function.call(**(@parameters.is_a?(Tool::Parameters) ? @parameters.parse(args) : args))
+      @function.call(**(@parameters.is_a?(Schema::Object) ? @parameters.parse(args) : args))
     end
   end
 end
