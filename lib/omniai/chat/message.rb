@@ -103,7 +103,13 @@ module OmniAI
         serializer = context&.serializer(:message)
         return serializer.call(self, context:) if serializer
 
-        content = @content.is_a?(Array) ? @content.map { |content| content.serialize(context:) } : @content
+        content =
+          case @content
+          when Array then @content.map { |content| content.serialize(context:) }
+          when Content then @content.serialize(context:)
+          else @content
+          end
+
         tool_calls = @tool_call_list&.serialize(context:)
 
         { role: @role, content:, tool_calls: }.compact
