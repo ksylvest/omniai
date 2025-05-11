@@ -176,6 +176,8 @@ end
 
 ### Example #6 [Chat w/ Schema](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_schema)
 
+Requesting structured data back from an LLM is possible by defining a schema, then passing the schema into the chat. The following example defines a structured schema using `OmniAI::Schema` to model a `Contact`. The results of the LLM call are then parsed using the schema to ensure all types are accurate.
+
 ```ruby
 format = OmniAI::Schema.format(name: "Contact", schema: OmniAI::Schema.object(
   description: "A contact with a name, relationship, and addresses.",
