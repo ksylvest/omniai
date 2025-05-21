@@ -147,6 +147,8 @@ end
 The weather is 24° Celsius in London and 42° Fahrenheit in Madrid.
 ```
 
+_For a set of pre-built tools for interacting with browsers, databases, docker, and more try the [OmniAI::Tools](https://omniai-tools.ksylvest.com/) project._
+
 ### Example #5: [Chat w/ History](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_history)
 
 Tracking a prompt history over multiple user and assistant messages is especially helpful when building an agent like conversation experience. A prompt can be used to track this back and forth conversation:
