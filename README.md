@@ -151,7 +151,7 @@ _For a set of pre-built tools for interacting with browsers, databases, docker, 
 
 ### Example #5: [Chat w/ History](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_history)
 
-Tracking a prompt history over multiple user and assistant messages is especially helpful when building an agent like conversation experience. A prompt can be used to track this back and forth conversation:
+Tracking a prompt history over multiple user and assistant messages is especially helpful when building an agent like conversation experience. A prompt can be used to track this back-and-forth conversation:
 
 ```ruby
 require "omniai/openai"
@@ -178,7 +178,7 @@ end
 
 ### Example #6 [Chat w/ Schema](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_schema)
 
-Requesting structured data back from an LLM is possible by defining a schema, then passing the schema into the chat. The following example defines a structured schema using `OmniAI::Schema` to model a `Contact`. The results of the LLM call are then parsed using the schema to ensure all types are accurate.
+Requesting structured data back from an LLM is possible by defining a schema, then passing the schema into the chat. The following example defines a structured schema using `OmniAI::Schema` to model a `Contact`. The results of the LLM call are then parsed using the schema to ensure all types are correct.
 
 ```ruby
 format = OmniAI::Schema.format(name: "Contact", schema: OmniAI::Schema.object(
@@ -425,10 +425,10 @@ require 'omniai/openai'
 require 'logger'
 
 logger = Logger.new(STDOUT)
-client = OmniAI::OpenAI::Client.new(timeout: 8) # i.e. 8 seconds
+client = OmniAI::OpenAI::Client.new(timeout: 8) # 8 seconds
 ```
 
-Timeouts are also configurable by passing a `timeout` hash with `timeout` / `read` / `write` / keys using:
+Timeouts are also configurable by passing a `timeout` hash with `timeout` / `read` / `write` keys using:
 
 ```ruby
 require 'omniai/openai'
@@ -485,7 +485,7 @@ client.chat('Tell me a joke.', stream:)
 
 #### Completion using Streaming via IO
 
-The above code can also be supplied any IO (e.g. `File`, `$stdout`, `$stdin`, etc):
+The above code can also be supplied with any IO object (e.g., `File`, `$stdout`, `$stdin`, etc.):
 
 ```ruby
 client.chat('Tell me a story', stream: $stdout)
@@ -493,11 +493,11 @@ client.chat('Tell me a story', stream: $stdout)
 
 #### Completion with Tools
 
-A chat can also be initialized with tools:
+A chat can also be initialized using tools:
 
 ```ruby
 class WeatherTool
-  description "Lookup the weather at a location in either Celsius for Fahrenheit."
+  description "Lookup the weather at a location in either Celsius or Fahrenheit."
 
   parameter :location, :string, description: "The location to find the weather."
   parameter :unit, :string, enum: %w[Celsius Fahrenheit], description: "The unit of measurement."
@@ -508,11 +508,11 @@ class WeatherTool
   #
   # @return [Hash]
   def execute(location:, unit: "Celsius")
-    puts "[weather] location=#{locaiton} unit=#{unit}"
+    puts "[weather] location=#{location} unit=#{unit}"
 
     {
       temperature: "#{rand(20..50)}°",
-      humidty: rand(0..100),
+      humidity: rand(0..100),
     }
   end
 end
@@ -542,7 +542,7 @@ end
 
 ### Speak
 
-Clients that support speak (e.g. OpenAI w/ "Whisper") convert text to recordings via the following calls:
+Clients that support speak (e.g. OpenAI w/ "Whisper") convert text to speech via the following calls:
 
 #### Speech with Stream
 
@@ -572,12 +572,12 @@ response.usage # <OmniAI::Embed::Usage prompt_tokens=5 total_tokens=5>
 response.embedding # [0.1, 0.2, ...] >
 ```
 
-Batches of text can also be converted to embeddings via the following:
+Theese APIs support generating embeddings in batches using the following code:
 
 ```ruby
 response = client.embed([
-  '',
-  '',
+  'The quick brown fox jumps over a lazy dog',
+  'Pack my box with five dozen liquor jugs',
 ])
 response.usage # <OmniAI::Embed::Usage prompt_tokens=5 total_tokens=5>
 response.embeddings.each do |embedding|
@@ -587,7 +587,7 @@ end
 
 ## CLI
 
-OmniAI packages a basic command line interface (CLI) to allow for exploration of various APIs. A detailed CLI documentation can be found via help:
+OmniAI packages a basic command line interface (CLI) to allow for exploration of various APIs. CLI documentation is available with the `--help` flag:
 
 ```bash
 omniai --help
