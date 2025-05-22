@@ -148,6 +148,28 @@ RSpec.describe OmniAI::Client do
     end
   end
 
+  describe ".discover" do
+    subject(:discover) { described_class.discover }
+
+    context "when find returns a client" do
+      let(:client) { instance_double(described_class) }
+
+      it "returns a client" do
+        allow(described_class).to receive(:find) { client }
+        expect(discover).to eql(client)
+        expect(described_class).to have_received(:find)
+      end
+    end
+
+    context "when find does not return a client" do
+      it "raises an error" do
+        allow(described_class).to receive(:find).and_raise(OmniAI::LoadError)
+        expect { discover }.to raise_error(OmniAI::LoadError)
+        expect(described_class).to have_received(:find).exactly(5).times
+      end
+    end
+  end
+
   describe "#api_key" do
     it { expect(client.api_key).to eq(api_key) }
   end
