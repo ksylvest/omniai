@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Chat
+
+omniai chat "Who designed the Ruby programming language?"
+omniai chat --provider="google" --model="gemini-2.0-flash" "Who are you?"
+
+## Speech to Text
+
+omniai speak "Salley sells sea shells by the sea shore." > ./files/audio.wav
+
+# Text to Speech
+
+omniai transcribe "./files/audio.wav"
+
+# Embed
+
+omniai embed "What is the capital of France?"

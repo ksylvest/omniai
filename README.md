@@ -228,24 +228,27 @@ puts format.parse(response.text)
 }
 ```
 
-### Example #7: [Chat w/ CLI](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_cli)
+### Example #7: [CLI](https://github.com/ksylvest/omniai/blob/main/examples/cli)
 
 The `OmniAI` gem also ships with a CLI to simplify quick tests.
 
 ```bash
+# Chat
+
 omniai chat "Who designed the Ruby programming language?"
-```
-
-```
-The Ruby programming language was created by Yukihiro Matsumoto, often known as "Matz."
-```
-
-```bash
 omniai chat --provider="google" --model="gemini-2.0-flash" "Who are you?"
-```
 
-```
-I am a large language model, trained by Google.
+## Speech to Text
+
+omniai speak "Salley sells sea shells by the sea shore." > ./files/audio.wav
+
+# Text to Speech
+
+omniai transcribe "./files/audio.wav"
+
+# Embed
+
+omniai embed "What is the capital of France?"
 ```
 
 ### Example #8: [Text-to-Speech](https://github.com/ksylvest/omniai/blob/main/examples/text_to_speech)
@@ -648,6 +651,18 @@ The capital of Spain is **Madrid**.
 ```
 0.0
 ...
+```
+
+#### Text-to-Speech
+
+```bash
+omniai speak "Sally sells sea shells on the sea shore." > audio.aac
+```
+
+#### Speech-to-Text
+
+```bash
+omniai transcribe ./audio.aac
 ```
 
 ### MCP
