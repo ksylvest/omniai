@@ -20,7 +20,7 @@ RSpec.describe OmniAI::Client do
     end
 
     context "when the client is not defined" do
-      it { expect { anthropic }.to raise_error(OmniAI::Error) }
+      it { expect { anthropic }.to raise_error(OmniAI::LoadError) }
     end
   end
 
@@ -36,7 +36,7 @@ RSpec.describe OmniAI::Client do
     end
 
     context "when the client is not defined" do
-      it { expect { deepseek }.to raise_error(OmniAI::Error) }
+      it { expect { deepseek }.to raise_error(OmniAI::LoadError) }
     end
   end
 
@@ -52,7 +52,23 @@ RSpec.describe OmniAI::Client do
     end
 
     context "when the client is not defined" do
-      it { expect { google }.to raise_error(OmniAI::Error) }
+      it { expect { google }.to raise_error(OmniAI::LoadError) }
+    end
+  end
+
+  describe ".llama" do
+    subject(:llama) { described_class.llama }
+
+    context "when the client is defined" do
+      let(:klass) { Class.new }
+
+      before { stub_const("OmniAI::Llama::Client", klass) }
+
+      it { expect(llama).to eql(klass) }
+    end
+
+    context "when the client is not defined" do
+      it { expect { llama }.to raise_error(OmniAI::LoadError) }
     end
   end
 
@@ -68,7 +84,7 @@ RSpec.describe OmniAI::Client do
     end
 
     context "when the client is not defined" do
-      it { expect { mistral }.to raise_error(OmniAI::Error) }
+      it { expect { mistral }.to raise_error(OmniAI::LoadError) }
     end
   end
 
@@ -84,7 +100,7 @@ RSpec.describe OmniAI::Client do
     end
 
     context "when the client is not defined" do
-      it { expect { openai }.to raise_error(OmniAI::Error) }
+      it { expect { openai }.to raise_error(OmniAI::LoadError) }
     end
   end
 
@@ -118,6 +134,16 @@ RSpec.describe OmniAI::Client do
         allow(described_class).to receive(:google) { Class.new }
         find
         expect(described_class).to have_received(:google)
+      end
+    end
+
+    context "when the provider is llama" do
+      let(:provider) { "llama" }
+
+      it "calls .llama" do
+        allow(described_class).to receive(:llama) { Class.new }
+        find
+        expect(described_class).to have_received(:llama)
       end
     end
 

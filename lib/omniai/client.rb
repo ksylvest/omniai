@@ -56,6 +56,18 @@ module OmniAI
       raise LoadError, "requires 'omniai-deepseek': `gem install omniai-deepseek`"
     end
 
+    # Lookup the `OmniAI::LLama::Client``. This method requires the provider if it is undefined.
+    #
+    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
+    #
+    # @return [Class<OmniAI::Client>]
+    def self.llama
+      require "omniai/llama" unless defined?(OmniAI::Llama::Client)
+      OmniAI::Llama::Client
+    rescue ::LoadError
+      raise LoadError, "requires 'omniai-llama': `gem install omniai-llama`"
+    end
+
     # Lookup the `OmniAI::Google::Client``. This method requires the provider if it is undefined.
     #
     # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
@@ -105,11 +117,12 @@ module OmniAI
       end
 
       raise LoadError, <<~TEXT
-        requires 'omniai-openai' or 'omniai-anthropic' or 'openai-deepseek' or 'omniai-google' or 'omniai-mistral':
+        Please rune one of the following commands to install a provider specific gem:
 
           `gem install omniai-openai`
           `gem install omniai-anthropic`
           `gem install omniai-deepseek`
+          `gem install omniai-llama`
           `gem install omniai-google`
           `gem install omniai-mistral`
       TEXT
@@ -118,7 +131,7 @@ module OmniAI
     # Initialize a client by provider (e.g. 'openai'). This method attempts to require the provider.
     #
     #
-    # @param provider [String, Symbol] required (e.g. 'anthropic', 'deepseek', 'google', 'mistral', 'openai', etc)
+    # @param provider [String, Symbol] required (e.g. 'anthropic', 'deepseek', 'google', 'mistral', 'openai', 'llama')
     #
     # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
     #
@@ -129,6 +142,7 @@ module OmniAI
         when :anthropic, "anthropic" then anthropic
         when :deepseek, "deepseek" then deepseek
         when :google, "google" then google
+        when :llama, "llama" then llama
         when :mistral, "mistral" then mistral
         when :openai, "openai" then openai
         else raise Error, "unknown provider=#{provider.inspect}"
