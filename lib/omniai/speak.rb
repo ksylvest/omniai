@@ -23,7 +23,11 @@ module OmniAI
   #     end
   #   end
   #
-  #   client.transcribe(File.open("..."), model: "...", format: :json)
+  #   File.open('audio.wav', 'wb') do |file|
+  #     client.speak('Sally sells seashells by the seashore.', format: OmniAI::Speak::Format::WAV) do |chunk|
+  #       file << chunk
+  #     end
+  #   end
   class Speak
     module Format
       AAC = "aac"
