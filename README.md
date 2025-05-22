@@ -15,9 +15,9 @@ OmniAI provides a unified Ruby API for integrating with multiple AI providers, i
 - [OmniAI::Mistral](https://github.com/ksylvest/omniai-mistral)
 - [OmniAI::OpenAI](https://github.com/ksylvest/omniai-openai)
 
-## Examples
+## 📄 Examples
 
-### Example #1: [Chat w/ Text](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_text)
+### Example #1: [💬 Chat w/ Text](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_text)
 
 This example demonstrates using `OmniAI` with **Anthropic** to ask for a joke. The response is parsed and printed.
 
@@ -33,7 +33,7 @@ puts client.chat("Tell me a joke").text
 Why don't scientists trust atoms? Because they make up everything!
 ```
 
-### Example #2: [Chat w/ Prompt](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_prompt)
+### Example #2: [💬 Chat w/ Prompt](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_prompt)
 
 This example demonstrates using `OmniAI` with **Mistral** to ask for the fastest animal. It includes a system and user message in the prompt. The response is streamed in real time.
 
@@ -53,7 +53,7 @@ end
 **French**: Le faucon pèlerin est généralement considéré comme l'animal le plus rapide, atteignant des vitesses de plus de 390 km/h.
 ```
 
-### Example #3: [Chat w/ Vision](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_vision)
+### Example #3: [💬 Chat w/ Vision](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_vision)
 
 This example demonstrates using `OmniAI` with **OpenAI** to prompt a “biologist” for an analysis of photos, identifying the animals within each one. A system and user message are provided, and the response is streamed in real time.
 
@@ -80,7 +80,7 @@ The first photo is of a cat, *Felis Catus*.
 The second photo is of a dog, *Canis Familiaris*.
 ```
 
-### Example #4: [Chat w/ Tools](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_tools)
+### Example #4: [💬 Chat w/ Tools](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_tools)
 
 This example demonstrates using `OmniAI` with **Google** to ask for the weather. A tool “Weather” is provided. The tool accepts a location and unit (Celsius or Fahrenheit) then calculates the weather. The LLM makes multiple tool-call requests and is automatically provided with a tool-call response prior to streaming in real-time the result.
 
@@ -150,7 +150,7 @@ The weather is 24° Celsius in London and 42° Fahrenheit in Madrid.
 
 _For a set of pre-built tools for interacting with browsers, databases, docker, and more try the [OmniAI::Tools](https://omniai-tools.ksylvest.com/) project._
 
-### Example #5: [Chat w/ History](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_history)
+### Example #5: [💬 Chat w/ History](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_history)
 
 Tracking a prompt history over multiple user and assistant messages is especially helpful when building an agent like conversation experience. A prompt can be used to track this back-and-forth conversation:
 
@@ -177,7 +177,7 @@ loop do
 end
 ```
 
-### Example #6 [Chat w/ Schema](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_schema)
+### Example #6 [💬 Chat w/ Schema](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_schema)
 
 Requesting structured data back from an LLM is possible by defining a schema, then passing the schema into the chat. The following example defines a structured schema using `OmniAI::Schema` to model a `Contact`. The results of the LLM call are then parsed using the schema to ensure all types are correct.
 
@@ -229,7 +229,7 @@ puts format.parse(response.text)
 }
 ```
 
-### Example #7: [CLI](https://github.com/ksylvest/omniai/blob/main/examples/cli)
+### Example #7: [🐚 CLI](https://github.com/ksylvest/omniai/blob/main/examples/cli)
 
 The `OmniAI` gem also ships with a CLI to simplify quick tests.
 
@@ -252,7 +252,7 @@ omniai transcribe "./files/audio.wav"
 omniai embed "What is the capital of France?"
 ```
 
-### Example #8: [Text-to-Speech](https://github.com/ksylvest/omniai/blob/main/examples/text_to_speech)
+### Example #8: [🔈 Text-to-Speech](https://github.com/ksylvest/omniai/blob/main/examples/text_to_speech)
 
 This example demonstrates using `OmniAI` with **OpenAI** to convert text to speech and save it to a file.
 
@@ -268,7 +268,7 @@ File.open(File.join(__dir__, 'audio.wav'), 'wb') do |file|
 end
 ```
 
-### Example #9: [Speech-to-Text](https://github.com/ksylvest/omniai/blob/main/examples/speech_to_text)
+### Example #9: [🎤 Speech-to-Text](https://github.com/ksylvest/omniai/blob/main/examples/speech_to_text)
 
 This example demonstrates using `OmniAI` with **OpenAI** to convert speech to text.
 
@@ -283,7 +283,7 @@ File.open(File.join(__dir__, 'audio.wav'), 'rb') do |file|
 end
 ```
 
-### Example #10: [Embeddings](https://github.com/ksylvest/omniai/blob/main/examples/embeddings)
+### Example #10: [💻 Embeddings](https://github.com/ksylvest/omniai/blob/main/examples/embeddings)
 
 This example demonstrates using `OmniAI` with **Mistral** to generate embeddings for a dataset. It defines a set of entries (e.g. "George is a teacher." or "Ringo is a doctor.") and then compares the embeddings generated from a query (e.g. "What does George do?" or "Who is a doctor?") to rank the entries by relevance.
 
@@ -454,7 +454,7 @@ client = OmniAI::OpenAI::Client.new(timeout: {
 })
 ```
 
-### Chat
+### 💬 Chat
 
 Clients that support chat (e.g. Anthropic w/ "Claude", Google w/ "Gemini", Mistral w/ "LeChat", OpenAI w/ "ChatGPT", etc) generate completions using the following calls:
 
@@ -532,7 +532,7 @@ end
 client.chat('What is the weather in "London" in Celsius and "Paris" in Fahrenheit?', tools: [WeatherTool.new])
 ```
 
-### Transcribe
+### 🎤 Speech to Text
 
 Clients that support transcribe (e.g. OpenAI w/ "Whisper") convert recordings to text via the following calls:
 
@@ -552,7 +552,7 @@ File.open("example.ogg", "rb") do |file|
 end
 ```
 
-### Speak
+### 🔈 Text to Speech
 
 Clients that support speak (e.g. OpenAI w/ "Whisper") convert text to speech via the following calls:
 
@@ -597,7 +597,7 @@ response.embeddings.each do |embedding|
 end
 ```
 
-## CLI
+## 🐚 CLI
 
 OmniAI packages a basic command line interface (CLI) to allow for exploration of various APIs. CLI documentation is available with the `--help` flag:
 
@@ -674,7 +674,7 @@ omniai speak "Sally sells sea shells on the sea shore." > audio.aac
 omniai transcribe ./audio.aac
 ```
 
-### MCP
+## MCP
 
 [MCP](https://modelcontextprotocol.io/introduction) is an open protocol designed to standardize giving context to LLMs. The OmniAI implementation supports building an MCP server that operates via the [stdio](https://modelcontextprotocol.io/docs/concepts/transports) transport.
 
