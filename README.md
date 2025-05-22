@@ -10,6 +10,7 @@ OmniAI provides a unified Ruby API for integrating with multiple AI providers, i
 
 - [OmniAI::Anthropic](https://github.com/ksylvest/omniai-anthropic)
 - [OmniAI::DeepSeek](https://github.com/ksylvest/omniai-deepseek)
+- [OmniAI::Llama](https://github.com/ksylvest/omniai-llama)
 - [OmniAI::Google](https://github.com/ksylvest/omniai-google)
 - [OmniAI::Mistral](https://github.com/ksylvest/omniai-mistral)
 - [OmniAI::OpenAI](https://github.com/ksylvest/omniai-openai)
@@ -363,6 +364,14 @@ client = OmniAI::Anthropic::Client.new
 require 'omniai/deepseek'
 
 client = OmniAI::DeepSeek::Client.new
+```
+
+#### [OmniAI::Llama](https://github.com/ksylvest/omniai-llama)
+
+```ruby
+require 'omniai/llama'
+
+client = OmniAI::Llama::Client.new
 ```
 
 #### [OmniAI::Google](https://github.com/ksylvest/omniai-google)

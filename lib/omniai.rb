@@ -25,9 +25,9 @@ loader.setup
 module OmniAI
   class Error < StandardError; end
 
-  # Discover a client by provider ('openai' then 'anthropic' then 'google' then 'mistral' then 'deepseek').
+  # Discover a client by provider ('openai' then 'anthropic' then 'google' then 'mistral' then 'deepseek' then 'llama').
   #
-  # @param provider [Symbol] the provider to use (e.g. :openai, :anthropic, :google, :mistral, :deepseek) - optional
+  # @param provider [Symbol] the provider to use (e.g. :openai, :anthropic, :google, :mistral, :deepseek, :llama)
   #
   # @raise [OmniAI::LoadError] if no providers are installed
   #
