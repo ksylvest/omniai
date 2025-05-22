@@ -23,7 +23,9 @@ module OmniAI
   #     end
   #   end
   #
-  #   client.transcribe(File.open("..."), model: "...", format: :json)
+  #   File.open('audio.wav', 'rb') do |file|
+  #     client.transcribe(file, model: "...", format: :json)
+  #   end
   class Transcribe
     module Language
       AFRIKAANS = "af"
