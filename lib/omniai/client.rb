@@ -55,7 +55,7 @@ module OmniAI
       require "omniai/deepseek" unless defined?(OmniAI::DeepSeek::Client)
       OmniAI::DeepSeek::Client
     rescue ::LoadError
-      raise LoadError, "requires 'omniai-anthropic': `gem install omniai-anthropic`"
+      raise LoadError, "requires 'omniai-deepseek': `gem install omniai-deepseek`"
     end
 
     # Lookup the `OmniAI::Google::Client``. This method requires the provider if it is undefined.
