@@ -1,49 +1,39 @@
 # frozen_string_literal: true
 
-RSpec.describe OmniAI::CLI::EmbedHandler do
+RSpec.describe OmniAI::CLI::TranscribeHandler do
   let(:stdin) { StringIO.new }
   let(:stdout) { StringIO.new }
   let(:provider) { "fake" }
   let(:model) { "fake" }
+  let(:language) { OmniAI::Transcribe::Language::ENGLISH }
+  let(:format) { OmniAI::Transcribe::Format::TEXT }
 
   describe ".handle!" do
     subject(:handle!) { described_class.handle!(argv:, stdin:, stdout:, provider:) }
 
     let(:client) { instance_double(OmniAI::Client) }
+    let(:transcription) { build(:transcribe_transcription) }
+    let(:path) { Pathname(File.dirname(__FILE__)).join("..", "..", "fixtures", "file.ogg") }
 
-    context "when chatting" do
+    context "when transcribing" do
       let(:argv) do
         [
           "--model", model,
+          "--language", language,
           "--provider", provider,
-          prompt,
+          "--format", format,
+          path,
         ]
       end
 
       before do
         allow(OmniAI).to receive(:client).with(provider:) { client }
-        allow(client).to receive(:embed) { OmniAI::Embed::Response.new(data: { "data" => [{ "embedding" => [0.0] }] }) }
+        allow(client).to receive(:transcribe) { transcription }
       end
 
-      context "with a prompt" do
-        let(:prompt) { "The quick brown fox jumps over a lazy dog." }
-
-        it "runs calls chat" do
-          handle!
-          expect(stdout.string).to eql("0.0\n")
-        end
-      end
-
-      context "without a prompt" do
-        let(:prompt) { nil }
-
-        let(:stdin) { StringIO.new("The quick brown fox jumps over a lazy dog.") }
-
-        it "runs calls listen" do
-          handle!
-          expect(stdout.string).to include('Type "exit" or "quit" to leave.')
-          expect(stdout.string).to include("0.0")
-        end
+      it "transcribes" do
+        handle!
+        expect(stdout.string).to eql("#{transcription.text}\n")
       end
     end
 

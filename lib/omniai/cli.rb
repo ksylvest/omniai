@@ -13,7 +13,7 @@ module OmniAI
     # @param stdin [IO] a stream
     # @param stdout [IO] a stream
     # @param provider [String] a provider
-    def initialize(stdin: $stdin, stdout: $stdout, provider: "openai")
+    def initialize(stdin: $stdin, stdout: $stdout, provider: nil)
       @stdin = stdin
       @stdout = stdout
       @provider = provider
@@ -30,6 +30,8 @@ module OmniAI
         case command
         when "chat" then ChatHandler
         when "embed" then EmbedHandler
+        when "speak" then SpeakHandler
+        when "transcribe" then TranscribeHandler
         else raise Error, "unsupported command=#{command.inspect}"
         end
 
@@ -60,6 +62,9 @@ module OmniAI
         options.separator <<~COMMANDS
           commands:
             chat
+            embed
+            speak
+            transcribe
         COMMANDS
       end
     end

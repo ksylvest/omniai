@@ -31,7 +31,7 @@ module OmniAI
 
       # @return [OmniAI::Client]
       def client
-        @client ||= OmniAI::Client.find(provider: @provider)
+        @client ||= OmniAI.client(provider: @provider)
       end
     end
   end

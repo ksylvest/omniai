@@ -5,6 +5,6 @@ require "omniai/openai"
 
 client = OmniAI::OpenAI::Client.new
 
-File.open(File.join(__dir__, "audio.wav"), "rb") do |file|
+File.open(File.join(__dir__, "files/audio.wav"), "rb") do |file|
   puts client.transcribe(file).text
 end
