@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-class FakeClient < OmniAI::Client
-  def connection
-    HTTP.persistent("http://localhost:8080")
-  end
-end
-
 class FakeSpeak < OmniAI::Speak
   module Model
     FAKE = "fake"
@@ -20,7 +14,7 @@ RSpec.describe OmniAI::Speak do
   subject(:transcribe) { described_class.new(text, model:, client:, voice:) }
 
   let(:model) { "..." }
-  let(:client) { OmniAI::Client.new(api_key: "...") }
+  let(:client) { build(:client) }
   let(:text) { "The quick brown fox jumps over a lazy dog." }
   let(:voice) { "hal" }
 
@@ -29,7 +23,6 @@ RSpec.describe OmniAI::Speak do
   end
 
   describe ".process!" do
-    let(:client) { FakeClient.new(api_key: "...") }
     let(:model) { FakeSpeak::Model::FAKE }
 
     context "with a block" do

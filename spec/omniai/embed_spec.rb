@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-class FakeClient < OmniAI::Client
-  def connection
-    HTTP.persistent("http://localhost:8080")
-  end
-end
-
 class FakeEmbed < OmniAI::Embed
   module Model
     FAKE = "fake"
@@ -29,7 +23,7 @@ RSpec.describe OmniAI::Embed do
 
   let(:input) { "The quick brown fox jumps over a lazy dog." }
   let(:model) { "..." }
-  let(:client) { OmniAI::Client.new(api_key: "...") }
+  let(:client) { build(:client) }
 
   describe "#path" do
     it { expect { embed.send(:path) }.to raise_error(NotImplementedError) }
@@ -42,7 +36,6 @@ RSpec.describe OmniAI::Embed do
   describe ".process!" do
     subject(:process!) { FakeEmbed.process!(input, model:, client:) }
 
-    let(:client) { FakeClient.new(api_key: "...") }
     let(:model) { FakeChat::Model::FAKE }
 
     context "when OK" do

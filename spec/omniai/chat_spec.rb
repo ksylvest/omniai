@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-class FakeClient < OmniAI::Client
-end
-
 class FakeChat < OmniAI::Chat
   module Model
     FAKE = "fake"
@@ -65,7 +62,7 @@ RSpec.describe OmniAI::Chat do
     subject(:process!) { FakeChat.process!(prompt, model:, client:, stream:) }
 
     let(:stream) { nil }
-    let(:client) { FakeClient.new(api_key: "...") }
+    let(:client) { build(:client) }
     let(:model) { FakeChat::Model::FAKE }
 
     context "when OK" do
