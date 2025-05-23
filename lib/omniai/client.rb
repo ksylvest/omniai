@@ -117,7 +117,7 @@ module OmniAI
       end
 
       raise LoadError, <<~TEXT
-        Please rune one of the following commands to install a provider specific gem:
+        Please run one of the following commands to install a provider specific gem:
 
           `gem install omniai-openai`
           `gem install omniai-anthropic`
