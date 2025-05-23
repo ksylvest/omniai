@@ -326,7 +326,7 @@ search('Who do you call to fix a toilet?')
 'Who do you call to fix a toilet?': 'Paul is a plumber.'
 ```
 
-## Installation
+## 📦 Installation
 
 The main `omniai` gem is installed with:
 
@@ -344,7 +344,7 @@ gem install omniai-google
 gem install omniai-openai
 ```
 
-## Usage
+## 📖 Usage
 
 OmniAI implements APIs for a number of popular clients by default. A client can be initialized using the specific gem (e.g. `omniai-openai` for `OmniAI::OpenAI`). Vendor specific docs can be found within each repo.
 
@@ -574,7 +574,7 @@ tempfile.close
 tempfile.unlink
 ```
 
-### Embeddings
+### 💻 Embeddings
 
 Clients that support generating embeddings (e.g. OpenAI, Mistral, etc.) convert text to embeddings via the following:
 
