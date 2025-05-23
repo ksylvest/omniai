@@ -17,11 +17,6 @@ RSpec.describe OmniAI::CLI do
   end
 
   describe "#parse" do
-    before do
-      allow(OmniAI::Client).to receive(:find).with(provider:) { client }
-      allow(client).to receive(:chat)
-    end
-
     context "with a chat command" do
       it "forwards the command to OmniAI::CLI::ChatHandler" do
         allow(OmniAI::CLI::ChatHandler).to receive(:handle!)
@@ -37,6 +32,24 @@ RSpec.describe OmniAI::CLI do
         cli.parse(["embed", "What is the capital of Canada?"])
         expect(OmniAI::CLI::EmbedHandler).to have_received(:handle!)
           .with(stdin:, stdout:, provider:, argv: ["What is the capital of Canada?"])
+      end
+    end
+
+    context "with a transcribe command" do
+      it "forwards the command to OmniAI::CLI::TranscribeHandler" do
+        allow(OmniAI::CLI::TranscribeHandler).to receive(:handle!)
+        cli.parse(["transcribe", "./audio.wav"])
+        expect(OmniAI::CLI::TranscribeHandler).to have_received(:handle!)
+          .with(stdin:, stdout:, provider:, argv: ["./audio.wav"])
+      end
+    end
+
+    context "with a speak command" do
+      it "forwards the command to OmniAI::CLI::SpeakHandler" do
+        allow(OmniAI::CLI::SpeakHandler).to receive(:handle!)
+        cli.parse(["speak", "Sally sells sea shells by the sea shore."])
+        expect(OmniAI::CLI::SpeakHandler).to have_received(:handle!)
+          .with(stdin:, stdout:, provider:, argv: ["Sally sells sea shells by the sea shore."])
       end
     end
 
