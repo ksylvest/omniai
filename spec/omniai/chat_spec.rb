@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 class FakeClient < OmniAI::Client
-  def connection
-    HTTP.persistent("http://localhost:8080")
-  end
 end
 
 class FakeChat < OmniAI::Chat
