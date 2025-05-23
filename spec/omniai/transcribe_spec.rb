@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-class FakeClient < OmniAI::Client
-  def connection
-    HTTP.persistent("http://localhost:8080")
-  end
-end
-
 class FakeTranscribe < OmniAI::Transcribe
   module Model
     FAKE = "fake"
@@ -20,7 +14,7 @@ RSpec.describe OmniAI::Transcribe do
   subject(:transcribe) { described_class.new(io, model:, client:) }
 
   let(:model) { "..." }
-  let(:client) { OmniAI::Client.new(api_key: "...") }
+  let(:client) { build(:client) }
   let(:io) { Pathname.new(File.dirname(__FILE__)).join("..", "fixtures", "file.ogg") }
 
   describe "#path" do
@@ -32,7 +26,6 @@ RSpec.describe OmniAI::Transcribe do
 
     let(:format) { described_class::Format::JSON }
 
-    let(:client) { FakeClient.new(api_key: "...") }
     let(:model) { FakeTranscribe::Model::FAKE }
 
     context "when OK" do
