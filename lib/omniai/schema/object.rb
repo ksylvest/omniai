@@ -64,6 +64,16 @@ module OmniAI
         @required = required
       end
 
+      # @return [OmniAI::Schema::Object]
+      def dup
+        self.class.new(
+          title: @title,
+          description: @description,
+          properties: @properties.dup,
+          required: @required.dup
+        )
+      end
+
       # @return [Hash]
       def serialize
         {

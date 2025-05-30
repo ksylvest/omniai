@@ -16,18 +16,20 @@ module OmniAI
   #   end
   class Tool
     class << self
-      # @param description [String]
+      # @param description [String] optional
       #
       # @return [String]
       def description(description = nil)
-        return @description if description.nil?
-
-        @description = description
+        if description.nil?
+          @description || (superclass.description unless superclass.eql?(OmniAI::Tool))
+        else
+          @description = description
+        end
       end
 
       # @return [OmniAI::Schema::Object]
       def parameters
-        @parameters ||= OmniAI::Schema::Object.new
+        @parameters ||= superclass.eql?(OmniAI::Tool) ? superclass.parameters.dup : OmniAI::Schema::Object.new
       end
 
       # @param name [Symbol]
@@ -38,7 +40,7 @@ module OmniAI
 
       # @param names [Array<Symbol>]
       def required(names)
-        parameters.required = names
+        parameters.required += names
       end
 
       # Converts a class name to a tool:
