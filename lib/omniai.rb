@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "base64"
 require "logger"
 require "event_stream_parser"
 require "http"
