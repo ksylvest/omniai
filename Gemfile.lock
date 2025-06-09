@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    omniai (2.8.1)
+    omniai (2.8.2)
       base64
       event_stream_parser
       http
