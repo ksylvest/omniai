@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "base64"
 module OmniAI
   class Chat
     # An abstract class that represents audio / image / video and is used for both files and urls.

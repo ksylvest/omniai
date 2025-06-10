@@ -105,7 +105,9 @@ module OmniAI
     # @param prompt [String, nil] optional
     # @param temperature [Float, nil] optional
     # @param format [String, nil] optional
-    def initialize(io, client:, model:, language: nil, prompt: nil, temperature: nil, format: Format::JSON)
+    # @param verbose [Boolean] optional - request detailed response with segments/timing
+    def initialize(io, client:, model:, language: nil, prompt: nil, temperature: nil, format: Format::JSON,
+      verbose: false)
       @io = io
       @model = model
       @language = language
@@ -113,17 +115,17 @@ module OmniAI
       @temperature = temperature
       @format = format
       @client = client
+      @verbose = verbose
     end
 
     # @raise [HTTPError]
     # @return [OmniAI::Transcribe::Transcription]
     def process!
       response = request!
-
       raise HTTPError, response.flush unless response.status.ok?
 
-      text = @format.nil? || @format.eql?(Format::JSON) ? response.parse["text"] : String(response.body)
-      Transcription.new(text:, model: @model, format: @format)
+      data = @format.nil? || @format.eql?(Format::JSON) ? response.parse : String(response.body)
+      create_transcription(data)
     end
 
   protected
@@ -136,7 +138,39 @@ module OmniAI
         language: @language,
         prompt: @prompt,
         temperature: @temperature,
+        response_format: response_format_value,
+        timestamp_granularities: timestamp_granularities_value,
       }.compact
+    end
+
+  private
+
+    def create_transcription(data)
+      if data.is_a?(Hash) && @verbose
+        Transcription.new(
+          text: data["text"],
+          model: @model,
+          format: @format,
+          duration: data["duration"],
+          segments: data["segments"],
+          language: data["language"]
+        )
+      else
+        text = data.is_a?(Hash) ? data["text"] : data
+        Transcription.new(text:, model: @model, format: @format)
+      end
+    end
+
+    def response_format_value
+      if @verbose && (@format.nil? || @format.eql?(Format::JSON))
+        "verbose_json"
+      elsif @format && !@format.eql?(Format::JSON)
+        @format
+      end
+    end
+
+    def timestamp_granularities_value
+      @verbose && (@format.nil? || @format.eql?(Format::JSON)) ? ["segment"] : nil
     end
 
     # @return [String]

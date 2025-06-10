@@ -208,9 +208,10 @@ module OmniAI
     # @param prompt [String, nil] optional
     # @param temperature [Float, nil] optional
     # @param format [Symbol] :text, :srt, :vtt, or :json (default)
+    # @param verbose [Boolean] optional - request detailed response with segments/timing
     #
     # @return [OmniAI::Transcribe::Transcription]
-    def transcribe(io, model:, language: nil, prompt: nil, temperature: nil, format: nil)
+    def transcribe(io, model:, language: nil, prompt: nil, temperature: nil, format: nil, verbose: false)
       raise NotImplementedError, "#{self.class.name}#transcribe undefined"
     end
 

@@ -16,6 +16,25 @@ RSpec.describe OmniAI::Transcribe::Transcription do
   end
 
   describe "#inspect" do
-    it { expect(transcription.inspect).to eq('#<OmniAI::Transcribe::Transcription text="Hi!">') }
+    context "with basic attributes" do
+      it { expect(transcription.inspect).to eq('#<OmniAI::Transcribe::Transcription text="Hi!">') }
+    end
+
+    context "with verbose attributes" do
+      subject(:transcription) do
+        described_class.new(
+          text: "Hi!",
+          model: "whisper",
+          format: "text",
+          duration: 5.0,
+          segments: [{ "start" => 0, "end" => 5, "text" => "Hi!" }],
+          language: "english"
+        )
+      end
+
+      it "includes verbose information" do
+        expect(transcription.inspect).to include("duration=5.0")
+      end
+    end
   end
 end
