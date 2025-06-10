@@ -6,5 +6,8 @@ require "omniai/openai"
 client = OmniAI::OpenAI::Client.new
 
 File.open(File.join(__dir__, "files/audio.wav"), "rb") do |file|
-  puts client.transcribe(file).text
+  transcription = client.transcribe(file, format: OmniAI::Transcribe::Format::VERBOSE_JSON)
+  puts "Duration: #{transcription.duration}"
+  puts "Language: #{transcription.language}"
+  puts "Text: #{transcription.text}"
 end
