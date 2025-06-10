@@ -207,7 +207,7 @@ module OmniAI
     # @param language [String, nil] optional
     # @param prompt [String, nil] optional
     # @param temperature [Float, nil] optional
-    # @param format [Symbol] :text, :srt, :vtt, or :json (default)
+    # @param format [String] 'text', 'srt', 'vtt', 'json' (default), or 'verbose_json'
     #
     # @return [OmniAI::Transcribe::Transcription]
     def transcribe(io, model:, language: nil, prompt: nil, temperature: nil, format: nil)

@@ -92,6 +92,7 @@ module OmniAI
       TEXT = "text"
       VTT = "vtt"
       SRT = "srt"
+      VERBOSE_JSON = "verbose_json"
     end
 
     def self.process!(...)
@@ -105,28 +106,39 @@ module OmniAI
     # @param prompt [String, nil] optional
     # @param temperature [Float, nil] optional
     # @param format [String, nil] optional
-    def initialize(io, client:, model:, language: nil, prompt: nil, temperature: nil, format: Format::JSON)
+    def initialize(io, client:, model:, language: nil, prompt: nil, temperature: nil, format: nil)
       @io = io
+      @client = client
       @model = model
       @language = language
       @prompt = prompt
       @temperature = temperature
-      @format = format
-      @client = client
+      @format = format || Format::JSON
     end
 
     # @raise [HTTPError]
+    #
     # @return [OmniAI::Transcribe::Transcription]
     def process!
       response = request!
-
       raise HTTPError, response.flush unless response.status.ok?
 
-      text = @format.nil? || @format.eql?(Format::JSON) ? response.parse["text"] : String(response.body)
-      Transcription.new(text:, model: @model, format: @format)
+      data = json? || verbose_json? ? response.parse : String(response.body)
+
+      Transcription.parse(model: @model, format: @format, data:)
     end
 
   protected
+
+    # @return [Boolean]
+    def json?
+      String(@format).eql?(Format::JSON)
+    end
+
+    # @return [Boolean]
+    def verbose_json?
+      String(@format).eql?(Format::VERBOSE_JSON)
+    end
 
     # @return [Hash]
     def payload
@@ -136,8 +148,12 @@ module OmniAI
         language: @language,
         prompt: @prompt,
         temperature: @temperature,
+        response_format: @format,
+        timestamp_granularities: verbose_json? ? %w[segment] : nil,
       }.compact
     end
+
+  private
 
     # @return [String]
     def path
@@ -148,7 +164,7 @@ module OmniAI
     def request!
       @client
         .connection
-        .accept(@format.eql?(Format::JSON) ? :json : :text)
+        .accept(json? || verbose_json? ? :json : :text)
         .post(path, form: payload)
     end
   end
