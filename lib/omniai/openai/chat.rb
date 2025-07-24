@@ -54,7 +54,7 @@ module OmniAI
 
       # @return [Hash]
       def payload
-        OmniAI::OpenAI.config.chat_options.merge({
+        {
           messages: @prompt.serialize,
           model: @model,
           response_format:,
@@ -62,7 +62,7 @@ module OmniAI
           stream_options: (DEFAULT_STREAM_OPTIONS if stream?),
           temperature:,
           tools: (@tools.map(&:serialize) if @tools&.any?),
-        }).compact
+        }.compact
       end
 
       # @return [String]

@@ -41,6 +41,7 @@ module OmniAI
         CLAUDE_SONNET = CLAUDE_SONNET_4_0
       end
 
+      MAX_TOKENS = 4096
       DEFAULT_MODEL = Model::CLAUDE_SONNET
 
       # @return [Context]
@@ -71,14 +72,15 @@ module OmniAI
 
       # @return [Hash]
       def payload
-        OmniAI::Anthropic.config.chat_options.merge({
+        {
           model: @model,
           messages:,
           system:,
           stream: stream? || nil,
           temperature: @temperature,
           tools: tools_payload,
-        }).compact
+          max_tokens: MAX_TOKENS,
+        }.compact
       end
 
       # @return [Array<Hash>]
