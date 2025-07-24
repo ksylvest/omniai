@@ -8,13 +8,6 @@
 
 OmniAI provides a unified Ruby API for integrating with multiple AI providers, including Anthropic, DeepSeek, Google, Mistral, and OpenAI. It streamlines AI development by offering a consistent interface for features such as chat, text-to-speech, speech-to-text, and embeddings—ensuring seamless interoperability across platforms. Switching between providers is effortless, making any integration more flexible and reliable.
 
-- [OmniAI::Anthropic](https://github.com/ksylvest/omniai-anthropic)
-- [OmniAI::DeepSeek](https://github.com/ksylvest/omniai-deepseek)
-- [OmniAI::Llama](https://github.com/ksylvest/omniai-llama)
-- [OmniAI::Google](https://github.com/ksylvest/omniai-google)
-- [OmniAI::Mistral](https://github.com/ksylvest/omniai-mistral)
-- [OmniAI::OpenAI](https://github.com/ksylvest/omniai-openai)
-
 ## 📄 Examples
 
 ### Example #1: [💬 Chat w/ Text](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_text)
@@ -22,8 +15,6 @@ OmniAI provides a unified Ruby API for integrating with multiple AI providers, i
 This example demonstrates using `OmniAI` with **Anthropic** to ask for a joke. The response is parsed and printed.
 
 ```ruby
-require 'omniai/anthropic'
-
 client = OmniAI::Anthropic::Client.new
 
 puts client.chat("Tell me a joke").text
@@ -38,8 +29,6 @@ Why don't scientists trust atoms? Because they make up everything!
 This example demonstrates using `OmniAI` with **Mistral** to ask for the fastest animal. It includes a system and user message in the prompt. The response is streamed in real time.
 
 ```ruby
-require "omniai/mistral"
-
 client = OmniAI::Mistral::Client.new
 
 client.chat(stream: $stdout) do |prompt|
@@ -58,8 +47,6 @@ end
 This example demonstrates using `OmniAI` with **OpenAI** to prompt a “biologist” for an analysis of photos, identifying the animals within each one. A system and user message are provided, and the response is streamed in real time.
 
 ```ruby
-require "omniai/openai"
-
 client = OmniAI::OpenAI::Client.new
 
 CAT_URL = "https://images.unsplash.com/photo-1472491235688-bdc81a63246e?q=80&w=1024&h=1024&fit=crop&fm=jpg"
@@ -85,8 +72,6 @@ The second photo is of a dog, *Canis Familiaris*.
 This example demonstrates using `OmniAI` with **Google** to ask for the weather. A tool “Weather” is provided. The tool accepts a location and unit (Celsius or Fahrenheit) then calculates the weather. The LLM makes multiple tool-call requests and is automatically provided with a tool-call response prior to streaming in real-time the result.
 
 ```ruby
-require 'omniai/google'
-
 client = OmniAI::Google::Client.new
 
 class WeatherTool < OmniAI::Tool
@@ -155,8 +140,6 @@ _For a set of pre-built tools for interacting with browsers, databases, docker, 
 Tracking a prompt history over multiple user and assistant messages is especially helpful when building an agent like conversation experience. A prompt can be used to track this back-and-forth conversation:
 
 ```ruby
-require "omniai/openai"
-
 puts("Type 'exit' or 'quit' to leave.")
 
 client = OmniAI::OpenAI::Client.new
@@ -257,8 +240,6 @@ omniai embed "What is the capital of France?"
 This example demonstrates using `OmniAI` with **OpenAI** to convert text to speech and save it to a file.
 
 ```ruby
-require 'omniai/openai'
-
 client = OmniAI::OpenAI::Client.new
 
 File.open(File.join(__dir__, 'audio.wav'), 'wb') do |file|
@@ -273,8 +254,6 @@ end
 This example demonstrates using `OmniAI` with **OpenAI** to convert speech to text.
 
 ```ruby
-require 'omniai/openai'
-
 client = OmniAI::OpenAI::Client.new
 
 File.open(File.join(__dir__, 'audio.wav'), 'rb') do |file|
@@ -288,8 +267,6 @@ end
 This example demonstrates using `OmniAI` with **Mistral** to generate embeddings for a dataset. It defines a set of entries (e.g. "George is a teacher." or "Ringo is a doctor.") and then compares the embeddings generated from a query (e.g. "What does George do?" or "Who is a doctor?") to rank the entries by relevance.
 
 ```ruby
-require 'omniai/mistral'
-
 CLIENT = OmniAI::Mistral::Client.new
 
 Entry = Data.define(:text, :embedding) do
@@ -328,73 +305,51 @@ search('Who do you call to fix a toilet?')
 
 ## 📦 Installation
 
-The main `omniai` gem is installed with:
+OmniAI may be installed using the following command:
 
 ```sh
 gem install omniai
 ```
 
-Specific provider gems are installed with:
-
-```sh
-gem install omniai-anthropic
-gem install omniai-deepseek
-gem install omniai-mistral
-gem install omniai-google
-gem install omniai-openai
-```
-
 ## 📖 Usage
 
-OmniAI implements APIs for a number of popular clients by default. A client can be initialized using the specific gem (e.g. `omniai-openai` for `OmniAI::OpenAI`). Vendor specific docs can be found within each repo.
+OmniAI implements APIs for a the of popular providers (e.g. Anthropic, DeepSeek, Llama, Google, Mistral and OpenAI). A client is initialized using the following:
 
 ### Client
 
-#### [OmniAI::Anthropic](https://github.com/ksylvest/omniai-anthropic)
+#### OmniAI::Anthropic
 
 ```ruby
-require 'omniai/anthropic'
-
 client = OmniAI::Anthropic::Client.new
 ```
 
-#### [OmniAI::DeepSeek](https://github.com/ksylvest/omniai-deepseek)
+#### OmniAI::DeepSeek
 
 ```ruby
-require 'omniai/deepseek'
-
 client = OmniAI::DeepSeek::Client.new
 ```
 
-#### [OmniAI::Llama](https://github.com/ksylvest/omniai-llama)
+#### OmniAI::Llama
 
 ```ruby
-require 'omniai/llama'
-
 client = OmniAI::Llama::Client.new
 ```
 
-#### [OmniAI::Google](https://github.com/ksylvest/omniai-google)
+#### OmniAI::Google
 
 ```ruby
-require 'omniai/google'
-
 client = OmniAI::Google::Client.new
 ```
 
-#### [OmniAI::Mistral](https://github.com/ksylvest/omniai-mistral)
+#### OmniAI::Mistral
 
 ```ruby
-require 'omniai/mistral'
-
 client = OmniAI::Mistral::Client.new
 ```
 
-#### [OmniAI::OpenAI](https://github.com/ksylvest/omniai-openai)
+#### OmniAI::OpenAI
 
 ```ruby
-require 'omniai/openai'
-
 client = OmniAI::OpenAI::Client.new
 ```
 
@@ -415,7 +370,6 @@ Ollama support is offered through [OmniAI::OpenAI](https://github.com/ksylvest/o
 Logging the **request** / **response** is configurable by passing a logger into any client:
 
 ```ruby
-require 'omniai/openai'
 require 'logger'
 
 logger = Logger.new(STDOUT)
@@ -433,7 +387,6 @@ client = OmniAI::OpenAI::Client.new(logger:)
 Timeouts are configurable by passing a `timeout` an integer duration for the request / response of any APIs using:
 
 ```ruby
-require 'omniai/openai'
 require 'logger'
 
 logger = Logger.new(STDOUT)
@@ -443,7 +396,6 @@ client = OmniAI::OpenAI::Client.new(timeout: 8) # 8 seconds
 Timeouts are also configurable by passing a `timeout` hash with `timeout` / `read` / `write` keys using:
 
 ```ruby
-require 'omniai/openai'
 require 'logger'
 
 logger = Logger.new(STDOUT)

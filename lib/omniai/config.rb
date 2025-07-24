@@ -10,9 +10,6 @@ module OmniAI
   #     config.host = 'http://localhost:8080'
   #     config.logger = Logger.new(STDOUT)
   #     config.timeout = 15
-  #     config.chat_options = { ... }
-  #     config.transcribe_options = { ... }
-  #     config.speak_options = { ... }
   #   end
   class Config
     # @!attribute [rw] api_key
@@ -34,18 +31,6 @@ module OmniAI
     #   @option timeout [Integer] :connect
     attr_accessor :timeout
 
-    # @!attribute [rw] chat_options
-    #   @return [Hash]
-    attr_accessor :chat_options
-
-    # @!attribute [rw] transcribe_options
-    #   @return [Hash]
-    attr_accessor :transcribe_options
-
-    # @!attribute [rw] speak_options
-    #   @return [Hash]
-    attr_accessor :speak_options
-
     # @param api_key [String] optional
     # @param host [String] optional
     # @param logger [Logger] optional
@@ -55,10 +40,6 @@ module OmniAI
       @host = host
       @logger = logger
       @timeout = timeout
-
-      @chat_options = {}
-      @transcribe_options = {}
-      @speak_options = {}
     end
 
     # @return [String]
