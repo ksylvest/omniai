@@ -9,10 +9,14 @@ require "zeitwerk"
 
 loader = Zeitwerk::Loader.for_gem
 loader.inflector.inflect "omniai" => "OmniAI"
+loader.inflector.inflect "deepseek" => "DeepSeek"
+loader.inflector.inflect "openai" => "OpenAI"
 loader.inflector.inflect "cli" => "CLI"
+loader.inflector.inflect "ocr" => "OCR"
 loader.inflector.inflect "jrpc" => "JRPC"
 loader.inflector.inflect "mcp" => "MCP"
 loader.inflector.inflect "url" => "URL"
+loader.inflector.inflect "url_serializer" => "URLSerializer"
 loader.inflector.inflect "http_error" => "HTTPError"
 loader.inflector.inflect "ssl_error" => "SSLError"
 loader.setup

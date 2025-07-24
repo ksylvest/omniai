@@ -36,6 +36,14 @@ RSpec/MultipleExpectations:
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
 
+RSpec/ReceiveMessages:
+  Enabled: false
+
 RSpec/SpecFilePathFormat:
   CustomTransform:
+    DeepSeek: deepseek
     OmniAI: omniai
+    OpenAI: openai
+
+Style/EmptyCaseCondition:
+  Enabled: false

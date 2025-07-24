@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require "omniai/openai"
+require "bundler/setup"
+require "omniai"
 
 puts("Type 'exit' or 'quit' to leave.")
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require "omniai/mistral"
+require "bundler/setup"
+require "omniai"
 
 client = OmniAI::Mistral::Client.new
 
