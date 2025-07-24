@@ -30,10 +30,7 @@ module OmniAI
 
       # @return [Hash]
       def payload
-        OmniAI::OpenAI
-          .config.speak_options
-          .merge(super)
-          .merge({ response_format: @format }.compact)
+        super.merge({ response_format: @format }.compact)
       end
 
       # @return [String]
