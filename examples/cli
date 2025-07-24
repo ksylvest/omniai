@@ -3,7 +3,7 @@
 # Chat
 
 omniai chat "Who designed the Ruby programming language?"
-omniai chat --provider="google" --model="gemini-2.0-flash" "Who are you?"
+omniai chat --provider="google" --model="gemini-2.5-flash" "Who are you?"
 
 ## Speech to Text
 
