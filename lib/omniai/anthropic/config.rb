@@ -32,7 +32,6 @@ module OmniAI
         super(api_key:, host:, logger:, timeout:)
         @version = version
         @beta = beta
-        @chat_options[:max_tokens] = 4096
       end
     end
   end

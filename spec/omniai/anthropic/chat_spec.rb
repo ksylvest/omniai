@@ -13,7 +13,7 @@ RSpec.describe OmniAI::Anthropic::Chat do
 
       before do
         stub_request(:post, "https://api.anthropic.com/v1/messages")
-          .with(body: OmniAI::Anthropic.config.chat_options.merge({
+          .with(body: {
             messages: [
               {
                 role: "user",
@@ -26,7 +26,8 @@ RSpec.describe OmniAI::Anthropic::Chat do
               },
             ],
             model:,
-          }))
+            max_tokens: OmniAI::Anthropic::Chat::MAX_TOKENS,
+          })
           .to_return_json(body: {
             type: "message",
             role: "assistant",
@@ -57,7 +58,7 @@ RSpec.describe OmniAI::Anthropic::Chat do
 
       before do
         stub_request(:post, "https://api.anthropic.com/v1/messages")
-          .with(body: OmniAI::Anthropic.config.chat_options.merge({
+          .with(body: {
             system: "You are a helpful assistant.",
             messages: [
               {
@@ -71,7 +72,8 @@ RSpec.describe OmniAI::Anthropic::Chat do
               },
             ],
             model:,
-          }))
+            max_tokens: OmniAI::Anthropic::Chat::MAX_TOKENS,
+          })
           .to_return_json(body: {
             type: "message",
             role: "assistant",
@@ -100,7 +102,7 @@ RSpec.describe OmniAI::Anthropic::Chat do
 
       before do
         stub_request(:post, "https://api.anthropic.com/v1/messages")
-          .with(body: OmniAI::Anthropic.config.chat_options.merge({
+          .with(body: {
             messages: [
               {
                 role: "user",
@@ -114,7 +116,8 @@ RSpec.describe OmniAI::Anthropic::Chat do
             ],
             model:,
             temperature:,
-          }))
+            max_tokens: OmniAI::Anthropic::Chat::MAX_TOKENS,
+          })
           .to_return_json(body: {
             type: "message",
             role: "assistant",
@@ -147,7 +150,7 @@ RSpec.describe OmniAI::Anthropic::Chat do
 
       before do
         stub_request(:post, "https://api.anthropic.com/v1/messages")
-          .with(body: OmniAI::Anthropic.config.chat_options.merge({
+          .with(body: {
             system: OmniAI::Chat::JSON_PROMPT,
             messages: [
               {
@@ -161,7 +164,8 @@ RSpec.describe OmniAI::Anthropic::Chat do
               },
             ],
             model:,
-          }))
+            max_tokens: OmniAI::Anthropic::Chat::MAX_TOKENS,
+          })
           .to_return_json(body: {
             type: "message",
             role: "assistant",
@@ -191,7 +195,7 @@ RSpec.describe OmniAI::Anthropic::Chat do
 
       before do
         stub_request(:post, "https://api.anthropic.com/v1/messages")
-          .with(body: OmniAI::Anthropic.config.chat_options.merge({
+          .with(body: {
             messages: [
               {
                 role: "user",
@@ -205,7 +209,8 @@ RSpec.describe OmniAI::Anthropic::Chat do
             ],
             model:,
             stream: !stream.nil?,
-          }))
+            max_tokens: OmniAI::Anthropic::Chat::MAX_TOKENS,
+          })
           .to_return(body: <<~STREAM)
             event: message_start
             data: #{JSON.generate(type: 'message_start', message: { id: 'fake_id', model:, role: 'assistant', content: [] })}
@@ -249,7 +254,7 @@ RSpec.describe OmniAI::Anthropic::Chat do
 
       before do
         stub_request(:post, "https://api.anthropic.com/v1/messages")
-          .with(body: OmniAI::Anthropic.config.chat_options.merge({
+          .with(body: {
             messages: [
               {
                 role: "user",
@@ -262,7 +267,8 @@ RSpec.describe OmniAI::Anthropic::Chat do
               },
             ],
             model:,
-          }))
+            max_tokens: OmniAI::Anthropic::Chat::MAX_TOKENS,
+          })
           .to_return_json(body: {
             type: "message",
             role: "assistant",

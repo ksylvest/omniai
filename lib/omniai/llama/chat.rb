@@ -52,14 +52,14 @@ module OmniAI
 
       # @return [Hash]
       def payload
-        OmniAI::Llama.config.chat_options.merge({
+        {
           messages: @prompt.serialize,
           model: @model,
           response_format: (JSON_RESPONSE_FORMAT if @format.eql?(:json)),
           stream: stream? || nil,
           temperature: @temperature,
           tools: (@tools.map(&:serialize) if @tools&.any?),
-        }).compact
+        }.compact
       end
 
       # @return [String]

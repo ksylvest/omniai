@@ -85,12 +85,12 @@ module OmniAI
 
       # @return [Hash]
       def payload
-        OmniAI::Google.config.chat_options.merge({
+        {
           system_instruction: @prompt.messages.find(&:system?)&.serialize(context:),
           contents: @prompt.messages.reject(&:system?).map { |message| message.serialize(context:) },
           tools:,
           generationConfig: generation_config,
-        }).compact
+        }.compact
       end
 
       # @return [Hash]
