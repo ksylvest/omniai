@@ -17,10 +17,7 @@ module OmniAI
 
       # @return [Hash]
       def payload
-        OmniAI::OpenAI
-          .config.transcribe_options
-          .merge(super)
-          .merge({ response_format: @format || Format::JSON })
+        super.merge({ response_format: @format || Format::JSON })
       end
 
       # @return [String]
