@@ -112,8 +112,6 @@ module OmniAI
         features = build_features
         config[:features] = features unless features.empty?
 
-        config.merge!(OmniAI::Google.config.transcribe_options)
-
         config
       end
 
