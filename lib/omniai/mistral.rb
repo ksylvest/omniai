@@ -5,12 +5,12 @@ module OmniAI
   module Mistral
     # @return [OmniAI::Mistral::Config]
     def self.config
-      @config ||= Config.new
+      @config ||= OmniAI.config.mistral
     end
 
     # @yield [OmniAI::Mistral::Config]
     def self.configure
-      yield config
+      yield OmniAI.config.mistral
     end
   end
 end

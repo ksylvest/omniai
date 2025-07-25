@@ -22,7 +22,7 @@ module OmniAI
 
       # @return [String]
       def path
-        "#{@client.api_prefix}/#{OmniAI::OpenAI::Client::VERSION}/audio/transcriptions"
+        "/#{OmniAI::OpenAI::Client::VERSION}/audio/transcriptions"
       end
     end
   end

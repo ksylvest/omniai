@@ -3,16 +3,6 @@
 RSpec.describe OmniAI::Llama::Client do
   subject(:client) { described_class.new }
 
-  describe "#initialize" do
-    context "with an api_key" do
-      it { expect(described_class.new(api_key: "...")).to be_a(described_class) }
-    end
-
-    context "without an api_key" do
-      it { expect { described_class.new(api_key: nil) }.to raise_error(ArgumentError) }
-    end
-  end
-
   describe "#connection" do
     it { expect(client.connection).to be_a(HTTP::Client) }
   end

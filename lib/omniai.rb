@@ -85,4 +85,12 @@ module OmniAI
   def self.embed(...)
     client.embed(...)
   end
+
+  def self.config
+    @config ||= OmniAI::Config.new
+  end
+
+  def self.configure
+    yield(config)
+  end
 end

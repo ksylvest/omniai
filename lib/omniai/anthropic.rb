@@ -5,12 +5,12 @@ module OmniAI
   module Anthropic
     # @return [OmniAI::Anthropic::Config]
     def self.config
-      @config ||= Config.new
+      OmniAI.config.anthropic
     end
 
     # @yield [OmniAI::Anthropic::Config]
     def self.configure
-      yield config
+      yield OmniAI.config.anthropic
     end
   end
 end

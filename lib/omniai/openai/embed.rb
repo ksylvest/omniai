@@ -30,7 +30,7 @@ module OmniAI
 
       # @return [String]
       def path
-        "#{@client.api_prefix}/#{OmniAI::OpenAI::Client::VERSION}/embeddings"
+        "/#{OmniAI::OpenAI::Client::VERSION}/embeddings"
       end
 
       # @param [Object] value

@@ -5,12 +5,12 @@ module OmniAI
   module Google
     # @return [OmniAI::Google::Config]
     def self.config
-      @config ||= Config.new
+      OmniAI.config.google
     end
 
     # @yield [OmniAI::Google::Config]
     def self.configure
-      yield config
+      yield OmniAI.config.google
     end
   end
 end

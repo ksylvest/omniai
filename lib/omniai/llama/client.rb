@@ -22,28 +22,24 @@ module OmniAI
     class Client < OmniAI::Client
       VERSION = "v1"
 
-      # @param api_key [String, nil] optional - defaults to `OmniAI::Llama.config.api_key`
-      # @param host [String] optional - defaults to `OmniAI::Llama.config.host`
-      # @param logger [Logger, nil] optional - defaults to `OmniAI::Llama.config.logger`
-      # @param timeout [Integer, nil] optional - defaults to `OmniAI::Llama.config.timeout`
+      # @param host [String] optional (default: OmniAI.config.llama.host)
+      # @param api_key [String] optional (default: OmniAI.config.llama.api_key)
+      # @param logger [Logger] optional (default: OmniAI.config.logger)
+      # @param timeout [Integer] optional (default: OmniAI.config.timeout)
+      # @param config [OmniAI::Config] optional (default: OmniAI.config
       def initialize(
-        api_key: OmniAI::Llama.config.api_key,
-        host: OmniAI::Llama.config.host,
-        logger: OmniAI::Llama.config.logger,
-        timeout: OmniAI::Llama.config.timeout
+        api_key: OmniAI.config.llama.api_key,
+        host: OmniAI.config.llama.host,
+        logger: OmniAI.config.logger,
+        timeout: OmniAI.config.timeout
       )
-        raise(ArgumentError, %(ENV['LLAMA_API_KEY'] must be defined or `api_key` must be passed)) if api_key.nil?
-
-        super
+        super(host:, logger:, timeout:)
+        @api_key = api_key
       end
 
       # @return [HTTP::Client]
       def connection
-        @connection ||= begin
-          http = super
-          http = http.auth("Bearer #{@api_key}") if @api_key
-          http
-        end
+        @connection ||= super.auth("Bearer #{@api_key}")
       end
 
       # @raise [OmniAI::Error]

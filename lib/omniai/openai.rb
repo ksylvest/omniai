@@ -5,12 +5,12 @@ module OmniAI
   module OpenAI
     # @return [OmniAI::OpenAI::Config]
     def self.config
-      @config ||= Config.new
+      @config ||= OmniAI.config.openai
     end
 
     # @yield [OmniAI::OpenAI::Config]
     def self.configure
-      yield config
+      yield OmniAI.config.openai
     end
   end
 end

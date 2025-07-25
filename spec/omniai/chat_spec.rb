@@ -18,7 +18,7 @@ RSpec.describe OmniAI::Chat do
   subject(:chat) { described_class.new(prompt, model:, client:) }
 
   let(:model) { "..." }
-  let(:client) { OmniAI::Client.new(api_key: "...") }
+  let(:client) { build(:client) }
 
   let(:prompt) do
     OmniAI::Chat::Prompt.new.tap do |prompt|

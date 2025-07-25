@@ -5,12 +5,12 @@ module OmniAI
   module Llama
     # @return [OmniAI::Llama::Config]
     def self.config
-      @config ||= Config.new
+      OmniAI.config.llama
     end
 
     # @yield [OmniAI::Llama::Config]
     def self.configure
-      yield config
+      yield OmniAI.config.llama
     end
   end
 end

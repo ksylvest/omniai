@@ -4,43 +4,28 @@ module OmniAI
   module Anthropic
     # An Anthropic client implementation. Usage:
     #
-    # w/ `api_key``:
-    #   client = OmniAI::Anthropic::Client.new(api_key: '...')
-    #
-    # w/ ENV['ANTHROPIC_API_KEY']:
-    #
-    #   ENV['ANTHROPIC_API_KEY'] = '...'
     #   client = OmniAI::Anthropic::Client.new
-    #
-    # w/ config:
-    #
-    #   OmniAI::Anthropic.configure do |config|
-    #     config.api_key = '...'
-    #   end
-    #
-    #   client = OmniAI::Anthropic::Client.new
+    #   client.chat(...)
     class Client < OmniAI::Client
       VERSION = "v1"
 
-      # @param api_key [String] optional - defaults to `OmniAI::Anthropic.config.api_key`
-      # @param host [String] optional - defaults to `OmniAI::Anthropic.config.host`
-      # @param version [String] optional - defaults to `OmniAI::Anthropic.config.version`
-      # @param beta [String] optional - defaults to `OmniAI::Anthropic.config.beta`
-      # @param logger [Logger] optional - defaults to `OmniAI::Anthropic.config.logger`
-      # @param timeout [Integer] optional - defaults to `OmniAI::Anthropic.config.timeout`
+      # @param api_key [String] optional (default: OmniAI.config.anthropic.api_key)
+      # @param version [String] optional (default: OmniAI.config.anthropic.version)
+      # @param beta [Boolean] optional (default: OmniAI.config.anthropic.beta)
+      # @param host [String] optional (default: OmniAI.config.anthropic.host)
+      # @param timeout [Integer] optional (default: OmniAI.config.timeout)
+      # @param logger [Logger] optional (default: OmniAI.config.logger)
       def initialize(
-        api_key: OmniAI::Anthropic.config.api_key,
-        host: OmniAI::Anthropic.config.host,
-        version: OmniAI::Anthropic.config.version,
-        beta: OmniAI::Anthropic.config.beta,
-        logger: OmniAI::Anthropic.config.logger,
-        timeout: OmniAI::Anthropic.config.timeout
+        api_key: OmniAI.config.anthropic.api_key,
+        version: OmniAI.config.anthropic.version,
+        beta: OmniAI.config.anthropic.beta,
+        host: OmniAI.config.anthropic.host,
+        timeout: OmniAI.config.timeout,
+        logger: OmniAI.config.logger
       )
-        raise(ArgumentError, %(ENV['ANTHROPIC_API_KEY'] must be defined or `api_key` must be passed)) if api_key.nil?
+        super(host:, logger:, timeout:)
 
-        super(api_key:, host:, logger:, timeout:)
-
-        @host = host
+        @api_key = api_key
         @version = version
         @beta = beta
       end

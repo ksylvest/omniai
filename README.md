@@ -311,6 +311,30 @@ OmniAI may be installed using the following command:
 gem install omniai
 ```
 
+## 🧰 Configuration
+
+Global options may be configured using the following:
+
+```ruby
+OmniAI.configure do |config|
+  config.timeout = 15 # seconds
+  config.logger = Logger.new(STDOUT)
+end
+```
+
+Individual providers may be configured using the following:
+
+```ruby
+OmniAI.configure do |config|
+  config.anthropic.api_key = "..." # default ENV["ANTHROPIC_API_KEY"]
+  config.deepseek.api_key = "..." # default ENV["DEEPSEEK_API_KEY"]
+  config.llama.api_key = "..." # default ENV["LLAMA_API_KEY"]
+  config.google.api_key = "..." # defaullt ENV["GOOGLE_API_KEY]
+  config.mistral.api_key = "..." # default ENV["MISTRAL_API_KEY"]
+  config.openai.api_key = "..." # default ENV["OPENAI_API_KEY"]
+end
+```
+
 ## 📖 Usage
 
 OmniAI implements APIs for a the of popular providers (e.g. Anthropic, DeepSeek, Llama, Google, Mistral and OpenAI). A client is initialized using the following:

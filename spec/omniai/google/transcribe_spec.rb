@@ -2,8 +2,13 @@
 
 # rubocop:disable RSpec/SubjectStub, RSpec/VerifiedDoubles
 RSpec.describe OmniAI::Google::Transcribe do
-  let(:client) { OmniAI::Google::Client.new(api_key: "fake", project_id: "test-project", location_id: "us-central1") }
+  let(:client) { OmniAI::Google::Client.new(host:, api_key:, project_id:, location_id:, version:) }
   let(:model) { described_class::Model::LATEST_SHORT }
+  let(:host) { "https://us-central1-speech.googleapis.com" }
+  let(:api_key) { "fake" }
+  let(:project_id) { "test-project" }
+  let(:location_id) { "us-central1" }
+  let(:version) { "v2" }
 
   describe ".process!" do
     subject(:transcription) { described_class.process!(path, client:, model:, format:) }
@@ -14,7 +19,7 @@ RSpec.describe OmniAI::Google::Transcribe do
       let(:format) { described_class::Format::JSON }
 
       before do
-        stub_request(:post, "https://us-central1-speech.googleapis.com/v2/projects/test-project/locations/us-central1/recognizers/_:recognize?key=fake")
+        stub_request(:post, "https://us-central1-speech.googleapis.com/v2/projects/test-project/locations/us-central1/recognizers/_:recognize?key=#{client.api_key}")
           .to_return_json(body: {
             results: [
               {

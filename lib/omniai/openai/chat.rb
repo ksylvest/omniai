@@ -70,7 +70,7 @@ module OmniAI
 
       # @return [String]
       def path
-        "#{@client.api_prefix}/#{OmniAI::OpenAI::Client::VERSION}/chat/completions"
+        "/#{OmniAI::OpenAI::Client::VERSION}/chat/completions"
       end
 
       # @raise [ArgumentError]

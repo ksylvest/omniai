@@ -20,38 +20,46 @@ module OmniAI
     #
     #   client = OmniAI::Google::Client.new
     class Client < OmniAI::Client
+      # @!attribute [rw] String
+      #   @return [String]
+      attr_accessor :api_key
+
+      # @!attribute [rw] project_id
+      #   @return [String, nil]
+      attr_accessor :project_id
+
+      # @!attribute [rw] location_id
+      #   @return [String, nil]
+      attr_accessor :location_id
+
       # @!attribute [rw] version
       #   @return [String, nil]
       attr_accessor :version
 
-      # @param api_key [String] default is `OmniAI::Google.config.api_key`
-      # @param project_id [String] default is `OmniAI::Google.config.project_id`
-      # @param location_id [String] default is `OmniAI::Google.config.location_id`
-      # @param credentials [Google::Auth::ServiceAccountCredentials] default is `OmniAI::Google.config.credentials`
-      # @param host [String] default is `OmniAI::Google.config.host`
-      # @param version [String] default is `OmniAI::Google.config.version`
-      # @param logger [Logger] default is `OmniAI::Google.config.logger`
-      # @param timeout [Integer] default is `OmniAI::Google.config.timeout`
+      # @param host [String] optional (default: OmniAI.config.google.host)
+      # @param api_key [String] optional (default: OmniAI.config.google.api_key)
+      # @param logger [Logger] optional (default: OmniAI.config.logger)
+      # @param timeout [Integer] optional (default: OmniAI.config.timeout)
+      # @param project_id [String] optional (default: OmniAI.config.google.project_id)
+      # @param location_id [String] optional (default: OmniAI.config.google.location_id)
+      # @param version [String] optional (default: OmniAI.config.google.version)
+      # @param credentials [Google::Auth::Credentials] optional (default: OmniAI.config.google.credentials)
       def initialize(
-        api_key: OmniAI::Google.config.api_key,
-        project_id: OmniAI::Google.config.project_id,
-        location_id: OmniAI::Google.config.location_id,
-        credentials: OmniAI::Google.config.credentials,
-        logger: OmniAI::Google.config.logger,
-        host: OmniAI::Google.config.host,
-        version: OmniAI::Google.config.version,
-        timeout: OmniAI::Google.config.timeout
+        host: OmniAI.config.google.host,
+        api_key: OmniAI.config.google.api_key,
+        logger: OmniAI.config.logger,
+        timeout: OmniAI.config.timeout,
+        project_id: OmniAI.config.google.project_id,
+        location_id: OmniAI.config.google.location_id,
+        version: OmniAI.config.google.version,
+        credentials: OmniAI.config.google.credentials
       )
-        if api_key.nil? && credentials.nil?
-          raise(ArgumentError, "either an `api_key` or `credentials` must be provided")
-        end
-
-        super(api_key:, host:, logger:, timeout:)
-
+        super(host:, logger:, timeout:)
+        @api_key = api_key
         @project_id = project_id
         @location_id = location_id
-        @credentials = Credentials.parse(credentials)
         @version = version
+        @credentials = credentials
       end
 
       # @raise [OmniAI::Error]
@@ -109,14 +117,16 @@ module OmniAI
 
       # @return [HTTP::Client]
       def connection
-        http = super
-        http = http.auth(auth) if credentials?
-        http
+        @connection ||= begin
+          http = super
+          http = http.auth(auth) if credentials?
+          http
+        end
       end
 
       # @return [Boolean]
       def credentials?
-        !@credentials.nil?
+        !!@credentials
       end
 
       # @return [Boolean]

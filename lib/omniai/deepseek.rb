@@ -5,12 +5,12 @@ module OmniAI
   module DeepSeek
     # @return [OmniAI::DeepSeek::Config]
     def self.config
-      @config ||= Config.new
+      @config ||= OmniAI.config.deepseek
     end
 
     # @yield [OmniAI::DeepSeek::Config]
     def self.configure
-      yield config
+      yield OmniAI.config.deepseek
     end
   end
 end

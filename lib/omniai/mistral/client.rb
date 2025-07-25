@@ -22,24 +22,24 @@ module OmniAI
     class Client < OmniAI::Client
       VERSION = "v1"
 
-      # @param api_key [String] optional - defaults to `OmniAI::Mistral.config.api_key`
-      # @param host [String] optional - defaults to `OmniAI::Mistral.config.host`
-      # @param logger [Logger] optional - defaults to `OmniAI::Mistral.config.logger`
-      # @param timeout [Integer] optional - defaults to `OmniAI::Mistral.config.timeout`
+      # @param host [String] optional (default: OmniAI.config.mistral.host)
+      # @param api_key [String] optional (default: OmniAI.config.mistral.api_key)
+      # @param logger [Logger] optional (default: OmniAI.config.logger)
+      # @param timeout [Integer] optional (default: OmniAI.config.timeout)
+      # @param config [OmniAI::Config] optional (default: OmniAI.config
       def initialize(
-        api_key: OmniAI::Mistral.config.api_key,
-        host: OmniAI::Mistral.config.host,
-        logger: OmniAI::Mistral.config.logger,
-        timeout: OmniAI::Mistral.config.timeout
+        host: OmniAI.config.mistral.host,
+        api_key: OmniAI.config.mistral.api_key,
+        logger: OmniAI.config.logger,
+        timeout: OmniAI.config.timeout
       )
-        raise(ArgumentError, %(ENV['MISTRAL_API_KEY'] must be defined or `api_key` must be passed)) if api_key.nil?
-
-        super
+        super(host:, logger:, timeout:)
+        @api_key = api_key
       end
 
       # @return [HTTP::Client]
       def connection
-        @connection ||= super.auth("Bearer #{api_key}")
+        @connection ||= super.auth("Bearer #{@api_key}")
       end
 
       # @raise [OmniAI::Error]

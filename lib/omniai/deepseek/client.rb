@@ -20,26 +20,20 @@ module OmniAI
     #
     #   client = OmniAI::DeepSeek::Client.new
     class Client < OmniAI::Client
-      # @param api_key [String, nil] optional - defaults to `OmniAI::DeepSeek.config.api_key`
-      # @param host [String] optional - defaults to `OmniAI::DeepSeek.config.host`
-      # @param logger [Logger, nil] optional - defaults to `OmniAI::DeepSeek.config.logger`
-      # @param timeout [Integer, nil] optional - defaults to `OmniAI::DeepSeek.config.timeout`
       def initialize(
-        api_key: OmniAI::DeepSeek.config.api_key,
-        host: OmniAI::DeepSeek.config.host,
-        logger: OmniAI::DeepSeek.config.logger,
-        timeout: OmniAI::DeepSeek.config.timeout
+        host: OmniAI.config.deepseek.host,
+        api_key: OmniAI.config.deepseek.api_key,
+        logger: OmniAI.config.logger,
+        timeout: OmniAI.config.timeout
       )
-        super
+        super(host:, logger:, timeout:)
+
+        @api_key = api_key
       end
 
       # @return [HTTP::Client]
       def connection
-        @connection ||= begin
-          http = super
-          http = http.auth("Bearer #{@api_key}") if @api_key
-          http
-        end
+        @connection ||= super.auth("Bearer #{@api_key}")
       end
 
       # @raise [OmniAI::Error]

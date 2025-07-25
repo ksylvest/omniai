@@ -16,10 +16,6 @@ module OmniAI
   #     end
   #   end
   class Client
-    # @!attribute [rw] api_key
-    #   @return [String, nil]
-    attr_accessor :api_key
-
     # @!attribute [rw] logger
     #   @return [Logger, nil]
     attr_accessor :logger
@@ -79,12 +75,10 @@ module OmniAI
       klass.new(**)
     end
 
-    # @param api_key [String, nil] optional
-    # @param host [String, nil] optional - supports for customzing the host of the client (e.g. 'http://localhost:8080')
-    # @param logger [Logger, nil] optional
-    # @param timeout [Integer, nil] optional
-    def initialize(api_key: nil, logger: nil, host: nil, timeout: nil)
-      @api_key = api_key
+    # @param host [String] required
+    # @param logger [Logger] optional (default: OmniAI.config.logger)
+    # @param timeout [Integer] optional (default: OmniAI.config.timeout)
+    def initialize(host:, logger: OmniAI.config.logger, timeout: OmniAI.config.timeout)
       @host = host
       @logger = logger
       @timeout = timeout
@@ -92,22 +86,14 @@ module OmniAI
 
     # @return [String]
     def inspect
-      props = []
-      props << "api_key=#{masked_api_key.inspect}" if @api_key
-      props << "host=#{@host.inspect}" if @host
-      "#<#{self.class.name} #{props.join(' ')}>"
-    end
-
-    # @return [String]
-    def masked_api_key
-      "#{api_key[..2]}***" if api_key
+      "#<#{self.class.name}>"
     end
 
     # @return [HTTP::Client]
     def connection
       http = HTTP.persistent(@host)
       http = http.use(instrumentation: { instrumenter: Instrumentation.new(logger: @logger) }) if @logger
-      http = http.timeout(@timeout) if @timeout
+      http.timeout(@timeout) if @timeout
       http
     end
 

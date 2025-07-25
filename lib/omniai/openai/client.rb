@@ -22,47 +22,32 @@ module OmniAI
     class Client < OmniAI::Client
       VERSION = "v1"
 
-      attr_reader :api_prefix
-
-      # @param api_key [String, nil] optional - defaults to `OmniAI::OpenAI.config.api_key`
-      # @param api_prefix [String, nil] optional - defaults to empty string
-      # @param host [String] optional - defaults to `OmniAI::OpenAI.config.host`
-      # @param project [String, nil] optional - defaults to `OmniAI::OpenAI.config.project`
-      # @param organization [String, nil] optional - defaults to `OmniAI::OpenAI.config.organization`
-      # @param logger [Logger, nil] optional - defaults to `OmniAI::OpenAI.config.logger`
-      # @param timeout [Integer, nil] optional - defaults to `OmniAI::OpenAI.config.timeout`
+      # @param api_key [String] optional (default: OmniAI.config.openai.api_key)
+      # @param organization [String] optional (default: OmniAI.config.openai.organization)
+      # @param project [String] optional (default: OmniAI.config.openai.project)
+      # @param host [String] optional (default: OmniAI.config.openai.host)
+      # @param timeout [Integer] optional (default: OmniAI.config.timeout)
+      # @param logger [Logger] optional (default: OmniAI.config.logger)
       def initialize(
-        api_key: OmniAI::OpenAI.config.api_key,
-        api_prefix: "",
-        host: OmniAI::OpenAI.config.host,
-        organization: OmniAI::OpenAI.config.organization,
-        project: OmniAI::OpenAI.config.project,
-        logger: OmniAI::OpenAI.config.logger,
-        timeout: OmniAI::OpenAI.config.timeout
+        api_key: OmniAI.config.openai.api_key,
+        organization: OmniAI.config.openai.organization,
+        project: OmniAI.config.openai.project,
+        host: OmniAI.config.openai.host,
+        timeout: OmniAI.config.timeout,
+        logger: OmniAI.config.logger
       )
-        if api_key.nil? && host.eql?(Config::DEFAULT_HOST)
-          raise(
-            ArgumentError,
-            %(ENV['OPENAI_API_KEY'] must be defined or `api_key` must be passed when using #{Config::DEFAULT_HOST})
-          )
-        end
-
-        super(api_key:, host:, logger:, timeout:)
-
+        super(host:, logger:, timeout:)
+        @api_key = api_key
+        @host = host
         @organization = organization
         @project = project
-
-        @api_prefix = api_prefix
-        return if @api_prefix.empty? || @api_prefix.start_with?("/")
-
-        @api_prefix.prepend("/")
       end
 
       # @return [HTTP::Client]
       def connection
         @connection ||= begin
           http = super
-          http = http.auth("Bearer #{@api_key}") if @api_key
+          http = http.auth("Bearer #{@api_key}")
           http = http.headers("OpenAI-Organization": @organization) if @organization
           http = http.headers("OpenAI-Project": @project) if @project
           http
