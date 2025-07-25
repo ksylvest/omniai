@@ -27,23 +27,6 @@ module OmniAI
   class Chat
     JSON_PROMPT = "Respond with valid JSON. Do not include any non-JSON in the response."
 
-    # An error raised for tool-call issues.
-    class ToolCallError < Error
-      # @param tool_call [OmniAI::Chat::ToolCall]
-      # @param message [String]
-      def initialize(tool_call:, message:)
-        super(message)
-        @tool_call = tool_call
-      end
-    end
-
-    # An error raised when a tool-call is missing.
-    class ToolCallMissingError < ToolCallError
-      def initialize(tool_call:)
-        super(tool_call:, message: "missing tool for tool_call=#{tool_call.inspect}")
-      end
-    end
-
     module Role
       ASSISTANT = "assistant"
       USER = "user"
