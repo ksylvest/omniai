@@ -5,7 +5,6 @@
 [![GitHub](https://img.shields.io/badge/github-repo-blue.svg)](https://github.com/ksylvest/omniai)
 [![Yard](https://img.shields.io/badge/docs-site-blue.svg)](https://omniai.ksylvest.com)
 [![CircleCI](https://img.shields.io/circleci/build/github/ksylvest/omniai)](https://circleci.com/gh/ksylvest/omniai)
-[![Maintainability](https://qlty.sh/gh/ksylvest/projects/omniai/maintainability.svg)](https://qlty.sh/gh/ksylvest/projects/omniai)
 
 OmniAI provides a unified Ruby API for integrating with multiple AI providers, including Anthropic, DeepSeek, Google, Mistral, and OpenAI. It streamlines AI development by offering a consistent interface for features such as chat, text-to-speech, speech-to-text, and embeddings—ensuring seamless interoperability across platforms. Switching between providers is effortless, making any integration more flexible and reliable.
 
