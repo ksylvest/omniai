@@ -32,7 +32,7 @@ RSpec.describe OmniAI::MCP::Server do
               name: 'OmniAI',
               version: OmniAI::VERSION,
             },
-            capabilities: {},
+            capabilities: { tools: { listChanged: true } },
           })}
         JSON
       end
@@ -69,17 +69,19 @@ RSpec.describe OmniAI::MCP::Server do
 
       let(:output) do
         <<~JSON
-          #{JSON.generate(jsonrpc: '2.0', id: 0, result: [
-            {
-              name: 'weather',
-              description: 'Finds the weather for a location.',
-              inputSchema: {
-                type: 'object',
-                properties: { location: { type: 'string' } },
-                required: ['location'],
+          #{JSON.generate(jsonrpc: '2.0', id: 0, result: {
+            tools: [
+              {
+                name: 'weather',
+                description: 'Finds the weather for a location.',
+                inputSchema: {
+                  type: 'object',
+                  properties: { location: { type: 'string' } },
+                  required: ['location'],
+                },
               },
-            },
-          ])}
+            ],
+          })}
         JSON
       end
 
@@ -93,14 +95,14 @@ RSpec.describe OmniAI::MCP::Server do
         <<~JSON
           #{JSON.generate(jsonrpc: '2.0', id: 0, method: 'tools/call', params: {
             name: 'weather',
-            input: { location: 'London' },
+            arguments: { location: 'London' },
           })}
         JSON
       end
 
       let(:output) do
         <<~JSON
-          #{JSON.generate(jsonrpc: '2.0', id: 0, result: 'Rainy')}
+          #{JSON.generate(jsonrpc: '2.0', id: 0, result: { content: [{ type: 'text', text: 'Rainy' }] })}
         JSON
       end
 
@@ -114,14 +116,14 @@ RSpec.describe OmniAI::MCP::Server do
         <<~JSON
           #{JSON.generate(jsonrpc: '2.0', id: 0, method: 'tools/call', params: {
             name: 'weather',
-            input: { location: 'Madrid' },
+            arguments: { location: 'Madrid' },
           })}
         JSON
       end
 
       let(:output) do
         <<~JSON
-          #{JSON.generate(jsonrpc: '2.0', id: 0, result: 'Sunny')}
+          #{JSON.generate(jsonrpc: '2.0', id: 0, result: { content: [{ type: 'text', text: 'Sunny' }] })}
         JSON
       end
 
@@ -135,7 +137,7 @@ RSpec.describe OmniAI::MCP::Server do
         <<~JSON
           #{JSON.generate(jsonrpc: '2.0', id: 0, method: 'tools/call', params: {
             name: 'weather',
-            input: { location: 'Toronto' },
+            arguments: { location: 'Toronto' },
           })}
         JSON
       end
