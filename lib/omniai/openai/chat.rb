@@ -41,6 +41,12 @@ module OmniAI
       def path
         "/#{OmniAI::OpenAI::Client::VERSION}/chat/completions"
       end
+
+      def payload
+        super.merge({
+          stream_options: DEFAULT_STREAM_OPTIONS if stream?,
+        })
+      end
     end
   end
 end

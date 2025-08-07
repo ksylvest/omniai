@@ -144,7 +144,6 @@ module OmniAI
         model: @model,
         response_format:,
         stream: stream? || nil,
-        stream_options: (DEFAULT_STREAM_OPTIONS if stream?),
         temperature: @temperature,
         tools: (@tools.map(&:serialize) if @tools&.any?),
       }.compact
