@@ -19,6 +19,8 @@ module OmniAI
 
       # @param transport [OmniAI::MCP::Transport]
       def run(transport: OmniAI::MCP::Transport::Stdio.new)
+        @logger&.info("#{self.class}#run: running")
+
         loop do
           message = transport.gets
           break if message.nil?
@@ -29,9 +31,9 @@ module OmniAI
 
           transport.puts(response) if response
         end
-      end
 
-    private
+        @logger&.info("#{self.class}#run: finished")
+      end
 
       # @param message [String]
       #
@@ -68,7 +70,9 @@ module OmniAI
             name: @name,
             version: @version,
           },
-          capabilities: {},
+          capabilities: {
+            tools: { listChanged: true },
+          },
         })
       end
 
@@ -84,7 +88,7 @@ module OmniAI
       #
       # @return [JRPC::Response]
       def process_tools_list(request:)
-        result = @tools.map do |tool|
+        tools = @tools.map do |tool|
           {
             name: tool.name,
             description: tool.description,
@@ -92,7 +96,7 @@ module OmniAI
           }
         end
 
-        JRPC::Response.new(id: request.id, result:)
+        JRPC::Response.new(id: request.id, result: { tools: })
       end
 
       # @param request [JRPC::Request]
@@ -104,14 +108,21 @@ module OmniAI
         name = request.params["name"]
         tool = @tools.find { |tool| tool.name.eql?(name) }
 
-        result =
+        text =
           begin
-            tool.call(request.params["input"])
+            tool.call(request.params["arguments"])
           rescue StandardError => e
             raise JRPC::Error.new(code: JRPC::Error::Code::INTERNAL_ERROR, message: e.message)
           end
 
-        JRPC::Response.new(id: request.id, result:)
+        JRPC::Response.new(id: request.id, result: {
+          content: [
+            {
+              type: "text",
+              text:,
+            },
+          ],
+        })
       end
     end
   end
