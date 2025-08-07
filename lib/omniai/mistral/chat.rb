@@ -50,43 +50,11 @@ module OmniAI
 
       DEFAULT_MODEL = Model::MISTRAL_MEDIUM_LATEST
 
-      module Role
-        ASSISTANT = "assistant"
-        USER = "user"
-        SYSTEM = "system"
-      end
-
     protected
-
-      # @return [Hash]
-      def payload
-        {
-          messages: @prompt.serialize,
-          model: @model,
-          stream: stream? || nil,
-          temperature: @temperature,
-          response_format:,
-          tools: (@tools.map(&:serialize) if @tools&.any?),
-        }.compact
-      end
 
       # @return [String]
       def path
         "/#{OmniAI::Mistral::Client::VERSION}/chat/completions"
-      end
-
-      # @raise [ArgumentError]
-      #
-      # @return [Hash, nil]
-      def response_format
-        return if @format.nil?
-
-        case @format
-        when :text then { type: ResponseFormat::TEXT_TYPE }
-        when :json then { type: ResponseFormat::JSON_TYPE }
-        when OmniAI::Schema::Format then { type: ResponseFormat::SCHEMA_TYPE, json_schema: @format.serialize }
-        else raise ArgumentError, "unknown format=#{@format}"
-        end
       end
     end
   end
