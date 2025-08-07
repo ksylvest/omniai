@@ -26,22 +26,12 @@ module OmniAI
   #   client.chat(messages, model: "...", temperature: 0.0, format: :text)
   class Chat
     JSON_PROMPT = "Respond with valid JSON. Do not include any non-JSON in the response."
+    DEFAULT_STREAM_OPTIONS = { include_usage: ENV.fetch("OMNIAI_STREAM_USAGE", "on").eql?("on") }.freeze
 
-    # An error raised for tool-call issues.
-    class ToolCallError < Error
-      # @param tool_call [OmniAI::Chat::ToolCall]
-      # @param message [String]
-      def initialize(tool_call:, message:)
-        super(message)
-        @tool_call = tool_call
-      end
-    end
-
-    # An error raised when a tool-call is missing.
-    class ToolCallMissingError < ToolCallError
-      def initialize(tool_call:)
-        super(tool_call:, message: "missing tool for tool_call=#{tool_call.inspect}")
-      end
+    module ResponseFormat
+      TEXT_TYPE = "text"
+      JSON_TYPE = "json_object"
+      SCHEMA_TYPE = "json_schema"
     end
 
     module Role
@@ -149,7 +139,14 @@ module OmniAI
 
     # @return [Hash]
     def payload
-      raise NotImplementedError, "#{self.class.name}#payload undefined"
+      {
+        messages: @prompt.serialize,
+        model: @model,
+        response_format:,
+        stream: stream? || nil,
+        temperature: @temperature,
+        tools: (@tools.map(&:serialize) if @tools&.any?),
+      }.compact
     end
 
     # @return [String]
@@ -233,6 +230,20 @@ module OmniAI
       logger&.debug("Chat#execute_tool_call content=#{content.inspect}")
 
       content
+    end
+
+    # @raise [ArgumentError]
+    #
+    # @return [Hash, nil]
+    def response_format
+      return if @format.nil?
+
+      case @format
+      when :text then { type: ResponseFormat::TEXT_TYPE }
+      when :json then { type: ResponseFormat::JSON_TYPE }
+      when OmniAI::Schema::Format then { type: ResponseFormat::SCHEMA_TYPE, json_schema: @format.serialize }
+      else raise ArgumentError, "unknown format=#{@format}"
+      end
     end
   end
 end

@@ -1,108 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe OmniAI::Client do
-  subject(:client) { described_class.new(api_key:, host:, timeout:, logger:) }
+  subject(:client) { build(:client, timeout:, logger:) }
 
-  let(:api_key) { "abcdef" }
-  let(:host) { "http://localhost:8080" }
   let(:timeout) { 5 }
   let(:logger) { instance_double(Logger) }
-
-  describe ".anthropic" do
-    subject(:anthropic) { described_class.anthropic }
-
-    context "when the client is defined" do
-      let(:klass) { Class.new }
-
-      before { stub_const("OmniAI::Anthropic::Client", klass) }
-
-      it { expect(anthropic).to eql(klass) }
-    end
-
-    context "when the client is not defined" do
-      it { expect { anthropic }.to raise_error(OmniAI::LoadError) }
-    end
-  end
-
-  describe ".deepseek" do
-    subject(:deepseek) { described_class.deepseek }
-
-    context "when the client is defined" do
-      let(:klass) { Class.new }
-
-      before { stub_const("OmniAI::DeepSeek::Client", klass) }
-
-      it { expect(deepseek).to eql(klass) }
-    end
-
-    context "when the client is not defined" do
-      it { expect { deepseek }.to raise_error(OmniAI::LoadError) }
-    end
-  end
-
-  describe ".google" do
-    subject(:google) { described_class.google }
-
-    context "when the client is defined" do
-      let(:klass) { Class.new }
-
-      before { stub_const("OmniAI::Google::Client", klass) }
-
-      it { expect(google).to eql(klass) }
-    end
-
-    context "when the client is not defined" do
-      it { expect { google }.to raise_error(OmniAI::LoadError) }
-    end
-  end
-
-  describe ".llama" do
-    subject(:llama) { described_class.llama }
-
-    context "when the client is defined" do
-      let(:klass) { Class.new }
-
-      before { stub_const("OmniAI::Llama::Client", klass) }
-
-      it { expect(llama).to eql(klass) }
-    end
-
-    context "when the client is not defined" do
-      it { expect { llama }.to raise_error(OmniAI::LoadError) }
-    end
-  end
-
-  describe ".mistral" do
-    subject(:mistral) { described_class.mistral }
-
-    context "when the client is defined" do
-      let(:klass) { Class.new }
-
-      before { stub_const("OmniAI::Mistral::Client", klass) }
-
-      it { expect(mistral).to eql(klass) }
-    end
-
-    context "when the client is not defined" do
-      it { expect { mistral }.to raise_error(OmniAI::LoadError) }
-    end
-  end
-
-  describe ".openai" do
-    subject(:openai) { described_class.openai }
-
-    context "when the client is defined" do
-      let(:klass) { Class.new }
-
-      before { stub_const("OmniAI::OpenAI::Client", klass) }
-
-      it { expect(openai).to eql(klass) }
-    end
-
-    context "when the client is not defined" do
-      it { expect { openai }.to raise_error(OmniAI::LoadError) }
-    end
-  end
 
   describe ".find" do
     subject(:find) { described_class.find(provider:) }
@@ -110,30 +12,24 @@ RSpec.describe OmniAI::Client do
     context 'when the provider is "anthropic"' do
       let(:provider) { "anthropic" }
 
-      it "calls .anthropic" do
-        allow(described_class).to receive(:anthropic) { Class.new }
-        find
-        expect(described_class).to have_received(:anthropic)
+      it "returns an instance of OmniAI::Anthropic::Client" do
+        expect(find).to be_an_instance_of(OmniAI::Anthropic::Client)
       end
     end
 
     context 'when the provider is "deepseek"' do
       let(:provider) { "deepseek" }
 
-      it "calls .deepseek" do
-        allow(described_class).to receive(:deepseek) { Class.new }
-        find
-        expect(described_class).to have_received(:deepseek)
+      it "returns an instance of OmniAI::DeepSeek::Client" do
+        expect(find).to be_an_instance_of(OmniAI::DeepSeek::Client)
       end
     end
 
     context "when the provider is google" do
       let(:provider) { "google" }
 
-      it "calls .google" do
-        allow(described_class).to receive(:google) { Class.new }
-        find
-        expect(described_class).to have_received(:google)
+      it "returns an instance of OmniAI::Google::Client" do
+        expect(find).to be_an_instance_of(OmniAI::Google::Client)
       end
     end
 
@@ -141,29 +37,23 @@ RSpec.describe OmniAI::Client do
       let(:provider) { "llama" }
 
       it "calls .llama" do
-        allow(described_class).to receive(:llama) { Class.new }
-        find
-        expect(described_class).to have_received(:llama)
+        expect(find).to be_an_instance_of(OmniAI::Llama::Client)
       end
     end
 
     context "when the provider is mistral" do
       let(:provider) { "mistral" }
 
-      it "calls .mistral" do
-        allow(described_class).to receive(:mistral) { Class.new }
-        find
-        expect(described_class).to have_received(:mistral)
+      it "returns an instance of OmniAI::Mistral::Client" do
+        expect(find).to be_an_instance_of(OmniAI::Mistral::Client)
       end
     end
 
     context "when the provider is openai" do
       let(:provider) { "openai" }
 
-      it "calls .openai" do
-        allow(described_class).to receive(:openai) { Class.new }
-        find
-        expect(described_class).to have_received(:openai)
+      it "returns an instance of OmniAI::OpenAI::Client" do
+        expect(find).to be_an_instance_of(OmniAI::OpenAI::Client)
       end
     end
 
@@ -196,14 +86,6 @@ RSpec.describe OmniAI::Client do
     end
   end
 
-  describe "#api_key" do
-    it { expect(client.api_key).to eq(api_key) }
-  end
-
-  describe "#host" do
-    it { expect(client.host).to eq(host) }
-  end
-
   describe "#timeout" do
     it { expect(client.timeout).to eq(timeout) }
   end
@@ -225,6 +107,6 @@ RSpec.describe OmniAI::Client do
   end
 
   describe "#inspect" do
-    it { expect(client.inspect).to eq('#<OmniAI::Client api_key="abc***" host="http://localhost:8080">') }
+    it { expect(client.inspect).to eq("#<OmniAI::Client>") }
   end
 end

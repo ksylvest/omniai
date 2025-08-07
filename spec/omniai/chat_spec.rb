@@ -18,7 +18,7 @@ RSpec.describe OmniAI::Chat do
   subject(:chat) { described_class.new(prompt, model:, client:) }
 
   let(:model) { "..." }
-  let(:client) { OmniAI::Client.new(api_key: "...") }
+  let(:client) { build(:client) }
 
   let(:prompt) do
     OmniAI::Chat::Prompt.new.tap do |prompt|
@@ -55,7 +55,7 @@ RSpec.describe OmniAI::Chat do
   end
 
   describe "#payload" do
-    it { expect { chat.send(:payload) }.to raise_error(NotImplementedError) }
+    it { expect(chat.send(:payload)).to be_a(Hash) }
   end
 
   describe ".process!" do

@@ -6,23 +6,10 @@ module OmniAI
   # Usage:
   #
   #   OmniAI::OpenAI.config do |config|
-  #     config.api_key = '...'
-  #     config.host = 'http://localhost:8080'
   #     config.logger = Logger.new(STDOUT)
   #     config.timeout = 15
-  #     config.chat_options = { ... }
-  #     config.transcribe_options = { ... }
-  #     config.speak_options = { ... }
   #   end
   class Config
-    # @!attribute [rw] api_key
-    #   @return [String, nil]
-    attr_accessor :api_key
-
-    # @!attribute [rw] host
-    #   @return [String, nil]
-    attr_accessor :host
-
     # @!attribute [rw] logger
     #   @return [Logger, nil]
     attr_accessor :logger
@@ -34,37 +21,47 @@ module OmniAI
     #   @option timeout [Integer] :connect
     attr_accessor :timeout
 
-    # @!attribute [rw] chat_options
-    #   @return [Hash]
-    attr_accessor :chat_options
-
-    # @!attribute [rw] transcribe_options
-    #   @return [Hash]
-    attr_accessor :transcribe_options
-
-    # @!attribute [rw] speak_options
-    #   @return [Hash]
-    attr_accessor :speak_options
-
-    # @param api_key [String] optional
-    # @param host [String] optional
     # @param logger [Logger] optional
     # @param timeout [Integer] optional
-    def initialize(api_key: nil, host: nil, logger: nil, timeout: nil)
-      @api_key = api_key
-      @host = host
+    def initialize(logger: nil, timeout: nil)
       @logger = logger
       @timeout = timeout
-
-      @chat_options = {}
-      @transcribe_options = {}
-      @speak_options = {}
     end
 
     # @return [String]
     def inspect
       masked_api_key = "#{api_key[..2]}***" if api_key
       "#<#{self.class.name} api_key=#{masked_api_key.inspect} host=#{host.inspect}>"
+    end
+
+    # @return [OmniAI::Anthropic::Config]
+    def anthropic
+      @anthropic ||= OmniAI::Anthropic::Config.new
+    end
+
+    # @return [OmniAI::DeepSeek::Config]
+    def deepseek
+      @deepseek ||= OmniAI::DeepSeek::Config.new
+    end
+
+    # @return [OmniAI::Llama::Config]
+    def llama
+      @llama ||= OmniAI::Llama::Config.new
+    end
+
+    # @return [OmniAI::Google::Config]
+    def google
+      @google ||= OmniAI::Google::Config.new
+    end
+
+    # @return [OmniAI::Mistral::Config]
+    def mistral
+      @mistral ||= OmniAI::Mistral::Config.new
+    end
+
+    # @return [OmniAI::OpenAI::Config]
+    def openai
+      @openai ||= OmniAI::OpenAI::Config.new
     end
   end
 end

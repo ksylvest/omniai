@@ -16,10 +16,6 @@ module OmniAI
   #     end
   #   end
   class Client
-    # @!attribute [rw] api_key
-    #   @return [String, nil]
-    attr_accessor :api_key
-
     # @!attribute [rw] logger
     #   @return [Logger, nil]
     attr_accessor :logger
@@ -31,78 +27,6 @@ module OmniAI
     # @!attribute [rw] timeout
     #  @return [Integer, nil]
     attr_accessor :timeout
-
-    # Initialize a client for Anthropic. This method requires the provider if it is undefined.
-    #
-    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
-    #
-    # @return [Class<OmniAI::Client>]
-    def self.anthropic
-      require "omniai/anthropic" unless defined?(OmniAI::Anthropic::Client)
-      OmniAI::Anthropic::Client
-    rescue ::LoadError
-      raise LoadError, "requires 'omniai-anthropic': `gem install omniai-anthropic`"
-    end
-
-    # Initialize a client for DeepSeek. This method requires the provider if it is undefined.
-    #
-    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
-    #
-    # @return [Class<OmniAI::Client>]
-    def self.deepseek
-      require "omniai/deepseek" unless defined?(OmniAI::DeepSeek::Client)
-      OmniAI::DeepSeek::Client
-    rescue ::LoadError
-      raise LoadError, "requires 'omniai-deepseek': `gem install omniai-deepseek`"
-    end
-
-    # Lookup the `OmniAI::LLama::Client``. This method requires the provider if it is undefined.
-    #
-    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
-    #
-    # @return [Class<OmniAI::Client>]
-    def self.llama
-      require "omniai/llama" unless defined?(OmniAI::Llama::Client)
-      OmniAI::Llama::Client
-    rescue ::LoadError
-      raise LoadError, "requires 'omniai-llama': `gem install omniai-llama`"
-    end
-
-    # Lookup the `OmniAI::Google::Client``. This method requires the provider if it is undefined.
-    #
-    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
-    #
-    # @return [Class<OmniAI::Client>]
-    def self.google
-      require "omniai/google" unless defined?(OmniAI::Google::Client)
-      OmniAI::Google::Client
-    rescue ::LoadError
-      raise LoadError, "requires 'omniai-google': `gem install omniai-google`"
-    end
-
-    # Initialize a client for Mistral. This method requires the provider if it is undefined.
-    #
-    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
-    #
-    # @return [Class<OmniAI::Client>]
-    def self.mistral
-      require "omniai/mistral" unless defined?(OmniAI::Mistral::Client)
-      OmniAI::Mistral::Client
-    rescue ::LoadError
-      raise LoadError, "requires 'omniai-mistral': `gem install omniai-mistral`"
-    end
-
-    # Initialize a client for OpenAI. This method requires the provider if it is undefined.
-    #
-    # @raise [OmniAI::LoadError] if the provider is not defined and the gem is not installed
-    #
-    # @return [Class<OmniAI::Client>]
-    def self.openai
-      require "omniai/openai" unless defined?(OmniAI::OpenAI::Client)
-      OmniAI::OpenAI::Client
-    rescue ::LoadError
-      raise LoadError, "requires 'omniai-openai': `gem install omniai-openai`"
-    end
 
     # Discover a client by provider ('openai' then 'anthropic' then 'google' then 'mistral' then 'deepseek').
     #
@@ -139,24 +63,22 @@ module OmniAI
     def self.find(provider:, **)
       klass =
         case provider
-        when :anthropic, "anthropic" then anthropic
-        when :deepseek, "deepseek" then deepseek
-        when :google, "google" then google
-        when :llama, "llama" then llama
-        when :mistral, "mistral" then mistral
-        when :openai, "openai" then openai
+        when :anthropic, "anthropic" then OmniAI::Anthropic::Client
+        when :deepseek, "deepseek" then OmniAI::DeepSeek::Client
+        when :google, "google" then OmniAI::Google::Client
+        when :llama, "llama" then OmniAI::Llama::Client
+        when :mistral, "mistral" then OmniAI::Mistral::Client
+        when :openai, "openai" then OmniAI::OpenAI::Client
         else raise Error, "unknown provider=#{provider.inspect}"
         end
 
       klass.new(**)
     end
 
-    # @param api_key [String, nil] optional
-    # @param host [String, nil] optional - supports for customzing the host of the client (e.g. 'http://localhost:8080')
-    # @param logger [Logger, nil] optional
-    # @param timeout [Integer, nil] optional
-    def initialize(api_key: nil, logger: nil, host: nil, timeout: nil)
-      @api_key = api_key
+    # @param host [String] required
+    # @param logger [Logger] optional (default: OmniAI.config.logger)
+    # @param timeout [Integer] optional (default: OmniAI.config.timeout)
+    def initialize(host:, logger: OmniAI.config.logger, timeout: OmniAI.config.timeout)
       @host = host
       @logger = logger
       @timeout = timeout
@@ -164,22 +86,14 @@ module OmniAI
 
     # @return [String]
     def inspect
-      props = []
-      props << "api_key=#{masked_api_key.inspect}" if @api_key
-      props << "host=#{@host.inspect}" if @host
-      "#<#{self.class.name} #{props.join(' ')}>"
-    end
-
-    # @return [String]
-    def masked_api_key
-      "#{api_key[..2]}***" if api_key
+      "#<#{self.class.name}>"
     end
 
     # @return [HTTP::Client]
     def connection
       http = HTTP.persistent(@host)
       http = http.use(instrumentation: { instrumenter: Instrumentation.new(logger: @logger) }) if @logger
-      http = http.timeout(@timeout) if @timeout
+      http.timeout(@timeout) if @timeout
       http
     end
 
