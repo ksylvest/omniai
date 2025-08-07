@@ -10,14 +10,12 @@ module OmniAI
       VERSION = "v1"
 
       # @param api_key [String] optional (default: OmniAI.config.anthropic.api_key)
-      # @param version [String] optional (default: OmniAI.config.anthropic.version)
       # @param beta [Boolean] optional (default: OmniAI.config.anthropic.beta)
       # @param host [String] optional (default: OmniAI.config.anthropic.host)
       # @param timeout [Integer] optional (default: OmniAI.config.timeout)
       # @param logger [Logger] optional (default: OmniAI.config.logger)
       def initialize(
         api_key: OmniAI.config.anthropic.api_key,
-        version: OmniAI.config.anthropic.version,
         beta: OmniAI.config.anthropic.beta,
         host: OmniAI.config.anthropic.host,
         timeout: OmniAI.config.timeout,
@@ -26,7 +24,6 @@ module OmniAI
         super(host:, logger:, timeout:)
 
         @api_key = api_key
-        @version = version
         @beta = beta
       end
 
@@ -34,7 +31,6 @@ module OmniAI
       def connection
         @connection ||= super.headers({
           "x-api-key": @api_key,
-          "anthropic-version": @version,
           "anthropic-beta": @beta,
         }.compact)
       end

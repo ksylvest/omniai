@@ -5,7 +5,7 @@ module OmniAI
     # Configuration for Anthropic.
     class Config
       DEFAULT_HOST = "https://api.anthropic.com"
-      DEFAULT_VERSION = "2023-06-01"
+      DEFAULT_VERSION = "v1"
 
       # @!attribute [rw] api_key
       #   @return [String, nil]
@@ -28,6 +28,10 @@ module OmniAI
         @version = ENV.fetch("ANTHROPIC_VERSION", DEFAULT_VERSION)
         @host = ENV.fetch("ANTHROPIC_HOST", DEFAULT_HOST)
         @beta = ENV.fetch("ANTHROPIC_BETA", nil)
+      end
+
+      def base_url
+        "#{@host}/#{@version}"
       end
     end
   end
