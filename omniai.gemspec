@@ -31,5 +31,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "google-cloud-storage"
   spec.add_dependency "http"
   spec.add_dependency "logger"
+  spec.add_dependency "uri"
   spec.add_dependency "zeitwerk"
 end

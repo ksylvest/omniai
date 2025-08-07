@@ -90,33 +90,6 @@ RSpec.describe OmniAI::OpenAI::Chat do
       it { expect(completion.text).to eql("3") }
     end
 
-    context "with a temperature using a model that does not support" do
-      subject(:completion) { described_class.process!(prompt, client:, model:, temperature:) }
-
-      let(:model) { described_class::Model::O3_MINI }
-      let(:prompt) { "Pick a number between 1 and 5." }
-      let(:temperature) { 2.0 }
-
-      before do
-        stub_request(:post, "https://api.openai.com/v1/chat/completions")
-          .with(body: {
-            messages: [{ role: "user", content: [{ type: "text", text: "Pick a number between 1 and 5." }] }],
-            model:,
-          })
-          .to_return_json(body: {
-            choices: [{
-              index: 0,
-              message: {
-                role: "assistant",
-                content: "3",
-              },
-            }],
-          })
-      end
-
-      it { expect(completion.text).to eql("3") }
-    end
-
     context "when formatting as JSON" do
       subject(:completion) { described_class.process!(prompt, client:, model:, format: :json) }
 

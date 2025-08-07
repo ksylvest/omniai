@@ -14,12 +14,6 @@ module OmniAI
     class Chat < OmniAI::Chat
       DEFAULT_STREAM_OPTIONS = { include_usage: ENV.fetch("OMNIAI_STREAM_USAGE", "on").eql?("on") }.freeze
 
-      module ResponseFormat
-        TEXT_TYPE = "text"
-        JSON_TYPE = "json_object"
-        SCHEMA_TYPE = "json_schema"
-      end
-
       module Model
         GPT_5 = "gpt-5"
         GPT_5_MINI = "gpt-5-mini"
@@ -43,48 +37,9 @@ module OmniAI
 
     protected
 
-      # @return [Float, nil]
-      def temperature
-        return if @temperature.nil?
-
-        if [Model::O1_MINI, Model::O3_MINI, Model::O1].any? { |model| model.eql?(@model) }
-          logger&.warn("unsupported temperature=#{@temperature} for model=#{@model}")
-          return
-        end
-
-        @temperature
-      end
-
-      # @return [Hash]
-      def payload
-        {
-          messages: @prompt.serialize,
-          model: @model,
-          response_format:,
-          stream: stream? || nil,
-          stream_options: (DEFAULT_STREAM_OPTIONS if stream?),
-          temperature:,
-          tools: (@tools.map(&:serialize) if @tools&.any?),
-        }.compact
-      end
-
       # @return [String]
       def path
         "/#{OmniAI::OpenAI::Client::VERSION}/chat/completions"
-      end
-
-      # @raise [ArgumentError]
-      #
-      # @return [Hash, nil]
-      def response_format
-        return if @format.nil?
-
-        case @format
-        when :text then { type: ResponseFormat::TEXT_TYPE }
-        when :json then { type: ResponseFormat::JSON_TYPE }
-        when OmniAI::Schema::Format then { type: ResponseFormat::SCHEMA_TYPE, json_schema: @format.serialize }
-        else raise ArgumentError, "unknown format=#{@format}"
-        end
       end
     end
   end

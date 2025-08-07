@@ -5,6 +5,7 @@ module OmniAI
     # Configuration for OpenAI.
     class Config
       DEFAULT_HOST = "https://api.openai.com"
+      DEFAULT_VERSION = "v1"
 
       # @!attribute [rw] api_key
       #   @return [String]
@@ -25,8 +26,14 @@ module OmniAI
       def initialize
         @api_key = ENV.fetch("OPENAI_API_KEY", nil)
         @host = ENV.fetch("OPENAI_HOST", DEFAULT_HOST)
+        @version = ENV.fetch("OPENAI_VERSION", DEFAULT_VERSION)
         @organization = ENV.fetch("OPENAI_ORGANIZATION", nil)
         @project = ENV.fetch("OPENAI_PROJECT", nil)
+      end
+
+      # @return [String]
+      def base_url
+        "#{@host}/#{@version}"
       end
     end
   end

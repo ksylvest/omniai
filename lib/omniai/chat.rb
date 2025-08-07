@@ -26,6 +26,13 @@ module OmniAI
   #   client.chat(messages, model: "...", temperature: 0.0, format: :text)
   class Chat
     JSON_PROMPT = "Respond with valid JSON. Do not include any non-JSON in the response."
+    DEFAULT_STREAM_OPTIONS = { include_usage: ENV.fetch("OMNIAI_STREAM_USAGE", "on").eql?("on") }.freeze
+
+    module ResponseFormat
+      TEXT_TYPE = "text"
+      JSON_TYPE = "json_object"
+      SCHEMA_TYPE = "json_schema"
+    end
 
     module Role
       ASSISTANT = "assistant"
@@ -132,7 +139,15 @@ module OmniAI
 
     # @return [Hash]
     def payload
-      raise NotImplementedError, "#{self.class.name}#payload undefined"
+      {
+        messages: @prompt.serialize,
+        model: @model,
+        response_format:,
+        stream: stream? || nil,
+        stream_options: (DEFAULT_STREAM_OPTIONS if stream?),
+        temperature: @temperature,
+        tools: (@tools.map(&:serialize) if @tools&.any?),
+      }.compact
     end
 
     # @return [String]
@@ -216,6 +231,20 @@ module OmniAI
       logger&.debug("Chat#execute_tool_call content=#{content.inspect}")
 
       content
+    end
+
+    # @raise [ArgumentError]
+    #
+    # @return [Hash, nil]
+    def response_format
+      return if @format.nil?
+
+      case @format
+      when :text then { type: ResponseFormat::TEXT_TYPE }
+      when :json then { type: ResponseFormat::JSON_TYPE }
+      when OmniAI::Schema::Format then { type: ResponseFormat::SCHEMA_TYPE, json_schema: @format.serialize }
+      else raise ArgumentError, "unknown format=#{@format}"
+      end
     end
   end
 end

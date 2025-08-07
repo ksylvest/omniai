@@ -55,7 +55,7 @@ RSpec.describe OmniAI::Chat do
   end
 
   describe "#payload" do
-    it { expect { chat.send(:payload) }.to raise_error(NotImplementedError) }
+    it { expect(chat.send(:payload)).to be_a(Hash) }
   end
 
   describe ".process!" do
