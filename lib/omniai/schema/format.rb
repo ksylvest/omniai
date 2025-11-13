@@ -62,9 +62,13 @@ module OmniAI
       #
       # @param text [String]
       #
+      # @raise OmniAI::ParseError
+      #
       # @return [Hash]
       def parse(text)
         schema.parse(JSON.parse(text))
+      rescue JSON::ParserError => e
+        raise OmniAI::ParseError, "Unable to parse JSON text=#{text.inspect} message=#{e.message.inspect}."
       end
     end
   end
