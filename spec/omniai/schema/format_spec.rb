@@ -47,6 +47,14 @@ RSpec.describe OmniAI::Schema::Format do
       end
     end
 
+    context "with questionable JSON" do
+      let(:text) { ' ```json { "name": "Ringo Starr" } ``` ' }
+
+      it "parses" do
+        expect(parse).to eql({ name: "Ringo Starr" })
+      end
+    end
+
     context "with invalid JSON" do
       let(:text) { '{ "name": "Ringo Starr", }' }
 
