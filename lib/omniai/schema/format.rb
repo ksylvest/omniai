@@ -70,6 +70,22 @@ module OmniAI
       rescue JSON::ParserError => e
         raise OmniAI::ParseError, "Unable to parse JSON text=#{text.inspect} message=#{e.message.inspect}."
       end
+
+      # A helper used for LLMs that do not support passing in a schema using a dedicated argument.
+      #
+      # @example
+      #   format.prompt #=> "Your response must match the following schema: ..."
+      #
+      # @return [String]
+      def prompt
+        <<~TEXT
+          Your must respond with ONLY valid JSON matching this exact schema:
+
+          #{JSON.generate(schema.serialize)}
+
+          Do not include any preamble, explanation, heredocs, etc. Return only the JSON.
+        TEXT
+      end
     end
   end
 end
