@@ -55,4 +55,12 @@ RSpec.describe OmniAI::Schema::Format do
       end
     end
   end
+
+  describe "#prompt" do
+    subject(:prompt) { format.prompt }
+
+    it "generates a text prompt" do
+      expect(prompt).to be_a(String)
+    end
+  end
 end
