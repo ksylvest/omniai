@@ -15,6 +15,8 @@ module OmniAI
     #   })
     #   format.serialize # => { name: "example", schema: { ... } }
     class Format
+      BLOCK_REGEX = /```(?:json)?\s*(?<text>.+)\s*```/m
+
       # @!attribute [rw] name
       #   @return [String]
       attr_accessor :name
@@ -66,6 +68,9 @@ module OmniAI
       #
       # @return [Hash]
       def parse(text)
+        match = BLOCK_REGEX.match(text)
+        text = match[:text] if match
+
         schema.parse(JSON.parse(text))
       rescue JSON::ParserError => e
         raise OmniAI::ParseError, "Unable to parse JSON text=#{text.inspect} message=#{e.message.inspect}."
