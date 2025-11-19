@@ -39,10 +39,36 @@ RSpec.describe OmniAI::Schema::Format do
   describe "#parse" do
     subject(:parse) { format.parse(text) }
 
-    let(:text) { JSON.generate(name: "Ringo Starr") }
+    context "with valid JSON" do
+      let(:text) { '{ "name": "Ringo Starr" }' }
 
-    it "parses" do
-      expect(parse).to eql({ name: "Ringo Starr" })
+      it "parses" do
+        expect(parse).to eql({ name: "Ringo Starr" })
+      end
+    end
+
+    context "with questionable JSON" do
+      let(:text) { ' ```json { "name": "Ringo Starr" } ``` ' }
+
+      it "parses" do
+        expect(parse).to eql({ name: "Ringo Starr" })
+      end
+    end
+
+    context "with invalid JSON" do
+      let(:text) { '{ "name": "Ringo Starr", }' }
+
+      it "raises" do
+        expect { parse }.to raise_error(OmniAI::ParseError)
+      end
+    end
+  end
+
+  describe "#prompt" do
+    subject(:prompt) { format.prompt }
+
+    it "generates a text prompt" do
+      expect(prompt).to be_a(String)
     end
   end
 end
