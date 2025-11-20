@@ -66,16 +66,14 @@ module OmniAI
     # @param stream [Proc, IO, nil] optional
     # @param tools [Array<OmniAI::Tool>] optional
     # @param format [:json, :text, OmniAI::Schema::Object, nil] optional
-    # @param reasoning [Hash, nil] optional reasoning configuration (provider-specific)
-    # @param verbosity [Hash, nil] optional verbosity configuration (provider-specific)
-    # @param kwargs [Hash] additional provider-specific options
+    # @param kawrgs [Hash] optional - used to provide vendor specific options
     #
     # @yield [prompt] optional
     # @yieldparam prompt [OmniAI::Chat::Prompt]
     #
     # @return [OmniAi::Chat]
-    def initialize(prompt = nil, client:, model:, temperature: nil, stream: nil, tools: nil, format: nil,
-      reasoning: nil, verbosity: nil, **kwargs, &block)
+    def initialize(prompt = nil, client:, model:, temperature: nil, stream: nil, tools: nil, format: nil, **kawrgs,
+      &block)
       raise ArgumentError, "prompt or block is required" if !prompt && !block
 
       @prompt = prompt ? Prompt.parse(prompt) : Prompt.new
@@ -87,9 +85,7 @@ module OmniAI
       @stream = stream
       @tools = tools
       @format = format
-      @reasoning = reasoning
-      @verbosity = verbosity
-      @kwargs = kwargs
+      @kawrgs = kawrgs
     end
 
     # @raise [HTTPError]
@@ -153,7 +149,7 @@ module OmniAI
         format: @format,
         reasoning: @reasoning,
         verbosity: @verbosity,
-        **@kwargs
+        **@options
       )
     end
 
