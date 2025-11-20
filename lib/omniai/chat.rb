@@ -60,20 +60,29 @@ module OmniAI
     end
 
     # @param prompt [OmniAI::Chat::Prompt, String, nil] optional
-    # @param client [OmniAI::Client] the client
+    # @param client [OmniAI::Client] required
     # @param model [String] required
     # @param temperature [Float, nil] optional
     # @param stream [Proc, IO, nil] optional
-    # @param tools [Array<OmniAI::Tool>] optional
+    # @param tools [Array<OmniAI::Tool>, nil] optional
     # @param format [:json, :text, OmniAI::Schema::Object, nil] optional
-    # @param kawrgs [Hash] optional - used to provide vendor specific options
+    # @param options [Hash, nil] optional (used for vendor specific options)
     #
     # @yield [prompt] optional
     # @yieldparam prompt [OmniAI::Chat::Prompt]
     #
     # @return [OmniAi::Chat]
-    def initialize(prompt = nil, client:, model:, temperature: nil, stream: nil, tools: nil, format: nil, **kawrgs,
-      &block)
+    def initialize(
+      prompt = nil,
+      client:,
+      model:,
+      temperature: nil,
+      stream: nil,
+      tools: nil,
+      format: nil,
+      **options,
+      &block
+    )
       raise ArgumentError, "prompt or block is required" if !prompt && !block
 
       @prompt = prompt ? Prompt.parse(prompt) : Prompt.new
@@ -85,7 +94,7 @@ module OmniAI
       @stream = stream
       @tools = tools
       @format = format
-      @kawrgs = kawrgs
+      @options = options
     end
 
     # @raise [HTTPError]
