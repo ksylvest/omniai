@@ -40,8 +40,7 @@ module OmniAI
 
       # Usage:
       #
-      #   message.serialize # => { role: :user, content: 'Hello!' }
-      #   message.serialize # => { role: :user, content: [{ type: 'text', text: 'Hello!' }] }
+      #   message.serialize # => { role: :tool, content: 'Hello!', tool_call_id: '...' }
       #
       # @param context [Context] optional
       #
