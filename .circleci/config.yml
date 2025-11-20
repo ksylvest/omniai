@@ -9,7 +9,7 @@ executors:
     parameters:
       ruby-version:
         description: "ruby version tag"
-        default: "3.4.6"
+        default: "3.4.7"
         type: string
     docker:
       - image: cimg/ruby:<<parameters.ruby-version>>
@@ -63,7 +63,7 @@ workflows:
           matrix:
             parameters:
               ruby-version:
-                - "3.4.6"
+                - "3.4.7"
                 - "3.3.7"
                 - "3.2.6"
       - rubocop
