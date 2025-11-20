@@ -186,8 +186,8 @@ module OmniAI
     # @raise [OmniAI::Error]
     #
     # @param prompt [OmniAI::Chat::Prompt, String, nil] optional
-    # @param model [String] optional
-    # @param format [Symbol] optional :text or :json
+    # @param model [String, nil] optional
+    # @param format [Symbol, OmniAI::Schema::Format, nil] optional (e.g. `:text`, `:json`, `OmniAI::Schema.format(...)`)
     # @param temperature [Float, nil] optional
     # @param stream [Proc, nil] optional
     # @param tools [Array<OmniAI::Tool>] optional
