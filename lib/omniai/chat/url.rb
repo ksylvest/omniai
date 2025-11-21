@@ -26,7 +26,8 @@ module OmniAI
         "#<#{self.class} uri=#{@uri.inspect}>"
       end
 
-      # @param data [Hash]
+      # @param context [Context] optional
+      # @param data [Hash] required
       def self.deserialize(data, context: nil)
         deserialize = context&.deserializer(:url)
         return deserialize.call(data, context:) if deserialize
@@ -38,15 +39,16 @@ module OmniAI
       end
 
       # @param context [Context] optional
+      # @param direction [String] optional - either "input" or "output"
       #
       # @return [Hash]
-      def serialize(context: nil)
+      def serialize(context: nil, direction: nil)
         if text?
           content = fetch!
           Text.new("<file>#{filename}: #{content}</file>").serialize(context:)
         else
           serializer = context&.serializer(:url)
-          return serializer.call(self, context:) if serializer
+          return serializer.call(self, context:, direction:) if serializer
 
           {
             type: "#{kind}_url",

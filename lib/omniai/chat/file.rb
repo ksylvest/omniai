@@ -29,14 +29,16 @@ module OmniAI
       end
 
       # @param context [Context]
+      # @param direction [String] optional - either "input" or "output"
+      #
       # @return [Hash]
-      def serialize(context: nil)
+      def serialize(context: nil, direction: nil)
         if text?
           content = fetch!
           Text.new("<file>#{filename}: #{content}</file>").serialize(context:)
         else
           serializer = context&.serializer(:file)
-          return serializer.call(self, context:) if serializer
+          return serializer.call(self, context:, direction:) if serializer
 
           { type: "#{kind}_url", "#{kind}_url": { url: data_uri } }
         end

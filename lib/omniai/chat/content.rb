@@ -13,9 +13,10 @@ module OmniAI
       end
 
       # @param context [Context] optional
+      # @param direction [String] optional either "input" or "output"
       #
       # @return [String]
-      def serialize(context: nil)
+      def serialize(context: nil, direction: nil)
         raise NotImplementedError, "#{self.class}#serialize undefined"
       end
 

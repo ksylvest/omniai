@@ -157,6 +157,14 @@ module OmniAI
 
         [object]
       end
+
+      # @return [String] either "input" or "output"
+      def direction
+        case role
+        when Role::ASSISTANT then "output"
+        else "input"
+        end
+      end
     end
   end
 end
