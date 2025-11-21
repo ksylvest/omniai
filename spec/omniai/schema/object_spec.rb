@@ -40,6 +40,7 @@ RSpec.describe OmniAI::Schema::Object do
           employed: { type: "boolean", description: "Is the person employed?" },
         },
         required: %i[name],
+        additionalProperties: false,
       })
     end
   end

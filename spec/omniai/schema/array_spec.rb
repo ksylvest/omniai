@@ -22,6 +22,7 @@ RSpec.describe OmniAI::Schema::Array do
             employed: { type: "boolean", description: "Is the person employed?" },
           },
           required: %i[name],
+          additionalProperties: false,
         },
         minItems: 2,
         maxItems: 3,

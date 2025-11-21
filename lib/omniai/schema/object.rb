@@ -82,6 +82,7 @@ module OmniAI
           description: @description,
           properties: @properties.transform_values(&:serialize),
           required: @required,
+          additionalProperties: false,
         }.compact
       end
 
