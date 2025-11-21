@@ -4,14 +4,17 @@ module OmniAI
   class Chat
     # An `OmniAI::Chat::Response` encapsulates the result of generating a chat completion.
     class Response
-      # @return [Hash]
+      # @!attribute [data]
+      #   @return [Hash]
       attr_accessor :data
 
-      # @return [Array<Choice>]
-      attr_accessor :choices
-
-      # @return [Usage, nil]
+      # @!attribute [usage]
+      #   @return [Usage, nil]
       attr_accessor :usage
+
+      # @!attribute [choices]
+      #   @return [Array<Choice>]
+      attr_accessor :choices
 
       # @param data [Hash]
       # @param choices [Array<Choice>]
@@ -24,7 +27,7 @@ module OmniAI
 
       # @return [String]
       def inspect
-        "#<#{self.class.name} choices=#{choices.inspect} usage=#{usage.inspect}>"
+        "#<#{self.class.name} choices=#{@choices.inspect} usage=#{@usage.inspect}>"
       end
 
       # @param data [Hash]
@@ -42,64 +45,38 @@ module OmniAI
       end
 
       # @param context [OmniAI::Context] optional
+      #
       # @return [Hash]
       def serialize(context:)
         serialize = context&.serializer(:response)
         return serialize.call(self, context:) if serialize
 
         {
-          choices: choices.map { |choice| choice.serialize(context:) },
-          usage: usage&.serialize(context:),
+          choices: @choices.map { |choice| choice.serialize(context:) },
+          usage: @usage&.serialize(context:),
         }
-      end
-
-      # @param index [Integer]
-      #
-      # @return [Choice, nil]
-      def choice(index: 0)
-        @choices[index]
-      end
-
-      # @param index [Integer]
-      #
-      # @return [Boolean]
-      def choice?(index: 0)
-        !choice(index:).nil?
-      end
-
-      # @param index [Integer]
-      #
-      # @return [Message, nil]
-      def message(index: 0)
-        choice(index:)&.message
-      end
-
-      # @param index [Integer]
-      #
-      # @return [Boolean]
-      def message?(index: 0)
-        !message(index:).nil?
       end
 
       # @return [Array<Message>]
       def messages
-        @choices.map(&:message)
+        @choices.map(&:message).compact
       end
 
-      # @param index [Integer]
-      #
-      # @return [String, nil]
-      def text(index: 0)
-        message(index:)&.text
-      end
-
-      # @param index [Integer]
-      #
       # @return [Boolean]
-      def text?(index: 0)
-        message = message(index:)
+      def messages?
+        messages.any?
+      end
 
-        !message.nil? && message.text?
+      # @return [String, nil]
+      def text
+        return unless text?
+
+        messages.filter(&:text?).map(&:text).join("\n\n")
+      end
+
+      # @return [Boolean]
+      def text?
+        messages.any?(&:text?)
       end
 
       # @return [ToolCallList, nil]

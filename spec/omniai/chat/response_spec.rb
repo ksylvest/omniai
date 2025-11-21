@@ -80,27 +80,9 @@ RSpec.describe OmniAI::Chat::Response do
     end
   end
 
-  describe "#choices" do
-    it "returns the choices" do
-      expect(response.choices).to all(be_a(OmniAI::Chat::Choice))
-    end
-  end
-
   describe "#messages" do
     it "returns the messages" do
       expect(response.messages).to all(be_a(OmniAI::Chat::Message))
-    end
-  end
-
-  describe "#choice" do
-    it "returns the choice" do
-      expect(response.choice).to be_a(OmniAI::Chat::Choice)
-    end
-  end
-
-  describe "#message" do
-    it "returns the message" do
-      expect(response.message).to be_a(OmniAI::Chat::Message)
     end
   end
 

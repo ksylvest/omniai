@@ -71,7 +71,7 @@ module OmniAI
       # @example
       #   array.serialize # => { type: "array", items: { type: "string" } }
       #
-      # @param options [Hash] optional
+      # @param additional_properties [Boolean, nil] optional
       #
       # @return [Hash]
       def serialize(additional_properties: false)

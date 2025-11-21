@@ -51,7 +51,7 @@ module OmniAI
       # @example
       #   format.serialize # => { name: "...", schema: { ... } }
       #
-      # @param options [Hash] optional (e.g. `{ additional_properties: nil }``)
+      # @param additional_properties [Boolean, nil] optional
       #
       # @return [Hash]
       def serialize(additional_properties: false)
