@@ -48,12 +48,16 @@ module OmniAI
         @entries.each(&)
       end
 
+      # @param index [Integer]
+      #
       # @return [ToolCall]
       def [](index)
         @entries[index]
       end
 
-      # @param [other] [ToolCallList]
+      # @param other [ToolCallList]
+      #
+      # @return [ToolCallList]
       def +(other)
         self.class.new(entries: entries + other.entries)
       end
