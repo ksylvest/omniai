@@ -102,18 +102,17 @@ module OmniAI
         !message.nil? && message.text?
       end
 
-      # @param index [Integer]
-      #
-      # @return [ToolCallList]
-      def tool_call_list(index: 0)
-        message(index:)&.tool_call_list
+      # @return [ToolCallList, nil]
+      def tool_call_list
+        tool_call_lists = messages.map(&:tool_call_list).compact
+        return if tool_call_lists.empty?
+
+        tool_call_lists.reduce(&:+)
       end
 
       # @return [Boolean]
-      def tool_call_list?(index: 0)
-        tool_call_list = tool_call_list(index:)
-
-        !tool_call_list.nil? && tool_call_list.any?
+      def tool_call_list?
+        !tool_call_list.nil?
       end
     end
   end
