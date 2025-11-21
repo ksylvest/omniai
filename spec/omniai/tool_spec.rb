@@ -43,6 +43,7 @@ RSpec.describe OmniAI::Tool do
                 },
               },
               required: %i[values operation],
+              additionalProperties: false,
             },
           },
         })
@@ -94,6 +95,7 @@ RSpec.describe OmniAI::Tool do
                 n: { type: "integer", description: "The nth Fibonacci number to calculate" },
               },
               required: %i[n],
+              additionalProperties: false,
             },
           },
         })

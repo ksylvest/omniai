@@ -78,6 +78,7 @@ RSpec.describe OmniAI::MCP::Server do
                   type: 'object',
                   properties: { location: { type: 'string' } },
                   required: ['location'],
+                  additionalProperties: false,
                 },
               },
             ],
