@@ -66,7 +66,7 @@ module OmniAI
     # @param stream [Proc, IO, nil] optional
     # @param tools [Array<OmniAI::Tool>, nil] optional
     # @param format [:json, :text, OmniAI::Schema::Object, nil] optional
-    # @param options [Hash, nil] optional (used for vendor specific options)
+    # @param options [Hash] optional (used for vendor specific options)
     #
     # @yield [prompt] optional
     # @yieldparam prompt [OmniAI::Chat::Prompt]
@@ -94,7 +94,7 @@ module OmniAI
       @stream = stream
       @tools = tools
       @format = format
-      @options = options
+      @options = options || {}
     end
 
     # @raise [HTTPError]
@@ -156,9 +156,7 @@ module OmniAI
         stream: @stream,
         tools: @tools,
         format: @format,
-        reasoning: @reasoning,
-        verbosity: @verbosity,
-        **@options
+        options: @options
       )
     end
 
