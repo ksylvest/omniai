@@ -91,7 +91,7 @@ module OmniAI
       #   property.serialize #=> { type: "string" }
       #
       # @return [Hash]
-      def serialize
+      def serialize(*)
         {
           type: @type,
           description: @description,

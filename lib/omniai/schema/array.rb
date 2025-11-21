@@ -71,12 +71,14 @@ module OmniAI
       # @example
       #   array.serialize # => { type: "array", items: { type: "string" } }
       #
+      # @param options [Hash] optional
+      #
       # @return [Hash]
-      def serialize
+      def serialize(additional_properties: false)
         {
           type: TYPE,
           description: @description,
-          items: @items.serialize,
+          items: @items.serialize(additional_properties:),
           maxItems: @max_items,
           minItems: @min_items,
         }.compact

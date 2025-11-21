@@ -74,15 +74,17 @@ module OmniAI
         )
       end
 
+      # @param options [Hash] optional
+      #
       # @return [Hash]
-      def serialize
+      def serialize(additional_properties: false)
         {
           type: TYPE,
           title: @title,
           description: @description,
-          properties: @properties.transform_values(&:serialize),
+          properties: @properties.transform_values { |value| value.serialize(additional_properties:) },
           required: @required,
-          additionalProperties: false,
+          additionalProperties: additional_properties,
         }.compact
       end
 
