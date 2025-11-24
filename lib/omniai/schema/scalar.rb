@@ -22,7 +22,7 @@ module OmniAI
     #  scalar.serialize #=> { type: "boolean" }
     #  scalar.parse(true) #=> true
     #  scalar.parse(false) #=> false
-    class Scalar
+    class Scalar < Base
       module Type
         BOOLEAN = "boolean"
         INTEGER = "integer"
@@ -34,13 +34,13 @@ module OmniAI
       #   @return [String]
       attr_accessor :type
 
-      # @!attribute [rw] description
-      #   @return [String, nil]
-      attr_accessor :description
-
       # @!attribute [rw] enum
       #   @return [Array<String>, nil]
       attr_accessor :enum
+
+      # @!attribute [rw] nullable
+      #   @return [Boolean, nil]
+      attr_accessor :nullable
 
       # @example
       #   property = OmniAI::Schema::Scalar.deserialize({
@@ -68,32 +68,39 @@ module OmniAI
       #
       # @return [OmniAI::Schema::Scalar]
       def self.deserialize(data)
-        type = data["type"] || data[:type] || Type::STRING
+        types = Array(data["type"] || data[:type] || Type::STRING)
+        type = types.find { |type| !type.eql?("null") }
+        title = data["title"] || data[:title]
         description = data["description"] || data[:description]
         enum = data["enum"] || data[:enum]
 
-        new(type:, description:, enum:)
+        new(type:, title:, description:, enum:, nullable: types.include?("null"))
       end
 
       # @param type [String] required - the type of the property
+      # @param title [String] optional - a title of the property
       # @param description [String] optional - a description of the property
       # @param enum [Array] optional - the possible values of the property
+      # @param nullable [Boolean] optional - if the property may be null
       #
       # @return [OmniAI::Schema::Scalar]
-      def initialize(type:, description: nil, enum: nil)
-        super()
+      def initialize(type:, title: nil, description: nil, enum: nil, nullable: nil)
+        super(title:, description:, nullable:)
         @type = type
-        @description = description
         @enum = enum
       end
 
       # @example
       #   property.serialize #=> { type: "string" }
       #
+      # @example
+      #   property.serialize #=> { type: ["strig", "null"] }
+      #
       # @return [Hash]
       def serialize(*)
         {
-          type: @type,
+          type: nullify(@type),
+          title: @title,
           description: @description,
           enum: @enum,
         }.compact
@@ -106,6 +113,8 @@ module OmniAI
       #
       # @return [String, Integer, Float, Boolean, Object]
       def parse(value)
+        return if value.nil? && nullable?
+
         case @type
         when Type::INTEGER then Integer(value)
         when Type::STRING then String(value)

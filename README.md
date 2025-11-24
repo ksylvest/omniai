@@ -511,9 +511,9 @@ The chat API can be provided with a set of tools to be invoked:
 class WeatherTool
   description "Lookup the weather at a location in either Celsius or Fahrenheit."
 
-  parameter :location, :string, description: "The location to find the weather."
-  parameter :unit, :string, enum: %w[Celsius Fahrenheit], description: "The unit of measurement."
-  required %i[location]
+  parameter :location, :string, description: "The location to find the weather.", nullable: false
+  parameter :unit, :string, enum: %w[Celsius Fahrenheit], description: "The unit of measurement.", nullable: true
+  required %i[location unit]
 
   # @param location [String]
   # @param unit [String] "Celsius" or "Fahrenheit"

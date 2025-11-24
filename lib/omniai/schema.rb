@@ -47,7 +47,9 @@ module OmniAI
     #
     # @param data [OmniAI::Schema::Object, OmniAI::Schema::Array, OmniAI::Schema::Scalar]
     def self.deserialize(data)
-      case data["type"] || data[:type]
+      type = Array(data["type"] || data[:type]).find { |type| !type.eql?("null") }
+
+      case type
       when OmniAI::Schema::Array::TYPE then OmniAI::Schema::Array.deserialize(data)
       when OmniAI::Schema::Object::TYPE then OmniAI::Schema::Object.deserialize(data)
       else OmniAI::Schema::Scalar.deserialize(data)
@@ -80,10 +82,11 @@ module OmniAI
     # @param min_items [Integer] optional - the minimum number of items
     # @param max_items [Integer] optional - the maximum number of items
     # @param description [String] optional - a description of the array
+    # @param nullable [Boolean] optional - if the array may be null
     #
     # @return [OmniAI::Schema::Array]
-    def self.array(items:, min_items: nil, max_items: nil, description: nil)
-      OmniAI::Schema::Array.new(items:, description:, min_items:, max_items:)
+    def self.array(items:, min_items: nil, max_items: nil, description: nil, nullable: nil)
+      OmniAI::Schema::Array.new(items:, description:, min_items:, max_items:, nullable:)
     end
 
     # @example
@@ -101,54 +104,63 @@ module OmniAI
     # @param properties [Hash<String, OmniAI::Schema::Scalar>] required - the properties of the object
     # @param required [Array<Symbol>] optional - the required properties
     # @param description [String] optional - a description of the object
+    # @param nullable [Boolean] optional - if the object may be null
     #
     # @return [OmniAI::Schema::Array]
-    def self.object(title: nil, properties: {}, required: [], description: nil)
-      OmniAI::Schema::Object.new(title:, properties:, required:, description:)
+    def self.object(title: nil, properties: {}, required: [], description: nil, nullable: nil)
+      OmniAI::Schema::Object.new(title:, properties:, required:, description:, nullable:)
     end
 
     # @example
     #   OmniAI::Schema.boolean(description: "Is the person employed?") #=> OmniAI::Schema::Scalar
     #
+    # @param title [String] optional - the title of the property
     # @param description [String] optional - a description of the property
     # @param enum [Array<Boolean>] optional - the possible values of the property
+    # @param nullable [Boolean] optional - if the property may be null
     #
     # @return [OmniAI::Schema::Scalar]
-    def self.boolean(description: nil, enum: nil)
-      OmniAI::Schema::Scalar.new(type: OmniAI::Schema::Scalar::Type::BOOLEAN, description:, enum:)
+    def self.boolean(title: nil, description: nil, enum: nil, nullable: nil)
+      OmniAI::Schema::Scalar.new(type: OmniAI::Schema::Scalar::Type::BOOLEAN, title:, description:, enum:, nullable:)
     end
 
     # @example
     #   OmniAI::Schema.integer(description: "The age of the person") #=> OmniAI::Schema::Scalar
     #
+    # @param title [String] optional - the title of the property
     # @param description [String] optional - a description of the property
-    # @param enum [Array<Integer>] optinoal - the possible values of the property
+    # @param enum [Array<Integer>] optional - the possible values of the property
+    # @param nullable [Boolean] optional - if the property may be null
     #
     # @return [OmniAI::Schema::Scalar]
-    def self.integer(description: nil, enum: nil)
-      OmniAI::Schema::Scalar.new(type: OmniAI::Schema::Scalar::Type::INTEGER, description:, enum:)
+    def self.integer(title: nil, description: nil, enum: nil, nullable: nil)
+      OmniAI::Schema::Scalar.new(type: OmniAI::Schema::Scalar::Type::INTEGER, title:, description:, enum:, nullable:)
     end
 
     # @example
     #   OmniAI::Schema.string(description: "The name of the person.") #=> OmniAI::Schema::Scalar
     #
+    # @param title [String] optional - the title of the property
     # @param description [String] optional - a description of the property
     # @param enum [Array<String>] optional - the possible values of the property
+    # @param nullable [Boolean] optional - if the property may be null
     #
     # @return [OmniAI::Schema::Scalar]
-    def self.string(description: nil, enum: nil)
-      OmniAI::Schema::Scalar.new(type: OmniAI::Schema::Scalar::Type::STRING, description:, enum:)
+    def self.string(title: nil, description: nil, enum: nil, nullable: nil)
+      OmniAI::Schema::Scalar.new(type: OmniAI::Schema::Scalar::Type::STRING, title:, description:, enum:, nullable:)
     end
 
     # @example
     #  OmniAI::Schema.number(description: "The current temperature.") #=> OmniAI::Schema::Scalar
     #
+    # @param title [String] optional - the title of the property
     # @param description [String] optional - a description of the property
     # @param enum [Array<Number>] optional - the possible values of the property
+    # @param nullable [Boolean] optional - if the property may be null
     #
     # @return [OmniAI::Schema::Scalar]
-    def self.number(description: nil, enum: nil)
-      OmniAI::Schema::Scalar.new(type: OmniAI::Schema::Scalar::Type::NUMBER, description:, enum:)
+    def self.number(title: nil, description: nil, enum: nil, nullable: nil)
+      OmniAI::Schema::Scalar.new(type: OmniAI::Schema::Scalar::Type::NUMBER, title:, description:, enum:, nullable:)
     end
 
     # @example
@@ -156,6 +168,7 @@ module OmniAI
     #
     # @param name [String] required
     # @param schema [OmniAI::Schema::Object] required
+    # @param nullable [Boolean] optional
     #
     # @return [OmniAI::Schema::Format]
     def self.format(name:, schema:)
