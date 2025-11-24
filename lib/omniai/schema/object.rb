@@ -45,11 +45,6 @@ module OmniAI
         )
       end
 
-      # @param name [Symbol]
-      def property(name, ...)
-        @properties[name] = OmniAI::Schema.build(...)
-      end
-
       # @param data [Hash]
       #
       # @return [Hash]
