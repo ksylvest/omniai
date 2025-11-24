@@ -38,10 +38,6 @@ module OmniAI
       #   @return [Array<String>, nil]
       attr_accessor :enum
 
-      # @!attribute [rw] nullable
-      #   @return [Boolean, nil]
-      attr_accessor :nullable
-
       # @example
       #   property = OmniAI::Schema::Scalar.deserialize({
       #     type: "string",
