@@ -15,16 +15,17 @@ format = OmniAI::Schema.format(name: "Contact", schema: OmniAI::Schema.object(
         title: "Address",
         description: "An address with street, city, state, and zip code.",
         properties: {
+          aptsuite: OmniAI::Schema.string(nullable: true),
           street: OmniAI::Schema.string,
           city: OmniAI::Schema.string,
           state: OmniAI::Schema.string,
           zip: OmniAI::Schema.string,
         },
-        required: %i[street city state zip]
+        required: %i[aptsuite street city state zip]
       )
     ),
   },
-  required: %i[name]
+  required: %i[name relationship addresses]
 ))
 
 response = client.chat(format:) do |prompt|
