@@ -81,7 +81,7 @@ module OmniAI
 
       # @return [ToolCallList, nil]
       def tool_call_list
-        tool_call_lists = messages.map(&:tool_call_list).compact
+        tool_call_lists = messages.filter(&:tool_call_list?).map(&:tool_call_list)
         return if tool_call_lists.empty?
 
         tool_call_lists.reduce(&:+)

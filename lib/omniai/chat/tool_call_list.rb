@@ -42,6 +42,11 @@ module OmniAI
         "#<#{self.class.name} entries=#{@entries.inspect}>"
       end
 
+      # @return [Boolean]
+      def any?
+        @entries.any?
+      end
+
       # @yield toolcall
       # @yieldparam toolcall [ToolCall]
       def each(&)
