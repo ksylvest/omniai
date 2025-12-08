@@ -165,6 +165,11 @@ module OmniAI
         else "input"
         end
       end
+
+      # @return [Boolean]
+      def tool_call_list?
+        @tool_call_list&.any?
+      end
     end
   end
 end

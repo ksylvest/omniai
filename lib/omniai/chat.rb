@@ -112,7 +112,7 @@ module OmniAI
         raise SSLError, e.message, cause: e
       end
 
-      if @tools && completion.tool_call_list?
+      if tools? && completion.tool_call_list?
         spawn!(
           @prompt.dup.tap do |prompt|
             prompt.messages += completion.messages
@@ -125,6 +125,11 @@ module OmniAI
     end
 
   protected
+
+    # @return [Boolean]
+    def tools?
+      @tools&.any?
+    end
 
     # @return [Boolean]
     def stream?
