@@ -12,6 +12,18 @@ RSpec.describe OmniAI::Chat::ToolCallResult do
     it { expect(inspect).to eql('#<OmniAI::Chat::ToolCallResult content="Hello!" tool_call_id="fake_id">') }
   end
 
+  describe "#options" do
+    context "without extra kwargs" do
+      it { expect(tool_call_message.options).to eq({}) }
+    end
+
+    context "with extra kwargs" do
+      subject(:tool_call_message) { described_class.new(content:, tool_call_id:, thought_signature: "abc123") }
+
+      it { expect(tool_call_message.options).to eq({ thought_signature: "abc123" }) }
+    end
+  end
+
   describe ".deserialize" do
     subject(:deserialize) { described_class.deserialize(data, context:) }
 

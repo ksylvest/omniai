@@ -12,11 +12,17 @@ module OmniAI
       #   @return [ToolCall]
       attr_accessor :tool_call_id
 
+      # @!attribute [r] options
+      #   @return [Hash] provider-specific options
+      attr_reader :options
+
       # @param content [Object] e.g. a string, hash, array, boolean, numeric, etc.
       # @param tool_call_id [String]
-      def initialize(content:, tool_call_id:)
+      # @param options [Hash] optional - used for provider-specific options
+      def initialize(content:, tool_call_id:, **options)
         @content = content
         @tool_call_id = tool_call_id
+        @options = options
       end
 
       # @return [String]
