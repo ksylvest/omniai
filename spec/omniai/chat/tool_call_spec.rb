@@ -14,6 +14,18 @@ RSpec.describe OmniAI::Chat::ToolCall do
     it { expect(tool_call.function).to eq(function) }
   end
 
+  describe "#options" do
+    context "without extra kwargs" do
+      it { expect(tool_call.options).to eq({}) }
+    end
+
+    context "with extra kwargs" do
+      subject(:tool_call) { described_class.new(id:, function:, thought_signature: "abc123") }
+
+      it { expect(tool_call.options).to eq({ thought_signature: "abc123" }) }
+    end
+  end
+
   describe "#inspect" do
     subject(:inspect) { tool_call.inspect }
 

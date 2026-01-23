@@ -12,11 +12,17 @@ module OmniAI
       #   @return [Function]
       attr_accessor :function
 
+      # @!attribute [r] options
+      #   @return [Hash] provider-specific options
+      attr_reader :options
+
       # @param id [String]
       # @param function [Function]
-      def initialize(id:, function:)
+      # @param options [Hash] optional - used for provider-specific options
+      def initialize(id:, function:, **options)
         @id = id
         @function = function
+        @options = options
       end
 
       # @return [String]
