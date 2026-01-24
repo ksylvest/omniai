@@ -91,4 +91,104 @@ RSpec.describe OmniAI::Chat::Response do
       expect(response.text).to eq("Hello!")
     end
   end
+
+  describe "#parent" do
+    it "defaults to nil" do
+      expect(response.parent).to be_nil
+    end
+
+    it "can be set" do
+      parent = build(:chat_response)
+      response.parent = parent
+      expect(response.parent).to eq(parent)
+    end
+  end
+
+  describe "#response_chain" do
+    context "without parent" do
+      it "returns array containing only self" do
+        expect(response.response_chain).to eq([response])
+      end
+    end
+
+    context "with parent chain" do
+      let(:grandparent) { build(:chat_response) }
+      let(:parent) { build(:chat_response) }
+
+      before do
+        parent.parent = grandparent
+        response.parent = parent
+      end
+
+      it "returns chain from oldest to newest" do
+        expect(response.response_chain).to eq([grandparent, parent, response])
+      end
+    end
+  end
+
+  describe "#total_usage" do
+    context "without parent" do
+      it "returns usage equivalent to self" do
+        total = response.total_usage
+        expect(total.input_tokens).to eq(usage.input_tokens)
+        expect(total.output_tokens).to eq(usage.output_tokens)
+      end
+    end
+
+    context "with parent chain" do
+      let(:grandparent_usage) do
+        OmniAI::Chat::Usage.new(input_tokens: 100, output_tokens: 50, total_tokens: 150)
+      end
+      let(:parent_usage) do
+        OmniAI::Chat::Usage.new(input_tokens: 200, output_tokens: 100, total_tokens: 300)
+      end
+      let(:grandparent) { build(:chat_response, usage: grandparent_usage) }
+      let(:parent) { build(:chat_response, usage: parent_usage) }
+
+      before do
+        parent.parent = grandparent
+        response.parent = parent
+      end
+
+      it "aggregates input_tokens" do
+        # grandparent(100) + parent(200) + self(2) = 302
+        expect(response.total_usage.input_tokens).to eq(302)
+      end
+
+      it "aggregates output_tokens" do
+        # grandparent(50) + parent(100) + self(3) = 153
+        expect(response.total_usage.output_tokens).to eq(153)
+      end
+
+      it "calculates total_tokens from input + output" do
+        expect(response.total_usage.total_tokens).to eq(302 + 153)
+      end
+    end
+
+    context "when all usages are nil" do
+      let(:usage) { nil }
+
+      it "returns nil" do
+        expect(response.total_usage).to be_nil
+      end
+    end
+
+    context "when some usages are nil" do
+      let(:parent_usage) do
+        OmniAI::Chat::Usage.new(input_tokens: 200, output_tokens: 100, total_tokens: 300)
+      end
+      let(:parent) { build(:chat_response, usage: parent_usage) }
+      let(:usage) { nil }
+
+      before do
+        response.parent = parent
+      end
+
+      it "aggregates only non-nil usages" do
+        total = response.total_usage
+        expect(total.input_tokens).to eq(200)
+        expect(total.output_tokens).to eq(100)
+      end
+    end
+  end
 end

@@ -16,6 +16,10 @@ module OmniAI
       #   @return [Array<Choice>]
       attr_accessor :choices
 
+      # @!attribute [parent]
+      #   @return [Response, nil] the parent response in a tool call chain
+      attr_accessor :parent
+
       # @param data [Hash]
       # @param choices [Array<Choice>]
       # @param usage [Usage, nil]
@@ -90,6 +94,40 @@ module OmniAI
       # @return [Boolean]
       def tool_call_list?
         !tool_call_list.nil?
+      end
+
+      # Returns the chain of responses from oldest (first) to newest (self).
+      #
+      # @return [Array<Response>]
+      def response_chain
+        chain = []
+        current = self
+
+        while current
+          chain.unshift(current)
+          current = current.parent
+        end
+
+        chain
+      end
+
+      # Returns aggregated usage across all responses in the chain.
+      # Walks the parent chain and sums all token counts.
+      #
+      # @return [Usage, nil]
+      def total_usage
+        chain = response_chain
+        usages = chain.map(&:usage).compact
+        return nil if usages.empty?
+
+        input_tokens = usages.sum { |u| u.input_tokens || 0 }
+        output_tokens = usages.sum { |u| u.output_tokens || 0 }
+
+        Usage.new(
+          input_tokens:,
+          output_tokens:,
+          total_tokens: input_tokens + output_tokens
+        )
       end
     end
   end
