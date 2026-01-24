@@ -113,12 +113,16 @@ module OmniAI
       end
 
       if tools? && completion.tool_call_list?
-        spawn!(
+        next_completion = spawn!(
           @prompt.dup.tap do |prompt|
             prompt.messages += completion.messages
             prompt.messages += build_tool_call_messages(completion.tool_call_list)
           end
         ).process!
+
+        next_completion.parent = completion
+
+        next_completion
       else
         completion
       end
