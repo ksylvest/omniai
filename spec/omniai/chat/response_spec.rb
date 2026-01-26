@@ -104,6 +104,22 @@ RSpec.describe OmniAI::Chat::Response do
     end
   end
 
+  describe "#link_to" do
+    let(:grandparent) { build(:chat_response) }
+    let(:parent) { build(:chat_response) }
+
+    it "links a single response to a parent" do
+      response.link_to(parent)
+      expect(response.parent).to eq(parent)
+    end
+
+    it "links a chain to a parent via the oldest response" do
+      response.parent = parent
+      response.link_to(grandparent)
+      expect(parent.parent).to eq(grandparent)
+    end
+  end
+
   describe "#response_chain" do
     context "without parent" do
       it "returns array containing only self" do
