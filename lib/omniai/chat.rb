@@ -120,7 +120,7 @@ module OmniAI
           end
         ).process!
 
-        next_completion.parent = completion
+        next_completion.link_to(completion)
 
         next_completion
       else

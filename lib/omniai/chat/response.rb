@@ -96,6 +96,16 @@ module OmniAI
         !tool_call_list.nil?
       end
 
+      # Links this response chain to a parent response.
+      # Walks up to find the oldest response (no parent) and sets its parent.
+      #
+      # @param parent [Response]
+      def link_to(parent)
+        current = self
+        current = current.parent while current.parent
+        current.parent = parent
+      end
+
       # Returns the chain of responses from oldest (first) to newest (self).
       #
       # @return [Array<Response>]
