@@ -149,6 +149,19 @@ module OmniAI
         parts.map(&:text).join("\n") unless parts.empty?
       end
 
+      # @return [Boolean]
+      def thinking?
+        !thinking.nil?
+      end
+
+      # @return [String, nil]
+      def thinking
+        return if @content.nil?
+
+        parts = arrayify(@content).filter { |content| content.is_a?(Thinking) }
+        parts.map(&:thinking).join("\n") unless parts.empty?
+      end
+
       # @param object [Object]
       # @return [Array]
       def arrayify(object)

@@ -37,6 +37,7 @@ module OmniAI
 
         case data["type"]
         when "text" then Text.deserialize(data, context:)
+        when "thinking" then Thinking.deserialize(data, context:)
         when /(.*)_url/ then URL.deserialize(data, context:)
         else raise ArgumentError, "unknown type=#{data['type'].inspect}"
         end

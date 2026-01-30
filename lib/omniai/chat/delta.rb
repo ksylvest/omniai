@@ -6,17 +6,28 @@ module OmniAI
     # back to the caller.
     class Delta
       # @!attribute [rw] text
-      #
+      #   @return [String, nil]
       attr_accessor :text
 
-      # @param text [String]
-      def initialize(text:)
+      # @!attribute [rw] thinking
+      #   @return [String, nil]
+      attr_accessor :thinking
+
+      # @param text [String, nil]
+      # @param thinking [String, nil]
+      def initialize(text: nil, thinking: nil)
         @text = text
+        @thinking = thinking
       end
 
       # @return [Boolean]
       def text?
-        !text.empty?
+        !@text.nil? && !@text.empty?
+      end
+
+      # @return [Boolean]
+      def thinking?
+        !@thinking.nil? && !@thinking.empty?
       end
     end
   end
