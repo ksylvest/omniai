@@ -532,6 +532,39 @@ end
 client.chat('What is the weather in "London" in Celsius and "Paris" in Fahrenheit?', tools: [WeatherTool.new])
 ```
 
+#### Extended Thinking / Reasoning
+
+Some models support extended thinking or reasoning capabilities. OmniAI provides a unified `thinking:` option that works across all supported providers:
+
+```ruby
+# Enable thinking (provider uses sensible defaults)
+response = client.chat("What is 25 * 25?", thinking: true)
+
+# Access thinking content
+response.choices.first.message.contents.each do |content|
+  case content
+  when OmniAI::Chat::Thinking
+    puts "Thinking: #{content.thinking}"
+  when OmniAI::Chat::Text
+    puts "Response: #{content.text}"
+  end
+end
+```
+
+With streaming:
+
+```ruby
+client.chat("Solve this step by step: What is 123 * 456?", thinking: true, stream: $stdout)
+```
+
+**Provider Support:**
+
+| Provider | Option | Notes |
+|----------|--------|-------|
+| Anthropic | `thinking: true` or `thinking: { budget_tokens: N }` | Requires Claude 3.5+ models |
+| Google | `thinking: true` | Requires Gemini 2.0+ with thinking enabled |
+| OpenAI | `thinking: true` or `thinking: { effort: "high" }` | Requires o1/o3 models |
+
 ### 🎤 Speech to Text
 
 Clients that support transcribe (e.g. OpenAI w/ "Whisper") convert recordings to text via the following calls:

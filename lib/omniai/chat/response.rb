@@ -83,6 +83,18 @@ module OmniAI
         messages.any?(&:text?)
       end
 
+      # @return [String, nil]
+      def thinking
+        return unless thinking?
+
+        messages.filter(&:thinking?).map(&:thinking).join("\n\n")
+      end
+
+      # @return [Boolean]
+      def thinking?
+        messages.any?(&:thinking?)
+      end
+
       # @return [ToolCallList, nil]
       def tool_call_list
         tool_call_lists = messages.filter(&:tool_call_list?).map(&:tool_call_list)
