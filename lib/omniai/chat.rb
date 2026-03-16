@@ -165,7 +165,7 @@ module OmniAI
         stream: @stream,
         tools: @tools,
         format: @format,
-        options: @options
+        **@options
       )
     end
 
