@@ -186,6 +186,53 @@ RSpec.describe OmniAI::Chat do
       it { expect { process! }.to raise_error(OmniAI::HTTPError) }
     end
 
+    context "when tool calling with options" do
+      subject(:process!) { FakeChat.process!(prompt, model:, client:, tools:, thinking: true) }
+
+      let(:client) { build(:client) }
+      let(:model) { FakeChat::Model::FAKE }
+      let(:tool) { build(:tool) }
+      let(:tools) { [tool] }
+
+      before do
+        stub_request(:post, "http://localhost:8080/chat")
+          .with { |request| JSON.parse(request.body).dig("messages", -1, "role") != "tool" }
+          .to_return_json(status: 200, body: {
+            choices: [{
+              index: 0,
+              message: {
+                role: "assistant",
+                tool_calls: [{
+                  id: "call_1",
+                  type: "function",
+                  function: { name: "weather", arguments: JSON.generate(location: "London") },
+                }],
+              },
+            }],
+          })
+
+        stub_request(:post, "http://localhost:8080/chat")
+          .with { |request| JSON.parse(request.body).dig("messages", -1, "role") == "tool" }
+          .to_return_json(status: 200, body: {
+            choices: [{
+              index: 0,
+              message: {
+                role: "assistant",
+                content: "The weather in London is Rainy.",
+              },
+            }],
+          })
+      end
+
+      it "preserves options through spawn!" do
+        chat = FakeChat.new(prompt, model:, client:, tools:, thinking: true)
+        spawned = chat.send(:spawn!, prompt)
+        expect(spawned.instance_variable_get(:@options)).to eql({ thinking: true })
+      end
+
+      it { expect(process!.text).to eql("The weather in London is Rainy.") }
+    end
+
     context "when an SSL error occures" do
       before do
         stub_request(:post, "http://localhost:8080/chat")
