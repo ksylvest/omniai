@@ -240,9 +240,10 @@ module OmniAI
     #
     # @param input [String] required
     # @param model [String] required
+    # @param options [Hash] provider-specific options
     #
     # @return [OmniAI::Embed::Embedding]
-    def embed(input, model:)
+    def embed(input, model:, **options)
       raise NotImplementedError, "#{self.class.name}#embed undefined"
     end
   end
