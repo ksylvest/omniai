@@ -34,12 +34,14 @@ module OmniAI
     # @param input [String] required
     # @param client [Client] the client
     # @param model [String] required
+    # @param options [Hash] provider-specific options
     #
     # @return [Response]
-    def initialize(input, client:, model:)
+    def initialize(input, client:, model:, **options)
       @input = input
       @client = client
       @model = model
+      @options = options
     end
 
     # @raise [Error]
@@ -87,6 +89,12 @@ module OmniAI
     # @return [String]
     def path
       raise NotImplementedError, "#{self.class.name}#path undefined"
+    end
+
+    # @param value [Object]
+    # @return [Array]
+    def arrayify(value)
+      value.is_a?(Array) ? value : [value]
     end
   end
 end
