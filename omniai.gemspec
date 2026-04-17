@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "base64"
   spec.add_dependency "event_stream_parser"
-  spec.add_dependency "http", "~> 5"
+  spec.add_dependency "http", ">= 5", "< 7"
   spec.add_dependency "logger"
   spec.add_dependency "zeitwerk"
 end
