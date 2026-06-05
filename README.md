@@ -398,6 +398,19 @@ require 'omniai/openai'
 client = OmniAI::OpenAI::Client.new
 ```
 
+OpenAI-compatible gateways can be configured by passing a custom host. This keeps
+normal OpenAI usage unchanged while allowing private gateways, local model
+servers, or governed endpoints such as Tuning Engines:
+
+```ruby
+require 'omniai/openai'
+
+client = OmniAI::OpenAI::Client.new(
+  api_key: ENV.fetch('OPENAI_API_KEY'),
+  host: ENV.fetch('OPENAI_HOST', 'https://api.openai.com')
+)
+```
+
 #### Usage with LocalAI
 
 LocalAI support is offered through [OmniAI::OpenAI](https://github.com/ksylvest/omniai-openai):
