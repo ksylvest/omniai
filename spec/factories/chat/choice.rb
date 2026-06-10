@@ -6,5 +6,6 @@ FactoryBot.define do
 
     message factory: :chat_message
     index { 0 }
+    finish_reason { nil }
   end
 end

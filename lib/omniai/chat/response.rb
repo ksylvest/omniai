@@ -23,11 +23,28 @@ module OmniAI
       # @param data [Hash]
       # @param choices [Array<Choice>]
       # @param usage [Usage, nil]
-      def initialize(data:, choices: [], usage: nil)
+      # @param finish_reason [FinishReason, nil] an optional response-level finish reason (used by providers that
+      #   expose it at the response level, e.g. OpenAI's Responses API); when omitted, `#finish_reason` falls back to
+      #   the first choice's finish reason.
+      def initialize(data:, choices: [], usage: nil, finish_reason: nil)
         @data = data
         @choices = choices
         @usage = usage
+        @finish_reason = finish_reason
       end
+
+      # The normalized {FinishReason} for the final turn (carrying both `#reason` and the verbatim provider `#value`),
+      # or `nil` when absent. Some providers (e.g. OpenAI's Responses API) expose this at the response level; most
+      # expose it per-choice. Prefers an explicit response-level value, then falls back to the first choice. Reflects
+      # this response only (the final turn) — it is not aggregated across the parent chain, unlike {#total_usage}.
+      #
+      # @return [FinishReason, nil]
+      def finish_reason
+        @finish_reason || @choices.first&.finish_reason
+      end
+
+      # @!attribute [w] finish_reason
+      attr_writer :finish_reason
 
       # @return [String]
       def inspect

@@ -14,6 +14,38 @@ RSpec.describe OmniAI::Chat::Response do
     }
   end
 
+  describe "#finish_reason" do
+    let(:length) { OmniAI::Chat::FinishReason.new(reason: :length, value: "max_output_tokens") }
+    let(:filter) { OmniAI::Chat::FinishReason.new(reason: :filter, value: "content_filter") }
+    let(:stop) { OmniAI::Chat::FinishReason.new(reason: :stop, value: "stop") }
+
+    context "when set explicitly on the response (e.g. OpenAI Responses status)" do
+      subject(:response) { build(:chat_response, choices:, usage:, finish_reason: length) }
+
+      it { expect(response.finish_reason).to eql(length) }
+    end
+
+    context "when only the choice carries it (e.g. OpenAI/Mistral/Anthropic/Google)" do
+      let(:choice) { build(:chat_choice, message:, finish_reason: stop) }
+
+      it "falls back to the first choice's finish_reason" do
+        expect(response.finish_reason).to eql(stop)
+      end
+    end
+
+    context "when an explicit response value is present it wins over the choice" do
+      subject(:response) { build(:chat_response, choices:, usage:, finish_reason: filter) }
+
+      let(:choice) { build(:chat_choice, message:, finish_reason: stop) }
+
+      it { expect(response.finish_reason.reason).to eq(:filter) }
+    end
+
+    context "when neither is set" do
+      it { expect(response.finish_reason).to be_nil }
+    end
+  end
+
   describe ".deserialize" do
     subject(:deserialize) { described_class.deserialize(data, context:) }
 
