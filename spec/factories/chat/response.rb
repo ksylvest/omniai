@@ -7,5 +7,6 @@ FactoryBot.define do
     usage factory: :chat_usage
     choices { [] }
     data { {} }
+    finish_reason { nil }
   end
 end

@@ -16,11 +16,18 @@ module OmniAI
       #   @return [Message]
       attr_accessor :message
 
+      # @!attribute [rw] finish_reason
+      #   @return [FinishReason, nil] the normalized reason generation stopped (carrying both `#reason` and the
+      #     verbatim provider `#value`), or `nil` when absent.
+      attr_accessor :finish_reason
+
       # @param message [Message]
       # @param index [Integer]
-      def initialize(message:, index: DEFAULT_INDEX)
+      # @param finish_reason [FinishReason, nil]
+      def initialize(message:, index: DEFAULT_INDEX, finish_reason: nil)
         @message = message
         @index = index
+        @finish_reason = finish_reason
       end
 
       # @return [String]
@@ -39,7 +46,7 @@ module OmniAI
         index = data["index"] || DEFAULT_INDEX
         message = Message.deserialize(data["message"] || data["delta"], context:)
 
-        new(message:, index:)
+        new(message:, index:, finish_reason: FinishReason.deserialize(data["finish_reason"]))
       end
 
       # @param context [OmniAI::Context] optional
