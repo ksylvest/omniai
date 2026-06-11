@@ -213,7 +213,9 @@ RSpec.describe OmniAI::Client do
   end
 
   describe "#connection" do
-    it { expect(client.connection).to be_a(HTTP::Client) }
+    # `HTTP.persistent` returns an `HTTP::Client` on http 5 and an `HTTP::Session` on http 6; assert the request
+    # contract rather than a version-specific class.
+    it { expect(client.connection).to respond_to(:request) }
   end
 
   describe "#chat" do

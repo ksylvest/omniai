@@ -10,7 +10,7 @@ module OmniAI
   #       super
   #     end
   #
-  #     # @return [HTTP::Client]
+  #     # @return [HTTP::Client, HTTP::Session]
   #     def connection
   #       @connection ||= super.auth("Bearer: #{@api_key}")
   #     end
@@ -175,7 +175,7 @@ module OmniAI
       "#{api_key[..2]}***" if api_key
     end
 
-    # @return [HTTP::Client]
+    # @return [HTTP::Client, HTTP::Session] an `HTTP::Client` on http 5, an `HTTP::Session` on http 6
     def connection
       http = HTTP.persistent(@host)
       http = http.use(instrumentation: { instrumenter: Instrumentation.new(logger: @logger) }) if @logger
