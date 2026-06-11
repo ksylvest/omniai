@@ -19,6 +19,39 @@ RSpec.describe OmniAI::Instrumentation do
         expect(logger).to have_received(:error).with("Error: unknown")
       end
     end
+
+    context "with a block (http 6 around_request contract)" do
+      it "yields and returns the block's result so the response propagates" do
+        allow(logger).to receive(:info)
+        result = instrumentation.instrument("request.http", request:) { response }
+        expect(result).to eq(response)
+      end
+
+      it "logs the response for the request event" do
+        allow(logger).to receive(:info)
+        instrumentation.instrument("request.http", request:) { response }
+        expect(logger).to have_received(:info).with("200 OK")
+      end
+
+      it "logs the request for the start event and still yields" do
+        allow(logger).to receive(:info)
+        yielded = false
+        instrumentation.instrument("start_request.http", request:) { yielded = true }
+        expect(logger).to have_received(:info).with("POST /chat")
+        expect(yielded).to be(true)
+      end
+    end
+
+    context "when plugged into http's real instrumentation feature" do
+      let(:feature) { HTTP::Features::Instrumentation.new(instrumenter: instrumentation) }
+
+      it "drives around_request and returns the response (reproduces the http 6 nil bug)" do
+        skip "around_request is http 6+" unless feature.respond_to?(:around_request)
+        allow(logger).to receive(:info)
+        result = feature.around_request(request) { response }
+        expect(result).to eq(response)
+      end
+    end
   end
 
   describe "#start" do
