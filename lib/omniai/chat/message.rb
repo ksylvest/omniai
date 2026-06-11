@@ -145,7 +145,7 @@ module OmniAI
         return if @content.nil?
         return @content if @content.is_a?(String)
 
-        parts = arrayify(@content).filter { |content| content.is_a?(Text) }
+        parts = arrayify(@content).grep(Text)
         parts.map(&:text).join("\n") unless parts.empty?
       end
 
@@ -158,7 +158,7 @@ module OmniAI
       def thinking
         return if @content.nil?
 
-        parts = arrayify(@content).filter { |content| content.is_a?(Thinking) }
+        parts = arrayify(@content).grep(Thinking)
         parts.map(&:thinking).join("\n") unless parts.empty?
       end
 
