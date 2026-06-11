@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    omniai (3.7.0)
+    omniai (3.7.1)
       base64
       event_stream_parser
       http (>= 5, < 7)
@@ -125,9 +125,10 @@ GEM
     rubocop-rake (0.7.1)
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1)
-    rubocop-rspec (3.9.0)
+    rubocop-rspec (3.10.2)
       lint_roller (~> 1.1)
-      rubocop (~> 1.81)
+      regexp_parser (>= 2.0)
+      rubocop (~> 1.86, >= 1.86.2)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
     simplecov (0.22.0)
