@@ -40,6 +40,15 @@ RSpec.describe OmniAI::Instrumentation do
         expect(logger).to have_received(:info).with("POST /chat")
         expect(yielded).to be(true)
       end
+
+      it "is benign for an error event with an empty block (http 6 on_error)" do
+        allow(logger).to receive(:info)
+        allow(logger).to receive(:error)
+        result = instrumentation.instrument("error.http", request:, error: StandardError.new("boom")) { nil }
+        expect(result).to be_nil
+        expect(logger).to have_received(:error).with("error.http: boom")
+        expect(logger).not_to have_received(:info)
+      end
     end
 
     context "when plugged into http's real instrumentation feature" do
@@ -50,6 +59,16 @@ RSpec.describe OmniAI::Instrumentation do
         allow(logger).to receive(:info)
         result = feature.around_request(request) { response }
         expect(result).to eq(response)
+      end
+
+      # Contract guard: drives http's REAL event names (not our own strings) so a
+      # future upstream rename of the "start_" prefix fails loudly instead of
+      # silently dropping the request log line.
+      it "logs the request line via http's real event names" do
+        skip "around_request is http 6+" unless feature.respond_to?(:around_request)
+        allow(logger).to receive(:info)
+        feature.around_request(request) { response }
+        expect(logger).to have_received(:info).with("POST /chat")
       end
     end
   end
