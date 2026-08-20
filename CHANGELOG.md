@@ -25,4 +25,8 @@
 
   Known limitation: Anthropic reports no total at all, so its contribution is always the derived `input + output`, which excludes `cache_creation_input_tokens` and `cache_read_input_tokens`. An aggregate spanning Anthropic responses therefore understates cache-heavy conversations.
 
+### Upgrading
+
+- **Verified doubles of `OmniAI::Chat::Usage` need `thinking_tokens` stubbed.** `Response#total_usage` now reads the new attribute, so an `instance_double(OmniAI::Chat::Usage, input_tokens:, output_tokens:, total_tokens:)` raises on the unstubbed method. RSpec is behaving correctly — the double is verified against the real class — but it surfaces at upgrade time in specs rather than in application code. Add `thinking_tokens:` to affected doubles; `nil` is a valid value and matches a provider that reports no breakdown.
+
 Earlier changes are recorded in the GitHub releases.
