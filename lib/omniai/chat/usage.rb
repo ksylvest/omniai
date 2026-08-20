@@ -3,6 +3,18 @@
 module OmniAI
   class Chat
     # The usage of a chat in terms of tokens (input / output / total).
+    #
+    # Two invariants hold across every provider:
+    #
+    # - `thinking_tokens` is a *subset* of `output_tokens`, never an addition to it. Providers either fold reasoning
+    #   into their output count already (reporting the breakdown separately) or report it separately and have it
+    #   added in by their own serializer. Adding `thinking_tokens` to `output_tokens` double counts.
+    # - `total_tokens` may exceed `input_tokens + output_tokens`. Providers count buckets this class does not model
+    #   — cached input, tool-use prompts — so the reported total is authoritative and is never recomputed from the
+    #   parts. It may also be `nil`: some providers report no total at all.
+    #
+    # Provider-specific vocabulary is read by that provider's own `:usage` deserializer, not here. This class reads
+    # only its own keys and the flat OpenAI-compatible aliases the base client speaks.
     class Usage
       # @return [Integer]
       attr_accessor :input_tokens
@@ -50,24 +62,10 @@ module OmniAI
         input_tokens = data["input_tokens"] || data["prompt_tokens"]
         output_tokens = data["output_tokens"] || data["completion_tokens"]
         total_tokens = data["total_tokens"]
-        thinking_tokens = deserialize_thinking_tokens(data)
+        thinking_tokens = data["thinking_tokens"]
 
         new(input_tokens:, output_tokens:, total_tokens:, thinking_tokens:)
       end
-
-      # Providers that already fold reasoning into `output_tokens` report it separately as a breakdown. Anthropic
-      # uses `output_tokens_details.thinking_tokens`; OpenAI uses `completion_tokens_details.reasoning_tokens`. In
-      # both cases the value is a subset of the output tokens, never an addition to them.
-      #
-      # @param data [Hash]
-      #
-      # @return [Integer, nil]
-      def self.deserialize_thinking_tokens(data)
-        data["thinking_tokens"] ||
-          data["output_tokens_details"]&.fetch("thinking_tokens", nil) ||
-          data["completion_tokens_details"]&.fetch("reasoning_tokens", nil)
-      end
-      private_class_method :deserialize_thinking_tokens
 
       # @param context [OmniAI::Context] optional
       #

@@ -578,6 +578,30 @@ client.chat("Solve this step by step: What is 123 * 456?", thinking: true, strea
 | Google | `thinking: true` | Requires Gemini 2.0+ with thinking enabled |
 | OpenAI | `thinking: true` or `thinking: { effort: "high" }` | Requires o1/o3 models |
 
+#### Thinking Token Accounting
+
+Reasoning tokens are billable. `OmniAI::Chat::Usage#thinking_tokens` reports how many of a response's output tokens were internal reasoning:
+
+```ruby
+response = client.chat("What is 25 * 25?", thinking: true)
+
+response.usage.output_tokens   # => 1424 — billable output, reasoning included
+response.usage.thinking_tokens # => 840  — the reasoning subset of the above
+```
+
+`thinking_tokens` is always a **subset** of `output_tokens`, never an addition to it. Adding the two together double counts.
+
+It is `nil` when the provider reported no breakdown, which is deliberately distinct from `0` (the provider reported that no reasoning occurred). Each provider gem reads its own vocabulary:
+
+| Provider | Populated | Read from |
+|----------|-----------|-----------|
+| omniai-google >= 3.12 | yes | `thoughtsTokenCount` |
+| omniai-anthropic >= 3.6 | yes | `usage.output_tokens_details.thinking_tokens` |
+| omniai-openai >= 3.2 | yes | `usage.output_tokens_details.reasoning_tokens` (Responses API) |
+| omniai-mistral | no | no breakdown reported |
+
+Note also that `total_tokens` may exceed `input_tokens + output_tokens` — providers count buckets OmniAI does not model, such as cached input and tool-use prompts — and may be `nil` where a provider reports no total. The reported total is authoritative and is never recomputed from the parts.
+
 ### 🎤 Speech to Text
 
 Clients that support transcribe (e.g. OpenAI w/ "Whisper") convert recordings to text via the following calls:
