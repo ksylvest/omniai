@@ -15,8 +15,41 @@ RSpec.describe OmniAI::Chat::Usage do
     it { expect(usage.total_tokens).to eq(5) }
   end
 
+  describe "#thinking_tokens" do
+    context "when the provider reports no breakdown" do
+      it "is nil rather than zero" do
+        expect(usage.thinking_tokens).to be_nil
+      end
+    end
+
+    context "when the provider reports zero" do
+      subject(:usage) { build(:chat_usage, thinking_tokens: 0) }
+
+      it "is distinguishable from an absent breakdown" do
+        expect(usage.thinking_tokens).to eq(0)
+      end
+    end
+
+    context "when the provider reports a breakdown" do
+      subject(:usage) { build(:chat_usage, input_tokens: 2, output_tokens: 9, thinking_tokens: 6) }
+
+      it "is a subset of the output tokens, never an addition to them" do
+        expect(usage.thinking_tokens).to be <= usage.output_tokens
+      end
+    end
+  end
+
   describe "#inspect" do
     it { expect(usage.inspect).to eq("#<OmniAI::Chat::Usage input_tokens=2 output_tokens=3 total_tokens=5>") }
+
+    context "with thinking tokens" do
+      subject(:usage) { build(:chat_usage, input_tokens: 2, output_tokens: 9, total_tokens: 11, thinking_tokens: 6) }
+
+      it {
+        expect(usage.inspect)
+          .to eq("#<OmniAI::Chat::Usage input_tokens=2 output_tokens=9 total_tokens=11 thinking_tokens=6>")
+      }
+    end
   end
 
   describe ".deserialize" do
@@ -49,6 +82,46 @@ RSpec.describe OmniAI::Chat::Usage do
       it { expect(deserialize.input_tokens).to eq(2) }
       it { expect(deserialize.output_tokens).to eq(3) }
       it { expect(deserialize.total_tokens).to eq(5) }
+      it { expect(deserialize.thinking_tokens).to be_nil }
+    end
+
+    context "with an Anthropic-style breakdown" do
+      let(:context) { OmniAI::Context.build }
+      let(:data) do
+        {
+          "input_tokens" => 2,
+          "output_tokens" => 9,
+          "output_tokens_details" => { "thinking_tokens" => 6 },
+        }
+      end
+
+      it "reads thinking_tokens from the breakdown" do
+        expect(deserialize.thinking_tokens).to eq(6)
+      end
+
+      it "leaves output_tokens alone, because the provider already includes reasoning in it" do
+        expect(deserialize.output_tokens).to eq(9)
+      end
+    end
+
+    context "with an OpenAI-style breakdown" do
+      let(:context) { OmniAI::Context.build }
+      let(:data) do
+        {
+          "prompt_tokens" => 2,
+          "completion_tokens" => 9,
+          "total_tokens" => 11,
+          "completion_tokens_details" => { "reasoning_tokens" => 6 },
+        }
+      end
+
+      it "reads thinking_tokens from the breakdown" do
+        expect(deserialize.thinking_tokens).to eq(6)
+      end
+
+      it "leaves completion_tokens alone, because the provider already includes reasoning in it" do
+        expect(deserialize.output_tokens).to eq(9)
+      end
     end
   end
 
@@ -75,6 +148,17 @@ RSpec.describe OmniAI::Chat::Usage do
       let(:context) { OmniAI::Context.build }
 
       it { is_expected.to eq(input_tokens: 2, output_tokens: 3, total_tokens: 5) }
+    end
+
+    context "with thinking tokens" do
+      let(:usage) { build(:chat_usage, input_tokens: 2, output_tokens: 9, total_tokens: 11, thinking_tokens: 6) }
+      let(:context) { OmniAI::Context.build }
+
+      it { is_expected.to eq(input_tokens: 2, output_tokens: 9, total_tokens: 11, thinking_tokens: 6) }
+
+      it "round-trips" do
+        expect(described_class.deserialize(serialize.transform_keys(&:to_s)).thinking_tokens).to eq(6)
+      end
     end
   end
 end

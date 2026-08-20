@@ -153,20 +153,30 @@ module OmniAI
       # Returns aggregated usage across all responses in the chain.
       # Walks the parent chain and sums all token counts.
       #
+      # `total_tokens` prefers each response's provider-reported total and only falls back to `input + output` for
+      # responses where the provider reported none. Summing the reported totals matters wherever a provider counts
+      # tokens that are neither input nor output — Google's `totalTokenCount` includes thinking tokens, so
+      # recomputing unconditionally would discard them.
+      #
+      # Known limitation: Anthropic reports no total at all, so its contribution is always the derived
+      # `input + output`, which excludes `cache_creation_input_tokens` and `cache_read_input_tokens`. An aggregate
+      # spanning Anthropic responses therefore understates cache-heavy conversations.
+      #
       # @return [Usage, nil]
       def total_usage
-        chain = response_chain
-        usages = chain.map(&:usage).compact
+        usages = response_chain.map(&:usage).compact
         return nil if usages.empty?
 
-        input_tokens = usages.sum { |u| u.input_tokens || 0 }
-        output_tokens = usages.sum { |u| u.output_tokens || 0 }
+        input_tokens = usages.sum { |usage| usage.input_tokens || 0 }
+        output_tokens = usages.sum { |usage| usage.output_tokens || 0 }
+        total_tokens = usages.sum do |usage|
+          usage.total_tokens || ((usage.input_tokens || 0) + (usage.output_tokens || 0))
+        end
 
-        Usage.new(
-          input_tokens:,
-          output_tokens:,
-          total_tokens: input_tokens + output_tokens
-        )
+        thinking = usages.filter_map(&:thinking_tokens)
+        thinking_tokens = thinking.sum unless thinking.empty?
+
+        Usage.new(input_tokens:, output_tokens:, total_tokens:, thinking_tokens:)
       end
     end
   end
