@@ -16,13 +16,13 @@ module OmniAI
     # Provider-specific vocabulary is read by that provider's own `:usage` deserializer, not here. This class reads
     # only its own keys and the flat OpenAI-compatible aliases the base client speaks.
     class Usage
-      # @return [Integer]
+      # @return [Integer, nil]
       attr_accessor :input_tokens
 
-      # @return [Integer]
+      # @return [Integer, nil]
       attr_accessor :output_tokens
 
-      # @return [Integer]
+      # @return [Integer, nil]
       attr_accessor :total_tokens
 
       # The subset of `output_tokens` a provider attributes to internal reasoning ("thinking"). `nil` when the
@@ -32,9 +32,9 @@ module OmniAI
       # @return [Integer, nil]
       attr_accessor :thinking_tokens
 
-      # @param input_tokens [Integer]
-      # @param output_tokens [Integer]
-      # @param total_tokens [Integer]
+      # @param input_tokens [Integer, nil]
+      # @param output_tokens [Integer, nil]
+      # @param total_tokens [Integer, nil]
       # @param thinking_tokens [Integer, nil] optional
       def initialize(input_tokens:, output_tokens:, total_tokens:, thinking_tokens: nil)
         @input_tokens = input_tokens
