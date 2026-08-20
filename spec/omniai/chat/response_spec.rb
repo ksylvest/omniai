@@ -208,8 +208,40 @@ RSpec.describe OmniAI::Chat::Response do
         expect(response.total_usage.output_tokens).to eq(153)
       end
 
-      it "calculates total_tokens from input + output" do
-        expect(response.total_usage.total_tokens).to eq(302 + 153)
+      it "sums the provider-reported totals" do
+        # grandparent(150) + parent(300) + self(5) = 455
+        expect(response.total_usage.total_tokens).to eq(455)
+      end
+    end
+
+    context "when a provider reports a total larger than input + output" do
+      # Google counts thinking tokens in `totalTokenCount` but not in `candidatesTokenCount`, so a reported total
+      # legitimately exceeds input + output. Recomputing unconditionally would discard the difference.
+      let(:usage) do
+        OmniAI::Chat::Usage.new(input_tokens: 53, output_tokens: 550, total_tokens: 1409, thinking_tokens: 806)
+      end
+
+      it "preserves the reported total rather than recomputing it" do
+        expect(response.total_usage.total_tokens).to eq(1409)
+      end
+
+      it "aggregates thinking_tokens" do
+        expect(response.total_usage.thinking_tokens).to eq(806)
+      end
+    end
+
+    context "when a provider reports no total" do
+      # Anthropic sends no `total_tokens` field at all.
+      let(:usage) { OmniAI::Chat::Usage.new(input_tokens: 10, output_tokens: 20, total_tokens: nil) }
+
+      it "falls back to input + output for that response" do
+        expect(response.total_usage.total_tokens).to eq(30)
+      end
+    end
+
+    context "when no response reports thinking tokens" do
+      it "leaves thinking_tokens nil rather than reporting zero" do
+        expect(response.total_usage.thinking_tokens).to be_nil
       end
     end
 

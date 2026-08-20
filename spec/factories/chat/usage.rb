@@ -7,5 +7,6 @@ FactoryBot.define do
     input_tokens { 2 }
     output_tokens { 3 }
     total_tokens { input_tokens + output_tokens }
+    thinking_tokens { nil }
   end
 end
