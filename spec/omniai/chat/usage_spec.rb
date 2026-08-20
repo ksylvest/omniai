@@ -85,7 +85,18 @@ RSpec.describe OmniAI::Chat::Usage do
       it { expect(deserialize.thinking_tokens).to be_nil }
     end
 
-    context "with an Anthropic-style breakdown" do
+    context "with its own thinking_tokens key" do
+      let(:context) { OmniAI::Context.build }
+      let(:data) { { "input_tokens" => 2, "output_tokens" => 9, "thinking_tokens" => 6 } }
+
+      it "round-trips the field this class serializes" do
+        expect(deserialize.thinking_tokens).to eq(6)
+      end
+    end
+
+    context "with provider-specific breakdown vocabulary" do
+      # Base reads only its own key and the flat OpenAI-compatible aliases. Nested vendor shapes are read by that
+      # provider gem's own :usage deserializer, so base must not pick them up.
       let(:context) { OmniAI::Context.build }
       let(:data) do
         {
@@ -95,32 +106,8 @@ RSpec.describe OmniAI::Chat::Usage do
         }
       end
 
-      it "reads thinking_tokens from the breakdown" do
-        expect(deserialize.thinking_tokens).to eq(6)
-      end
-
-      it "leaves output_tokens alone, because the provider already includes reasoning in it" do
-        expect(deserialize.output_tokens).to eq(9)
-      end
-    end
-
-    context "with an OpenAI-style breakdown" do
-      let(:context) { OmniAI::Context.build }
-      let(:data) do
-        {
-          "prompt_tokens" => 2,
-          "completion_tokens" => 9,
-          "total_tokens" => 11,
-          "completion_tokens_details" => { "reasoning_tokens" => 6 },
-        }
-      end
-
-      it "reads thinking_tokens from the breakdown" do
-        expect(deserialize.thinking_tokens).to eq(6)
-      end
-
-      it "leaves completion_tokens alone, because the provider already includes reasoning in it" do
-        expect(deserialize.output_tokens).to eq(9)
+      it "does not read it" do
+        expect(deserialize.thinking_tokens).to be_nil
       end
     end
   end
