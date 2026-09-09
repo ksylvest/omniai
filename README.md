@@ -545,6 +545,42 @@ end
 client.chat('What is the weather in "London" in Celsius and "Paris" in Fahrenheit?', tools: [WeatherTool.new])
 ```
 
+#### Per-Round Usage
+
+A tool-call chain makes one request per round, but only the final `Response` is returned. Pass `on_response:` to see each round as it completes — before that round's tool calls are executed:
+
+```ruby
+usages = []
+
+response = client.chat(
+  'What is the weather in "London" in Celsius?',
+  tools: [WeatherTool.new],
+  on_response: proc { |round| usages << round.usage }
+)
+
+usages.sum(&:total_tokens) == response.total_usage.total_tokens # => true
+```
+
+It fires for single-round chats too, and is independent of `stream:`.
+
+Its value is that usage survives an abort. When a stream block or a tool raises mid-chain, `process!` unwinds without returning a `Response`, so every completed round's usage is lost — a run that cost real money bills as nothing. A loop guard that kills a runaway tool chain still knows what it spent:
+
+```ruby
+rounds = []
+
+stream = proc do |chunk|
+  raise TooManyRounds if rounds.length >= 20
+
+  print(chunk.text)
+end
+
+begin
+  client.chat(prompt, tools:, stream:, on_response: proc { |round| rounds << round })
+rescue TooManyRounds
+  rounds.sum { |round| round.usage.total_tokens } # the rounds actually paid for
+end
+```
+
 #### Extended Thinking / Reasoning
 
 Some models support extended thinking or reasoning capabilities. OmniAI provides a unified `thinking:` option that works across all supported providers:

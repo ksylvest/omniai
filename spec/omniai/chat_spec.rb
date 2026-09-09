@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class FakeChat < OmniAI::Chat
+  # Raised by a spec's stream block to abort a runaway tool-call chain.
+  class LoopGuardError < StandardError; end
+
   module Model
     FAKE = "fake"
   end
@@ -231,6 +234,129 @@ RSpec.describe OmniAI::Chat do
       end
 
       it { expect(process!.text).to eql("The weather in London is Rainy.") }
+    end
+
+    context "when on_response is given with a multi-round tool chain" do
+      subject(:process!) { FakeChat.process!(prompt, model:, client:, tools:, on_response:) }
+
+      let(:tools) { [build(:tool)] }
+      let(:responses) { [] }
+      let(:on_response) { proc { |response| responses << response } }
+
+      before do
+        stub_request(:post, "http://localhost:8080/chat")
+          .to_return_json(status: 200, body: {
+            choices: [{
+              index: 0,
+              message: {
+                role: "assistant",
+                tool_calls: [{
+                  id: "call_1",
+                  type: "function",
+                  function: { name: "weather", arguments: JSON.generate(location: "London") },
+                }],
+              },
+            }],
+            usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 },
+          })
+          .to_return_json(status: 200, body: {
+            choices: [{
+              index: 0,
+              message: {
+                role: "assistant",
+                tool_calls: [{
+                  id: "call_2",
+                  type: "function",
+                  function: { name: "weather", arguments: JSON.generate(location: "Madrid") },
+                }],
+              },
+            }],
+            usage: { prompt_tokens: 20, completion_tokens: 7, total_tokens: 27 },
+          })
+          .to_return_json(status: 200, body: {
+            choices: [{
+              index: 0,
+              message: { role: "assistant", content: "London is Rainy and Madrid is Sunny." },
+            }],
+            usage: { prompt_tokens: 30, completion_tokens: 9, total_tokens: 39 },
+          })
+      end
+
+      it "yields each completed round's own usage" do
+        process!
+        expect(responses.map { |response| response.usage.total_tokens }).to eql([15, 27, 39])
+      end
+
+      it "yields usages that sum to the final total_usage" do
+        response = process!
+        expect(responses.sum { |entry| entry.usage.total_tokens }).to eql(response.total_usage.total_tokens)
+      end
+    end
+
+    context "when a stream block aborts a multi-round tool chain" do
+      subject(:process!) { FakeChat.process!(prompt, model:, client:, tools:, stream:, on_response:) }
+
+      let(:tools) { [build(:tool)] }
+      let(:responses) { [] }
+      let(:on_response) { proc { |response| responses << response } }
+
+      # A loop guard in the shape the caller would write: abort the stream once two rounds have completed.
+      let(:stream) { proc { |_delta| raise FakeChat::LoopGuardError if responses.length >= 2 } }
+
+      before do
+        stub_request(:post, "http://localhost:8080/chat")
+          .to_return(status: 200, body: <<~STREAM)
+            data: #{JSON.generate({ choices: [{ index: 0, delta: { role: 'assistant', tool_calls: [{ index: 0, id: 'call_1', type: 'function', function: { name: 'weather', arguments: JSON.generate(location: 'London') } }] } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } })}\n\n
+            data: [DONE]\n\n
+          STREAM
+          .to_return(status: 200, body: <<~STREAM)
+            data: #{JSON.generate({ choices: [{ index: 0, delta: { role: 'assistant', tool_calls: [{ index: 0, id: 'call_2', type: 'function', function: { name: 'weather', arguments: JSON.generate(location: 'Madrid') } }] } }], usage: { prompt_tokens: 20, completion_tokens: 7, total_tokens: 27 } })}\n\n
+            data: [DONE]\n\n
+          STREAM
+          .to_return(status: 200, body: <<~STREAM)
+            data: #{JSON.generate({ choices: [{ index: 0, delta: { role: 'assistant', content: 'London is' } }] })}\n\n
+            data: #{JSON.generate({ choices: [{ index: 0, delta: { content: ' Rainy.' } }], usage: { prompt_tokens: 30, completion_tokens: 9, total_tokens: 39 } })}\n\n
+            data: [DONE]\n\n
+          STREAM
+      end
+
+      it { expect { process! }.to raise_error(FakeChat::LoopGuardError) }
+
+      it "leaves the caller holding the usage for every round that completed" do
+        expect { process! }.to raise_error(FakeChat::LoopGuardError)
+        expect(responses.map { |response| response.usage.total_tokens }).to eql([15, 27])
+      end
+    end
+
+    context "when a tool raises mid-chain" do
+      subject(:process!) { FakeChat.process!(prompt, model:, client:, tools:, on_response:) }
+
+      let(:tools) { [build(:tool)] }
+      let(:responses) { [] }
+      let(:on_response) { proc { |response| responses << response } }
+
+      before do
+        stub_request(:post, "http://localhost:8080/chat")
+          .to_return_json(status: 200, body: {
+            choices: [{
+              index: 0,
+              message: {
+                role: "assistant",
+                tool_calls: [{
+                  id: "call_1",
+                  type: "function",
+                  function: { name: "weather", arguments: JSON.generate(location: "Atlantis") },
+                }],
+              },
+            }],
+            usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 },
+          })
+      end
+
+      it "yields the round before executing its tool calls" do
+        expect { process! }.to raise_error(ArgumentError, "unknown location=Atlantis")
+        expect(responses.map { |response| response.usage.total_tokens }).to eql([15])
+      end
     end
 
     context "when an SSL error occures" do
