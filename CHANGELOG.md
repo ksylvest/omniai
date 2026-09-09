@@ -1,5 +1,30 @@
 # Changelog
 
+## 3.9.0
+
+### Added
+
+- `OmniAI::Chat` accepts `on_response:`, a proc handed the `Response` for each completed round of a tool-call chain, in order, before that round's tool calls are executed. It fires for single-round chats too, so the yielded usages always sum to the final `Response#total_usage`, and it is independent of `stream:`.
+
+  Only the final `Response` is returned from `#process!`, so when a caller aborts a chain mid-flight — a stream block raising to stop a runaway tool loop, or a tool raising — the stack unwinds with no `Response` at all and every completed round's usage is lost. A chain of 20 real, billed rounds books as zero. `on_response` hands each round to the caller as it completes, so an aborted run can still be accounted for.
+
+  ```ruby
+  rounds = []
+
+  begin
+    client.chat(prompt, tools:, stream:, on_response: proc { |round| rounds << round })
+  rescue TooManyRounds
+    rounds.sum { |round| round.usage.total_tokens }
+  end
+  ```
+
+  Deliberately not a `Delta`: deltas are provider chunks, usage is a round-level fact, and a delta cannot reach a caller streaming to an `IO`. Passing the whole `Response` also carries each round's `#finish_reason` and `#tool_call_list`.
+
+### Upgrading
+
+- Nothing to do. Callers that pass no `on_response:` are unaffected, streaming and non-streaming alike.
+- **Subclasses that override `#spawn!` must forward `on_response:`.** The base implementation now passes it along with `stream:`, `tools:`, and the rest; an override that enumerates keywords will silently drop it after the first round. No provider gem overrides `#spawn!`.
+
 ## 3.8.0
 
 ### Added

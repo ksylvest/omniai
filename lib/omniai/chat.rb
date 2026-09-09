@@ -66,6 +66,9 @@ module OmniAI
     # @param stream [Proc, IO, nil] optional
     # @param tools [Array<OmniAI::Tool>, nil] optional
     # @param format [:json, :text, OmniAI::Schema::Object, nil] optional
+    # @param on_response [Proc, nil] optional - called with the `Response` for each completed round of a
+    #   tool-call chain, in order, before that round's tool calls are executed. Fires for single-round chats
+    #   too, so the yielded usages always sum to the final `Response#total_usage`. Independent of `stream`.
     # @param options [Hash] optional (used for vendor specific options)
     #
     # @yield [prompt] optional
@@ -80,6 +83,7 @@ module OmniAI
       stream: nil,
       tools: nil,
       format: nil,
+      on_response: nil,
       **options,
       &block
     )
@@ -94,9 +98,14 @@ module OmniAI
       @stream = stream
       @tools = tools
       @format = format
+      @on_response = on_response
       @options = options || {}
     end
 
+    # Each completed round is handed to `on_response` before its tool calls are executed, so a caller that
+    # aborts mid-chain — by raising from the stream block or from a tool — still holds the usage for every
+    # round that completed. Only the final `Response` is returned; `#total_usage` aggregates the chain.
+    #
     # @raise [HTTPError]
     # @raise [SSLError]
     #
@@ -111,6 +120,8 @@ module OmniAI
       rescue OpenSSL::SSL::SSLError => e
         raise SSLError, e.message, cause: e
       end
+
+      @on_response&.call(completion)
 
       if tools? && completion.tool_call_list?
         next_completion = spawn!(
@@ -165,6 +176,7 @@ module OmniAI
         stream: @stream,
         tools: @tools,
         format: @format,
+        on_response: @on_response,
         **@options
       )
     end
