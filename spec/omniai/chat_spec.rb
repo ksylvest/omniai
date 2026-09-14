@@ -298,6 +298,26 @@ RSpec.describe OmniAI::Chat do
       end
     end
 
+    context "when on_response is given without tools" do
+      subject(:process!) { FakeChat.process!(prompt, model:, client:, on_response:) }
+
+      let(:responses) { [] }
+      let(:on_response) { proc { |response| responses << response } }
+
+      before do
+        stub_request(:post, "http://localhost:8080/chat")
+          .to_return_json(status: 200, body: {
+            choices: [{ index: 0, message: { role: "assistant", content: "Ringo" } }],
+            usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 },
+          })
+      end
+
+      it "yields the single response it returns" do
+        response = process!
+        expect(responses).to eql([response])
+      end
+    end
+
     context "when on_response raises" do
       subject(:process!) { FakeChat.process!(prompt, model:, client:, tools:, on_response:) }
 
