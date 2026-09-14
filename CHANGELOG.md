@@ -14,15 +14,16 @@
   begin
     client.chat(prompt, tools:, stream:, on_response: proc { |round| rounds << round })
   rescue TooManyRounds
-    rounds.sum { |round| round.usage.total_tokens }
+    rounds.filter_map(&:usage).sum { |usage| usage.input_tokens.to_i + usage.output_tokens.to_i }
   end
   ```
 
-  Deliberately not a `Delta`: deltas are provider chunks, usage is a round-level fact, and a delta cannot reach a caller streaming to an `IO`. Passing the whole `Response` also carries each round's `#finish_reason` and `#tool_call_list`.
+  Deliberately not a `Delta`: deltas are provider chunks, usage is a round-level fact, and a delta cannot reach a caller streaming to an `IO`. Passing the whole `Response` also carries each round's `#finish_reason`, `#tool_call_list`, and raw `#data` (e.g. Anthropic's cache usage keys).
 
 ### Upgrading
 
 - Nothing to do. Callers that pass no `on_response:` are unaffected, streaming and non-streaming alike.
+- **`on_response:` reaches `OmniAI::Chat` only through a `Client#chat` that forwards `**`.** omniai-anthropic, omniai-google, and omniai-openai do; omniai-mistral < 3.0.1 enumerates its keywords and raises `ArgumentError`.
 - **Subclasses that override `#spawn!` must forward `on_response:`.** The base implementation now passes it along with `stream:`, `tools:`, and the rest; an override that enumerates keywords will silently drop it after the first round. No provider gem overrides `#spawn!`.
 
 ## 3.8.0

@@ -191,6 +191,8 @@ module OmniAI
     # @param temperature [Float, nil] optional
     # @param stream [Proc, nil] optional
     # @param tools [Array<OmniAI::Tool>] optional
+    # @param on_response [Proc, nil] optional - called with each completed round's `Response` before its tool
+    #   calls run
     # @param options [Hash, nil] optional
     #
     # @yield [prompt] optional

@@ -547,23 +547,9 @@ client.chat('What is the weather in "London" in Celsius and "Paris" in Fahrenhei
 
 #### Per-Round Usage
 
-A tool-call chain makes one request per round, but only the final `Response` is returned. Pass `on_response:` to see each round as it completes — before that round's tool calls are executed:
+A tool-call chain makes one request per round, but only the final `Response` is returned. Pass `on_response:` to receive each round's `Response` as it completes, before that round's tool calls run. It fires for single-round chats too and is independent of `stream:`.
 
-```ruby
-usages = []
-
-response = client.chat(
-  'What is the weather in "London" in Celsius?',
-  tools: [WeatherTool.new],
-  on_response: proc { |round| usages << round.usage }
-)
-
-usages.sum(&:total_tokens) == response.total_usage.total_tokens # => true
-```
-
-It fires for single-round chats too, and is independent of `stream:`.
-
-Its value is that usage survives an abort. When a stream block or a tool raises mid-chain, `process!` unwinds without returning a `Response`, so every completed round's usage is lost — a run that cost real money bills as nothing. A loop guard that kills a runaway tool chain still knows what it spent:
+Usage then survives an abort. When a stream block or a tool raises mid-chain, `process!` unwinds without returning a `Response`, but the rounds already handed over are still accounted for:
 
 ```ruby
 rounds = []
@@ -577,7 +563,7 @@ end
 begin
   client.chat(prompt, tools:, stream:, on_response: proc { |round| rounds << round })
 rescue TooManyRounds
-  rounds.sum { |round| round.usage.total_tokens } # the rounds actually paid for
+  rounds.filter_map(&:usage).sum { |usage| usage.input_tokens.to_i + usage.output_tokens.to_i }
 end
 ```
 
