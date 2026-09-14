@@ -291,6 +291,56 @@ RSpec.describe OmniAI::Chat do
         response = process!
         expect(responses.sum { |entry| entry.usage.total_tokens }).to eql(response.total_usage.total_tokens)
       end
+
+      it "yields the same responses that form the returned chain" do
+        response = process!
+        expect(response.response_chain).to eql(responses)
+      end
+    end
+
+    context "when on_response raises" do
+      subject(:process!) { FakeChat.process!(prompt, model:, client:, tools:, on_response:) }
+
+      let(:tools) { [build(:tool, function: proc { |location:| raise "tool ran for #{location}" })] }
+      let(:on_response) { proc { |_response| raise FakeChat::LoopGuardError } }
+
+      before do
+        stub_request(:post, "http://localhost:8080/chat")
+          .to_return_json(status: 200, body: {
+            choices: [{
+              index: 0,
+              message: {
+                role: "assistant",
+                tool_calls: [{
+                  id: "call_1",
+                  type: "function",
+                  function: { name: "weather", arguments: JSON.generate(location: "London") },
+                }],
+              },
+            }],
+          })
+      end
+
+      it "propagates before the round's tool calls execute" do
+        expect { process! }.to raise_error(FakeChat::LoopGuardError)
+      end
+    end
+
+    context "when the request fails with on_response" do
+      subject(:process!) { FakeChat.process!(prompt, model:, client:, on_response:) }
+
+      let(:responses) { [] }
+      let(:on_response) { proc { |response| responses << response } }
+
+      before do
+        stub_request(:post, "http://localhost:8080/chat")
+          .to_return(status: 422, body: "An unknown error occurred.")
+      end
+
+      it "yields nothing" do
+        expect { process! }.to raise_error(OmniAI::HTTPError)
+        expect(responses).to be_empty
+      end
     end
 
     context "when a stream block aborts a multi-round tool chain" do
