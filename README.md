@@ -624,6 +624,24 @@ It is `nil` when the provider reported no breakdown, which is deliberately disti
 
 Note also that `total_tokens` may exceed `input_tokens + output_tokens` — providers count buckets OmniAI does not model, such as cached input and tool-use prompts — and may be `nil` where a provider reports no total. The reported total is authoritative and is never recomputed from the parts.
 
+#### Prompt Caching
+
+`cache:` is opt-in and safe to pass to every provider. Providers that need explicit cache breakpoints honor it; providers that cache prompt prefixes automatically ignore it.
+
+```ruby
+client.chat(prompt, cache: true)    # cache the stable prefix (tools + system prompt) and the conversation history
+client.chat(prompt, cache: :system) # cache only the stable prefix, for single-shot prompts with a unique message
+```
+
+Use `true` for multi-turn chats and tool loops, where each round re-sends the history. Use `:system` when many calls share a system prompt but each sends a different message, so the message is not written to the cache for nothing.
+
+| Provider | Behavior |
+|----------|----------|
+| omniai-anthropic >= 3.12 | marks `cache_control` breakpoints; `cache: { ttl: "1h" }` for a 1-hour TTL |
+| omniai-openai >= 3.3.1 | ignored (automatic prefix caching) |
+| omniai-google | ignored (implicit caching) |
+| omniai-mistral | ignored |
+
 ### 🎤 Speech to Text
 
 Clients that support transcribe (e.g. OpenAI w/ "Whisper") convert recordings to text via the following calls:
