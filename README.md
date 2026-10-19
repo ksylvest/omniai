@@ -626,7 +626,7 @@ Note also that `total_tokens` may exceed `input_tokens + output_tokens` — prov
 
 #### Prompt Caching
 
-`cache:` is opt-in and safe to pass to every provider. Providers that need explicit cache breakpoints honor it; providers that cache prompt prefixes automatically ignore it.
+`cache:` is opt-in and safe to pass to every provider at the versions below. Providers that need explicit cache breakpoints honor it; providers that cache prompt prefixes automatically ignore it.
 
 ```ruby
 client.chat(prompt, cache: true)    # cache the stable prefix (tools + system prompt) and the conversation history
