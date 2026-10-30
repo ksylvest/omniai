@@ -15,6 +15,8 @@ OmniAI provides a unified Ruby API for integrating with multiple AI providers, i
 - [OmniAI::Mistral](https://github.com/ksylvest/omniai-mistral)
 - [OmniAI::OpenAI](https://github.com/ksylvest/omniai-openai)
 
+_To grade model output with datasets, boolean criteria, judges, and scorecards, see [OmniAI::Evals](https://github.com/DeanSingh/omniai-evals)._
+
 ## 📄 Examples
 
 ### Example #1: [💬 Chat w/ Text](https://github.com/ksylvest/omniai/blob/main/examples/chat_with_text)
