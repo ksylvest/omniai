@@ -15,7 +15,7 @@ OmniAI provides a unified Ruby API for integrating with multiple AI providers, i
 - [OmniAI::Mistral](https://github.com/ksylvest/omniai-mistral)
 - [OmniAI::OpenAI](https://github.com/ksylvest/omniai-openai)
 
-_To grade model output with datasets, boolean criteria, judges, and scorecards, see [OmniAI::Evals](https://github.com/DeanSingh/omniai-evals)._
+_To test and grade model output, see [🧪 Evals](#-evals) and the [OmniAI::Evals](https://github.com/DeanSingh/omniai-evals) gem._
 
 ## 📄 Examples
 
@@ -708,6 +708,105 @@ response.embeddings.each do |embedding|
   embedding # [0.1, 0.2, ...]
 end
 ```
+
+## 🧪 Evals
+
+[OmniAI::Evals](https://github.com/DeanSingh/omniai-evals) tests model output. Every check is a boolean: a criterion held or it did not, with no 0–1 scores or thresholds. A check runs either as an **assertion** (code: free, offline, deterministic) or as a **judge** (a model, called through any OmniAI client).
+
+```bash
+gem install omniai-evals
+```
+
+### Assertions
+
+```ruby
+require 'omniai/openai'
+require 'omniai/evals'
+
+client = OmniAI::OpenAI::Client.new
+output = client.chat('When did Apollo 11 land on the Moon?').text
+# "Apollo 11 landed on the Moon on July 20, 1969."
+
+criterion = OmniAI::Evals::Criterion.new(
+  id: 'apollo#date', family: 'date', type: 'presence', scorer: 'assertion',
+  target: { 'date' => '1969-07-20' }, provenance: {}
+)
+
+result = OmniAI::Evals::Assertions.for(criterion.type).call(example: nil, output:, criterion:)
+result.score   # true
+result.comment # "date 1969-07-20 found (parsed)"
+```
+
+Dates are compared parsed, so `July 20, 1969`, `07/20/1969` and `1969-07-20` all match. The built-in assertions:
+
+| type         | example `target`                                          | passes when                                                    |
+| ------------ | --------------------------------------------------------- | -------------------------------------------------------------- |
+| `presence`   | `{ 'text' => 'armstrong' }` / `{ 'date' => '1969-07-20' }` | the text (case- and whitespace-insensitive) or date appears    |
+| `absence`    | `{ 'text' => 'as an AI' }`                                | the text does not appear                                       |
+| `identity`   | `{ 'text' => 'Apollo 11' }`                               | the text appears exactly, case-sensitive                       |
+| `structure`  | `{ 'path' => %w[mission date], 'type' => 'string' }`      | a Hash output has that path, with that JSON type               |
+| `abstention` | `{ 'region' => 'crew size', 'forbidden_terms' => %w[three] }` | the output declines (e.g. `[illegible]`) instead of guessing |
+
+### Judges
+
+When code can't decide (is this summary faithful?), a judge model compares the output to a human-written key:
+
+```ruby
+require 'omniai/evals/adapters/omniai'
+
+judge = OmniAI::Evals::Adapters::OmniAI.new(client:, model: OmniAI::OpenAI::Chat::Model::GPT_6_LUNA)
+
+verdict = judge.call(
+  system: 'Grade OUTPUT against KEY. Pass only if OUTPUT states the same facts as KEY.',
+  packet: OmniAI::Evals::Judge.packet(key_text: 'Apollo 11 landed on July 20, 1969.', output:),
+  schema: OmniAI::Evals::Judge.schema
+)
+# { "passed" => true, "reason" => "Same mission and date." }
+```
+
+The judge receives only the key and the output, never the original prompt. Any OmniAI client can judge, so the model under test and the judge can come from different providers.
+
+### Repeat runs: pass, fail or flaky
+
+Models are not deterministic, so run each check more than once:
+
+```ruby
+results = Array.new(5) do
+  output = client.chat('When did Apollo 11 land on the Moon?').text
+  OmniAI::Evals::Assertions.for(criterion.type).call(example: nil, output:, criterion:)
+end
+
+OmniAI::Evals::Reducer.all_epochs(results) # :pass, :fail or :flaky
+```
+
+A check that passes 3 times in 5 is `:flaky`, not "60% correct".
+
+### Datasets and scorecards
+
+For a full bench, keep examples and their criteria in JSON files, then grade every example and roll the results into a scorecard:
+
+```ruby
+dataset  = OmniAI::Evals::Dataset.load('bench/manifest.json')
+criteria = OmniAI::Evals::Criteria.load(dataset:)
+
+records = dataset.examples.flat_map do |example|
+  output = client.chat(File.read(dataset.input_path_for(example))).text
+  criteria.for(example.id).map do |criterion|
+    result = OmniAI::Evals::Assertions.for(criterion.type).call(example:, output:, criterion:)
+    OmniAI::Evals::Record.build(result:, run_id: 'run-1', example_id: example.id,
+                                family: criterion.family, scorer: criterion.scorer, epoch: 1)
+  end
+end
+
+OmniAI::Evals::Scorecard.build(
+  records:, run_id: 'run-1',
+  comparability_key: OmniAI::Evals::Compare.key(dataset_sha: dataset.sha256, criteria_sha: criteria.sha256,
+                                                prompt_version: 'v1')
+)
+# { "examples" => { "total" => 4, "all_pass" => 3, ... }, "families" => { "date" => { ... } } }
+```
+
+The scorecard holds counts only, never text, so it is safe to share. Runs compare only when their dataset, criteria and prompt version match. `OmniAI::Evals::Plan` estimates calls and cost before you spend anything. See the gem's [demo bench](https://github.com/DeanSingh/omniai-evals/tree/main/bench/demo) for a complete, runnable example.
 
 ## 🐚 CLI
 
