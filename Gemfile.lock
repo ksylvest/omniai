@@ -38,7 +38,7 @@ GEM
     domain_name (0.6.20240107)
     drb (2.2.3)
     erb (6.0.7)
-    event_stream_parser (1.0.0)
+    event_stream_parser (1.0.1)
     factory_bot (6.6.0)
       activesupport (>= 6.1.0)
     hashdiff (1.2.2)
